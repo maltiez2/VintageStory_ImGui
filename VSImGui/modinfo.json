@@ -1,0 +1,13 @@
+{
+    "type": "code",
+    "modid": "vsimgui",
+    "name": "Dear ImGui",
+    "authors": [
+        "Maltiez"
+    ],
+    "description": "ImGui.NET wrapper for Vintage Story",
+    "version": "0.0.2",
+    "dependencies": {
+        "game": "1.18.8"
+    }
+}
