@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using OpenTK.Graphics.ES30;
 using System;
 using System.Linq;
 using System.Numerics;
@@ -11,7 +12,6 @@ namespace VSImGui.ImGuiUtils
         public Vector2 Value { get; set; }
         public float X => Value.X;
         public float Y => Value.Y;
-
 
         public Value2(Vector2 value) => Value = value;
         public Value2((float first, float second) values) => Value = new(values.first, values.second);
@@ -73,6 +73,20 @@ namespace VSImGui.ImGuiUtils
         public ImGuiStyle NativeStyle => mNativeStyle;
 
         // PADDINGS
+        public Value2 Paddings
+        {
+            private get => PaddingWindow;
+            set
+            {
+                PaddingWindow = value;
+                PaddingFrame = value;
+                PaddingCell = value;
+                PaddingTouchExtra = value;
+                PaddingSeparatorText = value;
+                PaddingDisplayWindow = value;
+                PaddingDisplaySafeArea = value;
+            }
+        }
         public Value2 PaddingWindow { get => mNativeStyle.WindowPadding; set => mNativeStyle.WindowPadding = value.Value; }
         public Value2 PaddingFrame { get => mNativeStyle.FramePadding; set => mNativeStyle.FramePadding = value.Value; }
         public Value2 PaddingCell { get => mNativeStyle.CellPadding; set => mNativeStyle.CellPadding = value.Value; }
@@ -88,6 +102,20 @@ namespace VSImGui.ImGuiUtils
         public float SpacingColumnsMin { get => mNativeStyle.ColumnsMinSpacing; set => mNativeStyle.ColumnsMinSpacing = value; }
 
         // BORDERS
+        public float Borders
+        {
+            private get => BorderWindow;
+
+            set
+            {
+                BorderWindow = value;
+                BorderChild = value;
+                BorderPopup = value;
+                BorderFrame = value;
+                BorderTab = value;
+                BorderSeparatorText = value;
+            }
+        }
         public float BorderWindow { get => mNativeStyle.WindowBorderSize; set => mNativeStyle.WindowBorderSize = value; }
         public float BorderChild { get => mNativeStyle.ChildBorderSize; set => mNativeStyle.ChildBorderSize = value; }
         public float BorderPopup { get => mNativeStyle.PopupBorderSize; set => mNativeStyle.PopupBorderSize = value; }
@@ -96,6 +124,21 @@ namespace VSImGui.ImGuiUtils
         public float BorderSeparatorText { get => mNativeStyle.SeparatorTextBorderSize; set => mNativeStyle.SeparatorTextBorderSize = value; }
 
         // ROUNDING
+        public float Rounding
+        {
+            private get => RoundingWindow;
+            
+            set
+            {
+                RoundingWindow = value;
+                RoundingChild = value;
+                RoundingPopup = value;
+                RoundingFrame = value;
+                RoundingScrollbar = value;
+                RoundingGrab = value;
+                RoundingTab = value;
+            }
+        }
         public float RoundingWindow { get => mNativeStyle.WindowRounding; set => mNativeStyle.WindowRounding = value; }
         public float RoundingChild { get => mNativeStyle.ChildRounding; set => mNativeStyle.ChildRounding = value; }
         public float RoundingPopup { get => mNativeStyle.PopupRounding; set => mNativeStyle.PopupRounding = value; }
@@ -110,6 +153,18 @@ namespace VSImGui.ImGuiUtils
         public float SizeGrabMin { get => mNativeStyle.GrabMinSize; set => mNativeStyle.GrabMinSize = value; }
 
         // ALIGN
+        public Value2 Aligns
+        {
+            private get => AlignWindowTitle;
+
+            set
+            {
+                AlignWindowTitle = value;
+                AlignButtonText = value;
+                AlignSelectableText = value;
+                AlignSeparatorText = value;
+            }
+        }
         public Value2 AlignWindowTitle { get => mNativeStyle.WindowTitleAlign; set => mNativeStyle.WindowTitleAlign = value; }
         public Value2 AlignButtonText { get => mNativeStyle.ButtonTextAlign; set => mNativeStyle.ButtonTextAlign = value; }
         public Value2 AlignSelectableText { get => mNativeStyle.SelectableTextAlign; set => mNativeStyle.SelectableTextAlign = value; }
@@ -139,7 +194,174 @@ namespace VSImGui.ImGuiUtils
         public float MouseCursorScale { get => mNativeStyle.MouseCursorScale; set => mNativeStyle.MouseCursorScale = value; }
 
         // COLORS
+        public Value4 Colors
+        {
+            private get => ColorBackgroundWindow;
+
+            set
+            {
+                ColorBackgroundWindow = value;
+                ColorBackgroundChild = value;
+                ColorBackgroundPopup = value;
+                ColorBackgroundFrame = value;
+                ColorBackgroundFrameHovered = value;
+                ColorBackgroundFrameActive = value;
+                ColorBackgroundTitle = value;
+                ColorBackgroundTitleActive = value;
+                ColorBackgroundTitleCollapsed = value;
+                ColorBackgroundMenuBar = value;
+                ColorBackgroundScrollbar = value;
+                ColorBackgroundDockingEmpty = value;
+                ColorBackgroundTableHeader = value;
+                ColorBackgroundTableRow = value;
+                ColorBackgroundTableRowAlt = value;
+                ColorBackgroundTextSelected = value;
+                ColorBackgroundNavWindowingDim = value;
+                ColorBackgroundModalWindowDim = value;
+
+                // COLORS: TEXT
+                ColorText = value;
+                ColorTextDisabled = value;
+
+                // COLORS: BORDERS
+                ColorBorder = value;
+                ColorBorderShadow = value;
+                ColorTableBorderStrong = value;
+                ColorTableBorderLight = value;
+
+                // COLORS: SCROLL
+                ColorScrollbarGrab = value;
+                ColorScrollbarGrabHovered = value;
+                ColorScrollbarGrabActive = value;
+
+
+                // COLORS: SLIDER
+                ColorSliderGrab = value;
+                ColorSliderGrabActive = value;
+
+                // COLORS: BUTTON
+                ColorButton = value;
+                ColorButtonHovered = value;
+                ColorButtonActive = value;
+
+                // COLORS: HEADER
+                ColorHeader = value;
+                ColorHeaderHovered = value;
+                ColorHeaderActive = value;
+
+                // COLORS: SEPARATOR
+                ColorSeparator = value;
+                ColorSeparatorHovered = value;
+                ColorSeparatorActive = value;
+
+                // COLORS: RESIZE
+                ColorResizeGrip = value;
+                ColorResizeGripHovered = value;
+                ColorResizeGripActive = value;
+
+                // COLORS: TAB
+                ColorTab = value;
+                ColorTabHovered = value;
+                ColorTabActive = value;
+                ColorTabUnfocused = value;
+                ColorTabUnfocusedActive = value;
+
+                // COLORS: PLOT
+                ColorPlotLines = value;
+                ColorPlotLinesHovered = value;
+                ColorPlotHistogram = value;
+                ColorPlotHistogramHovered = value;
+
+                // COLORS: OTHER
+                ColorCheckMark = value;
+                ColorDockingPreview = value;
+                ColorDragDropTarget = value;
+                ColorNavHighlight = value;
+                ColorNavWindowingHighlight = value;
+            }
+        }
+        public Value4 ColorsActive
+        {
+            private get => ColorBackgroundFrameActive;
+
+            set
+            {
+                ColorBackgroundFrameActive = value;
+                ColorBackgroundTitleActive = value;
+                ColorScrollbarGrabActive = value;
+                ColorSliderGrabActive = value;
+                ColorButtonActive = value;
+                ColorHeaderActive = value;
+                ColorSeparatorActive = value;
+                ColorResizeGripActive = value;
+                ColorTabActive = value;
+                ColorTabUnfocusedActive = value;
+            }
+        }
+        public Value4 ColorsHovered
+        {
+            private get => ColorBackgroundFrameHovered;
+
+            set
+            {
+                ColorBackgroundFrameHovered = value;
+                ColorScrollbarGrabHovered = value;
+                ColorButtonHovered = value;
+                ColorHeaderHovered = value;
+                ColorSeparatorHovered = value;
+                ColorResizeGripHovered = value;
+                ColorTabHovered = value;
+                ColorPlotLinesHovered = value;
+                ColorPlotHistogramHovered = value;
+            }
+        }
+
         // COLORS: BACKGROUND
+        public Value4 ColorsBackground
+        {
+            private get => ColorBackgroundWindow;
+
+            set
+            {
+                ColorBackgroundWindow = value;
+                ColorBackgroundChild = value;
+                ColorBackgroundPopup = value;
+                ColorBackgroundFrame = value;
+                ColorBackgroundFrameHovered = value;
+                ColorBackgroundFrameActive = value;
+                ColorBackgroundTitle = value;
+                ColorBackgroundTitleActive = value;
+                ColorBackgroundTitleCollapsed = value;
+                ColorBackgroundMenuBar = value;
+                ColorBackgroundScrollbar = value;
+                ColorBackgroundDockingEmpty = value;
+                ColorBackgroundTableHeader = value;
+                ColorBackgroundTableRow = value;
+                ColorBackgroundTableRowAlt = value;
+                ColorBackgroundTextSelected = value;
+                ColorBackgroundNavWindowingDim = value;
+                ColorBackgroundModalWindowDim = value;
+            }
+        }
+        public Value4 ColorsBackgroundActive
+        {
+            private get => ColorBackgroundFrameActive;
+
+            set
+            {
+                ColorBackgroundFrameActive = value;
+                ColorBackgroundTitleActive = value;
+            }
+        }
+        public Value4 ColorsBackgroundHovered
+        {
+            private get => ColorBackgroundFrameHovered;
+
+            set
+            {
+                ColorBackgroundFrameHovered = value;
+            }
+        }
         public Value4 ColorBackgroundWindow { get => mNativeStyle.Colors_2; set => mNativeStyle.Colors_2 = value; }
         public Value4 ColorBackgroundChild { get => mNativeStyle.Colors_3; set => mNativeStyle.Colors_3 = value; }
         public Value4 ColorBackgroundPopup { get => mNativeStyle.Colors_4; set => mNativeStyle.Colors_4 = value; }
@@ -158,7 +380,6 @@ namespace VSImGui.ImGuiUtils
         public Value4 ColorBackgroundTextSelected { get => mNativeStyle.Colors_49; set => mNativeStyle.Colors_49 = value; }
         public Value4 ColorBackgroundNavWindowingDim { get => mNativeStyle.Colors_53; set => mNativeStyle.Colors_53 = value; }
         public Value4 ColorBackgroundModalWindowDim { get => mNativeStyle.Colors_54; set => mNativeStyle.Colors_54 = value; }
-
 
         // COLORS: TEXT
         public Value4 ColorText { get => mNativeStyle.Colors_0; set => mNativeStyle.Colors_0 = value; }
@@ -222,9 +443,10 @@ namespace VSImGui.ImGuiUtils
 
         // WINDOW STYLE
         public (string name, int size) Font { get => mWindowStyle.Font; set => mWindowStyle.Font = value; }
+        public string FontName { get => Font.name; set => Font = (value, FontSize); }
+        public int FontSize { get => Font.size; set => Font = (FontName, value); }
 
-        
-        
+
         private ImGuiStyle mNativeStyle;
         private WindowStyle mWindowStyle;
 
