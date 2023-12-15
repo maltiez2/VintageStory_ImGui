@@ -4,18 +4,13 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.Common.Input;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
 using ErrorCode = OpenTK.Graphics.OpenGL4.ErrorCode;
-using Vintagestory.API.Client;
 using Vintagestory.API.Config;
 using System.IO;
-using System.Text;
 using System.Runtime.InteropServices;
-using System.Drawing;
-using ImGuizmoNET;
 
 namespace VSImGui
 {
@@ -614,7 +609,7 @@ void main()
             }
         }
 
-        static public HashSet<float> FontSizes { get; set; } = new HashSet<float>
+        static public HashSet<int> FontSizes { get; set; } = new HashSet<int>
         {
             6,
             8,
@@ -642,16 +637,19 @@ void main()
             Path.Combine(GamePaths.AssetsPath, "game/fonts", "Montserrat-Italic.ttf"),
             Path.Combine(GamePaths.AssetsPath, "game/fonts", "Montserrat-Regular.ttf")
         };
+        static public Dictionary<(string, int), ImFontPtr> LoadedFonts { get; set; } = new();
         private void LoadFonts()
         {
+            LoadedFonts.Clear();
             var io = ImGui.GetIO();
             io.Fonts.AddFontDefault();
 
             foreach (string font in Fonts)
             {
-                foreach (float size in FontSizes)
+                foreach (int size in FontSizes)
                 {
-                    io.Fonts.AddFontFromFileTTF(font, size);
+                    ImFontPtr ptr = io.Fonts.AddFontFromFileTTF(font, size);
+                    LoadedFonts.TryAdd((Path.GetFileNameWithoutExtension(font), size), ptr);
                 }
             }
         }
