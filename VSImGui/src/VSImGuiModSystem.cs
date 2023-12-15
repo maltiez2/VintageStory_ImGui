@@ -16,13 +16,16 @@ namespace VSImGui
         private ICoreClientAPI mApi;
         private bool mMouseGrabbed;
 
-        public override void StartClientSide(ICoreClientAPI api)
+        public override void StartPre(ICoreAPI api)
         {
-            base.StartClientSide(api);
-
+            if (api is not ICoreClientAPI clientApi) return;
             EmbeddedDllClass.ExtractEmbeddedDlls();
             EmbeddedDllClass.LoadDll("cimgui.dll");
-
+            mApi = clientApi;
+            mImGuiInitialized = InitImGui();
+        }
+        public override void StartClientSide(ICoreClientAPI api)
+        {
             mApi = api;
 
             HarmonyPatches.Patch("vsimgui");

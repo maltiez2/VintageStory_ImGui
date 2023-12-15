@@ -1,11 +1,9 @@
 ﻿using ImGuiNET;
-using OpenTK.Graphics.ES30;
 using System;
-using System.Linq;
 using System.Numerics;
 using Vintagestory.API.MathTools;
 
-namespace VSImGui.ImGuiUtils
+namespace VSImGui
 {
     public struct Value2
     {
@@ -32,6 +30,7 @@ namespace VSImGui.ImGuiUtils
         public float R => Value.X;
         public float G => Value.Y;
         public float B => Value.Z;
+        public Value2 XY => new(X, Y);
 
         public Value3(Vector3 value) => Value = value;
         public Value3((float first, float second, float third) values) => Value = new(values.first, values.second, values.third);
@@ -55,6 +54,7 @@ namespace VSImGui.ImGuiUtils
         public float B => Value.Z;
         public float A => Value.W;
         public Value3 RGB => new(R, G, B);
+        public Value3 XYZ => new(X, Y, Z);
 
         public Value4(Vector4 value) => Value = value;
         public Value4((float first, float second, float third, float fourth) values) => Value = new(values.first, values.second, values.third, values.fourth);
@@ -68,7 +68,7 @@ namespace VSImGui.ImGuiUtils
         public static implicit operator Value4(Vec4f value) => new(value);
         public static implicit operator Vector4(Value4 value) => new(value.X, value.Y, value.Z, value.W);
     }
-    public struct Style
+    public class Style
     {
         public ImGuiStyle NativeStyle => mNativeStyle;
 
@@ -441,25 +441,9 @@ namespace VSImGui.ImGuiUtils
         public Value4 ColorNavHighlight { get => mNativeStyle.Colors_51; set => mNativeStyle.Colors_51 = value; }
         public Value4 ColorNavWindowingHighlight { get => mNativeStyle.Colors_52; set => mNativeStyle.Colors_52 = value; }
 
-        // WINDOW STYLE
-        public (string name, int size) Font { get => mWindowStyle.Font; set => mWindowStyle.Font = value; }
-        public string FontName { get => Font.name; set => Font = (value, FontSize); }
-        public int FontSize { get => Font.size; set => Font = (FontName, value); }
-
-
-        private ImGuiStyle mNativeStyle;
-        private WindowStyle mWindowStyle;
-
-        public Style(ImGuiStyle style) => mNativeStyle = style;
-
-        public void Push() => mWindowStyle.Push();
-        public void Pop() => mWindowStyle.Pop();
-    }
-
-    public struct WindowStyle
-    {
+        // FONT
         public (string name, int size) Font
-        { 
+        {
             get => mFontKey;
             set
             {
@@ -471,19 +455,217 @@ namespace VSImGui.ImGuiUtils
                 }
             }
         }
+        public string FontName { get => Font.name; set => Font = (value, FontSize); }
+        public int FontSize { get => Font.size; set => Font = (FontName, value); }
         public bool FontLoaded { get; private set; }
 
+        private ImGuiStyle mPrevStyle;
+        private ImGuiStyle mNativeStyle;
         private ImFontPtr mFont;
         private (string name, int size) mFontKey;
+        private bool mPushed = false;
+        private bool mFontPushed = false;
 
-        public void Push()
+        public Style(Style style) : this(style.NativeStyle, style.FontName, style.FontSize)
         {
-            ImGui.PushFont(mFont);
+
         }
 
-        public void Pop()
+        public Style(ImGuiStyle style, string fontName, int fontSize = 14)
         {
-            ImGui.PopFont();
+            mNativeStyle = style;
+            Font = (fontName, fontSize);
+        }
+
+        public Style(string fontName, int fontSize = 14)
+        {
+            unsafe
+            {
+                mNativeStyle = *ImGui.GetStyle().NativePtr;
+            }
+
+            Font = (fontName, fontSize);
+        }
+
+        public Style()
+        {
+            unsafe
+            {
+                mNativeStyle = *ImGui.GetStyle().NativePtr;
+            }
+
+            Font = ("", 14);
+        }
+
+        internal void Push()
+        {
+            if (mPushed) return;
+            mPushed = true;
+
+            unsafe
+            {
+                mPrevStyle = *ImGui.GetStyle().NativePtr;
+            }
+            
+            if (FontLoaded)
+            {
+                ImGui.PushFont(mFont);
+                mFontPushed = true;
+            }
+
+            ApplyStyle(in mNativeStyle);
+        }
+        internal void Pop()
+        {
+            if (!mPushed) return;
+            mPushed = false;
+
+            if (mFontPushed)
+            {
+                ImGui.PopFont();
+                mFontPushed = false;
+            }
+
+            ApplyStyle(in mPrevStyle);
+        }
+        unsafe static private void ApplyStyle(in ImGuiStyle style)
+        {
+            ref ImGuiStyle currentStyle = ref *ImGui.GetStyle().NativePtr;
+
+            currentStyle.Alpha = style.Alpha;
+            currentStyle.DisabledAlpha = style.DisabledAlpha;
+            currentStyle.WindowPadding = style.WindowPadding;
+            currentStyle.WindowRounding = style.WindowRounding;
+            currentStyle.WindowBorderSize = style.WindowBorderSize;
+            currentStyle.WindowMinSize = style.WindowMinSize;
+            currentStyle.WindowTitleAlign = style.WindowTitleAlign;
+            currentStyle.WindowMenuButtonPosition = style.WindowMenuButtonPosition;
+            currentStyle.ChildRounding = style.ChildRounding;
+            currentStyle.ChildBorderSize = style.ChildBorderSize;
+            currentStyle.PopupRounding = style.PopupRounding;
+            currentStyle.PopupBorderSize = style.PopupBorderSize;
+            currentStyle.FramePadding = style.FramePadding;
+            currentStyle.FrameRounding = style.FrameRounding;
+            currentStyle.FrameBorderSize = style.FrameBorderSize;
+            currentStyle.ItemSpacing = style.ItemSpacing;
+            currentStyle.ItemInnerSpacing = style.ItemInnerSpacing;
+            currentStyle.CellPadding = style.CellPadding;
+            currentStyle.TouchExtraPadding = style.TouchExtraPadding;
+            currentStyle.IndentSpacing = style.IndentSpacing;
+            currentStyle.ColumnsMinSpacing = style.ColumnsMinSpacing;
+            currentStyle.ScrollbarSize = style.ScrollbarSize;
+            currentStyle.ScrollbarRounding = style.ScrollbarRounding;
+            currentStyle.GrabMinSize = style.GrabMinSize;
+            currentStyle.GrabRounding = style.GrabRounding;
+            currentStyle.LogSliderDeadzone = style.LogSliderDeadzone;
+            currentStyle.TabRounding = style.TabRounding;
+            currentStyle.TabBorderSize = style.TabBorderSize;
+            currentStyle.TabMinWidthForCloseButton = style.TabMinWidthForCloseButton;
+            currentStyle.ColorButtonPosition = style.ColorButtonPosition;
+            currentStyle.ButtonTextAlign = style.ButtonTextAlign;
+            currentStyle.SelectableTextAlign = style.SelectableTextAlign;
+            currentStyle.SeparatorTextBorderSize = style.SeparatorTextBorderSize;
+            currentStyle.SeparatorTextAlign = style.SeparatorTextAlign;
+            currentStyle.SeparatorTextPadding = style.SeparatorTextPadding;
+            currentStyle.DisplayWindowPadding = style.DisplayWindowPadding;
+            currentStyle.DisplaySafeAreaPadding = style.DisplaySafeAreaPadding;
+            currentStyle.MouseCursorScale = style.MouseCursorScale;
+            currentStyle.AntiAliasedLines = style.AntiAliasedLines;
+            currentStyle.AntiAliasedLinesUseTex = style.AntiAliasedLinesUseTex;
+            currentStyle.AntiAliasedFill = style.AntiAliasedFill;
+            currentStyle.CurveTessellationTol = style.CurveTessellationTol;
+            currentStyle.CircleTessellationMaxError = style.CircleTessellationMaxError;
+            currentStyle.Colors_0 = style.Colors_0;
+            currentStyle.Colors_1 = style.Colors_1;
+            currentStyle.Colors_2 = style.Colors_2;
+            currentStyle.Colors_3 = style.Colors_3;
+            currentStyle.Colors_4 = style.Colors_4;
+            currentStyle.Colors_5 = style.Colors_5;
+            currentStyle.Colors_6 = style.Colors_6;
+            currentStyle.Colors_7 = style.Colors_7;
+            currentStyle.Colors_8 = style.Colors_8;
+            currentStyle.Colors_9 = style.Colors_9;
+            currentStyle.Colors_10 = style.Colors_10;
+            currentStyle.Colors_11 = style.Colors_11;
+            currentStyle.Colors_12 = style.Colors_12;
+            currentStyle.Colors_13 = style.Colors_13;
+            currentStyle.Colors_14 = style.Colors_14;
+            currentStyle.Colors_15 = style.Colors_15;
+            currentStyle.Colors_16 = style.Colors_16;
+            currentStyle.Colors_17 = style.Colors_17;
+            currentStyle.Colors_18 = style.Colors_18;
+            currentStyle.Colors_19 = style.Colors_19;
+            currentStyle.Colors_20 = style.Colors_20;
+            currentStyle.Colors_21 = style.Colors_21;
+            currentStyle.Colors_22 = style.Colors_22;
+            currentStyle.Colors_23 = style.Colors_23;
+            currentStyle.Colors_24 = style.Colors_24;
+            currentStyle.Colors_25 = style.Colors_25;
+            currentStyle.Colors_26 = style.Colors_26;
+            currentStyle.Colors_27 = style.Colors_27;
+            currentStyle.Colors_28 = style.Colors_28;
+            currentStyle.Colors_29 = style.Colors_29;
+            currentStyle.Colors_30 = style.Colors_30;
+            currentStyle.Colors_31 = style.Colors_31;
+            currentStyle.Colors_32 = style.Colors_32;
+            currentStyle.Colors_33 = style.Colors_33;
+            currentStyle.Colors_34 = style.Colors_34;
+            currentStyle.Colors_35 = style.Colors_35;
+            currentStyle.Colors_36 = style.Colors_36;
+            currentStyle.Colors_37 = style.Colors_37;
+            currentStyle.Colors_38 = style.Colors_38;
+            currentStyle.Colors_39 = style.Colors_39;
+            currentStyle.Colors_40 = style.Colors_40;
+            currentStyle.Colors_41 = style.Colors_41;
+            currentStyle.Colors_42 = style.Colors_42;
+            currentStyle.Colors_43 = style.Colors_43;
+            currentStyle.Colors_44 = style.Colors_44;
+            currentStyle.Colors_45 = style.Colors_45;
+            currentStyle.Colors_46 = style.Colors_46;
+            currentStyle.Colors_47 = style.Colors_47;
+            currentStyle.Colors_48 = style.Colors_48;
+            currentStyle.Colors_49 = style.Colors_49;
+            currentStyle.Colors_50 = style.Colors_50;
+            currentStyle.Colors_51 = style.Colors_51;
+            currentStyle.Colors_52 = style.Colors_52;
+            currentStyle.Colors_53 = style.Colors_53;
+            currentStyle.Colors_54 = style.Colors_54;
+            currentStyle.HoverStationaryDelay = style.HoverStationaryDelay;
+            currentStyle.HoverDelayShort = style.HoverDelayShort;
+            currentStyle.HoverDelayNormal = style.HoverDelayNormal;
+            currentStyle.HoverFlagsForTooltipMouse = style.HoverFlagsForTooltipMouse;
+            currentStyle.HoverFlagsForTooltipNav = style.HoverFlagsForTooltipNav;
+        }
+    }
+
+    public class StyleApplier : IDisposable
+    {
+        private readonly Style mStyle;
+        private bool disposedValue;
+
+        public StyleApplier(Style style)
+        {
+            mStyle = style;
+            mStyle.Push();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    mStyle.Pop();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
