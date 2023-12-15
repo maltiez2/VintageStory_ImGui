@@ -70,155 +70,155 @@ namespace VSImGui.ImGuiUtils
     }
     public struct Style
     {
-        public readonly ImGuiStyle NativeStyle => mNativeStyle;
+        public ImGuiStyle NativeStyle => mNativeStyle;
 
         // PADDINGS
-        public Value2 PaddingWindow { readonly get => mNativeStyle.WindowPadding; set => mNativeStyle.WindowPadding = value.Value; }
-        public Value2 PaddingFrame { readonly get => mNativeStyle.FramePadding; set => mNativeStyle.FramePadding = value.Value; }
-        public Value2 PaddingCell { readonly get => mNativeStyle.CellPadding; set => mNativeStyle.CellPadding = value.Value; }
-        public Value2 PaddingTouchExtra { readonly get => mNativeStyle.TouchExtraPadding; set => mNativeStyle.TouchExtraPadding = value.Value; }
-        public Value2 PaddingSeparatorText { readonly get => mNativeStyle.SeparatorTextPadding; set => mNativeStyle.SeparatorTextPadding = value.Value; }
-        public Value2 PaddingDisplayWindow { readonly get => mNativeStyle.DisplayWindowPadding; set => mNativeStyle.DisplayWindowPadding = value.Value; }
-        public Value2 PaddingDisplaySafeArea { readonly get => mNativeStyle.DisplaySafeAreaPadding; set => mNativeStyle.DisplaySafeAreaPadding = value.Value; }
+        public Value2 PaddingWindow { get => mNativeStyle.WindowPadding; set => mNativeStyle.WindowPadding = value.Value; }
+        public Value2 PaddingFrame { get => mNativeStyle.FramePadding; set => mNativeStyle.FramePadding = value.Value; }
+        public Value2 PaddingCell { get => mNativeStyle.CellPadding; set => mNativeStyle.CellPadding = value.Value; }
+        public Value2 PaddingTouchExtra { get => mNativeStyle.TouchExtraPadding; set => mNativeStyle.TouchExtraPadding = value.Value; }
+        public Value2 PaddingSeparatorText { get => mNativeStyle.SeparatorTextPadding; set => mNativeStyle.SeparatorTextPadding = value.Value; }
+        public Value2 PaddingDisplayWindow { get => mNativeStyle.DisplayWindowPadding; set => mNativeStyle.DisplayWindowPadding = value.Value; }
+        public Value2 PaddingDisplaySafeArea { get => mNativeStyle.DisplaySafeAreaPadding; set => mNativeStyle.DisplaySafeAreaPadding = value.Value; }
 
         // SPACING
-        public Value2 SpacingItem { readonly get => mNativeStyle.ItemSpacing; set => mNativeStyle.ItemSpacing = value.Value; }
-        public Value2 SpacingItemInner { readonly get => mNativeStyle.ItemInnerSpacing; set => mNativeStyle.ItemInnerSpacing = value.Value; }
-        public float SpacingIndent { readonly get => mNativeStyle.IndentSpacing; set => mNativeStyle.IndentSpacing = value; }
-        public float SpacingColumnsMin { readonly get => mNativeStyle.ColumnsMinSpacing; set => mNativeStyle.ColumnsMinSpacing = value; }
+        public Value2 SpacingItem { get => mNativeStyle.ItemSpacing; set => mNativeStyle.ItemSpacing = value.Value; }
+        public Value2 SpacingItemInner { get => mNativeStyle.ItemInnerSpacing; set => mNativeStyle.ItemInnerSpacing = value.Value; }
+        public float SpacingIndent { get => mNativeStyle.IndentSpacing; set => mNativeStyle.IndentSpacing = value; }
+        public float SpacingColumnsMin { get => mNativeStyle.ColumnsMinSpacing; set => mNativeStyle.ColumnsMinSpacing = value; }
 
         // BORDERS
-        public float BorderWindow { readonly get => mNativeStyle.WindowBorderSize; set => mNativeStyle.WindowBorderSize = value; }
-        public float BorderChild { readonly get => mNativeStyle.ChildBorderSize; set => mNativeStyle.ChildBorderSize = value; }
-        public float BorderPopup { readonly get => mNativeStyle.PopupBorderSize; set => mNativeStyle.PopupBorderSize = value; }
-        public float BorderFrame { readonly get => mNativeStyle.FrameBorderSize; set => mNativeStyle.FrameBorderSize = value; }
-        public float BorderTab { readonly get => mNativeStyle.TabBorderSize; set => mNativeStyle.TabBorderSize = value; }
-        public float BorderSeparatorText { readonly get => mNativeStyle.SeparatorTextBorderSize; set => mNativeStyle.SeparatorTextBorderSize = value; }
+        public float BorderWindow { get => mNativeStyle.WindowBorderSize; set => mNativeStyle.WindowBorderSize = value; }
+        public float BorderChild { get => mNativeStyle.ChildBorderSize; set => mNativeStyle.ChildBorderSize = value; }
+        public float BorderPopup { get => mNativeStyle.PopupBorderSize; set => mNativeStyle.PopupBorderSize = value; }
+        public float BorderFrame { get => mNativeStyle.FrameBorderSize; set => mNativeStyle.FrameBorderSize = value; }
+        public float BorderTab { get => mNativeStyle.TabBorderSize; set => mNativeStyle.TabBorderSize = value; }
+        public float BorderSeparatorText { get => mNativeStyle.SeparatorTextBorderSize; set => mNativeStyle.SeparatorTextBorderSize = value; }
 
         // ROUNDING
-        public float RoundingWindow { readonly get => mNativeStyle.WindowRounding; set => mNativeStyle.WindowRounding = value; }
-        public float RoundingChild { readonly get => mNativeStyle.ChildRounding; set => mNativeStyle.ChildRounding = value; }
-        public float RoundingPopup { readonly get => mNativeStyle.PopupRounding; set => mNativeStyle.PopupRounding = value; }
-        public float RoundingFrame { readonly get => mNativeStyle.FrameRounding; set => mNativeStyle.FrameRounding = value; }
-        public float RoundingScrollbar { readonly get => mNativeStyle.ScrollbarRounding; set => mNativeStyle.ScrollbarRounding = value; }
-        public float RoundingGrab { readonly get => mNativeStyle.GrabRounding; set => mNativeStyle.GrabRounding = value; }
-        public float RoundingTab { readonly get => mNativeStyle.TabRounding; set => mNativeStyle.TabRounding = value; }
+        public float RoundingWindow { get => mNativeStyle.WindowRounding; set => mNativeStyle.WindowRounding = value; }
+        public float RoundingChild { get => mNativeStyle.ChildRounding; set => mNativeStyle.ChildRounding = value; }
+        public float RoundingPopup { get => mNativeStyle.PopupRounding; set => mNativeStyle.PopupRounding = value; }
+        public float RoundingFrame { get => mNativeStyle.FrameRounding; set => mNativeStyle.FrameRounding = value; }
+        public float RoundingScrollbar { get => mNativeStyle.ScrollbarRounding; set => mNativeStyle.ScrollbarRounding = value; }
+        public float RoundingGrab { get => mNativeStyle.GrabRounding; set => mNativeStyle.GrabRounding = value; }
+        public float RoundingTab { get => mNativeStyle.TabRounding; set => mNativeStyle.TabRounding = value; }
 
         // SIZES
-        public Value2 SizeWindowMin { readonly get => mNativeStyle.WindowMinSize; set => mNativeStyle.WindowMinSize = value.Value; }
-        public float SizeScrollbar { readonly get => mNativeStyle.ScrollbarSize; set => mNativeStyle.ScrollbarSize = value; }
-        public float SizeGrabMin { readonly get => mNativeStyle.GrabMinSize; set => mNativeStyle.GrabMinSize = value; }
+        public Value2 SizeWindowMin { get => mNativeStyle.WindowMinSize; set => mNativeStyle.WindowMinSize = value.Value; }
+        public float SizeScrollbar { get => mNativeStyle.ScrollbarSize; set => mNativeStyle.ScrollbarSize = value; }
+        public float SizeGrabMin { get => mNativeStyle.GrabMinSize; set => mNativeStyle.GrabMinSize = value; }
 
         // ALIGN
-        public Value2 AlignWindowTitle { readonly get => mNativeStyle.WindowTitleAlign; set => mNativeStyle.WindowTitleAlign = value; }
-        public Value2 AlignButtonText { readonly get => mNativeStyle.ButtonTextAlign; set => mNativeStyle.ButtonTextAlign = value; }
-        public Value2 AlignSelectableText { readonly get => mNativeStyle.SelectableTextAlign; set => mNativeStyle.SelectableTextAlign = value; }
-        public Value2 AlignSeparatorText { readonly get => mNativeStyle.SeparatorTextAlign; set => mNativeStyle.SeparatorTextAlign = value; }
+        public Value2 AlignWindowTitle { get => mNativeStyle.WindowTitleAlign; set => mNativeStyle.WindowTitleAlign = value; }
+        public Value2 AlignButtonText { get => mNativeStyle.ButtonTextAlign; set => mNativeStyle.ButtonTextAlign = value; }
+        public Value2 AlignSelectableText { get => mNativeStyle.SelectableTextAlign; set => mNativeStyle.SelectableTextAlign = value; }
+        public Value2 AlignSeparatorText { get => mNativeStyle.SeparatorTextAlign; set => mNativeStyle.SeparatorTextAlign = value; }
 
         // RENDERING
-        public float Alpha { readonly get => mNativeStyle.Alpha; set => mNativeStyle.Alpha = value; }
-        public float DisabledAlpha { readonly get => mNativeStyle.DisabledAlpha; set => mNativeStyle.DisabledAlpha = value; }
-        public bool AntiAliasedLines { readonly get => BitConverter.ToBoolean(new byte[] { mNativeStyle.AntiAliasedLines }); set => mNativeStyle.AntiAliasedLines = value ? (byte)1 : (byte)0; }
-        public bool AntiAliasedLinesUseTex { readonly get => BitConverter.ToBoolean(new byte[] { mNativeStyle.AntiAliasedLinesUseTex }); set => mNativeStyle.AntiAliasedLinesUseTex = value ? (byte)1 : (byte)0; }
-        public bool AntiAliasedFill { readonly get => BitConverter.ToBoolean(new byte[] { mNativeStyle.AntiAliasedFill }); set => mNativeStyle.AntiAliasedFill = value ? (byte)1 : (byte)0; }
-        public float CurveTessellationTol { readonly get => mNativeStyle.CurveTessellationTol; set => mNativeStyle.CurveTessellationTol = value; }
-        public float CircleTessellationMaxError { readonly get => mNativeStyle.CircleTessellationMaxError; set => mNativeStyle.CircleTessellationMaxError = value; }
+        public float Alpha { get => mNativeStyle.Alpha; set => mNativeStyle.Alpha = value; }
+        public float DisabledAlpha { get => mNativeStyle.DisabledAlpha; set => mNativeStyle.DisabledAlpha = value; }
+        public bool AntiAliasedLines { get => BitConverter.ToBoolean(new byte[] { mNativeStyle.AntiAliasedLines }); set => mNativeStyle.AntiAliasedLines = value ? (byte)1 : (byte)0; }
+        public bool AntiAliasedLinesUseTex { get => BitConverter.ToBoolean(new byte[] { mNativeStyle.AntiAliasedLinesUseTex }); set => mNativeStyle.AntiAliasedLinesUseTex = value ? (byte)1 : (byte)0; }
+        public bool AntiAliasedFill { get => BitConverter.ToBoolean(new byte[] { mNativeStyle.AntiAliasedFill }); set => mNativeStyle.AntiAliasedFill = value ? (byte)1 : (byte)0; }
+        public float CurveTessellationTol { get => mNativeStyle.CurveTessellationTol; set => mNativeStyle.CurveTessellationTol = value; }
+        public float CircleTessellationMaxError { get => mNativeStyle.CircleTessellationMaxError; set => mNativeStyle.CircleTessellationMaxError = value; }
 
         // HOVER
-        public float HoverStationaryDelay { readonly get => mNativeStyle.HoverStationaryDelay; set => mNativeStyle.HoverStationaryDelay = value; }
-        public float HoverDelayShort { readonly get => mNativeStyle.HoverDelayShort; set => mNativeStyle.HoverDelayShort = value; }
-        public float HoverDelayNormal { readonly get => mNativeStyle.HoverDelayNormal; set => mNativeStyle.HoverDelayNormal = value; }
-        public ImGuiHoveredFlags HoverFlagsForTooltipMouse { readonly get => mNativeStyle.HoverFlagsForTooltipMouse; set => mNativeStyle.HoverFlagsForTooltipMouse = value; }
-        public ImGuiHoveredFlags HoverFlagsForTooltipNav { readonly get => mNativeStyle.HoverFlagsForTooltipNav; set => mNativeStyle.HoverFlagsForTooltipNav = value; }
+        public float HoverStationaryDelay { get => mNativeStyle.HoverStationaryDelay; set => mNativeStyle.HoverStationaryDelay = value; }
+        public float HoverDelayShort { get => mNativeStyle.HoverDelayShort; set => mNativeStyle.HoverDelayShort = value; }
+        public float HoverDelayNormal { get => mNativeStyle.HoverDelayNormal; set => mNativeStyle.HoverDelayNormal = value; }
+        public ImGuiHoveredFlags HoverFlagsForTooltipMouse { get => mNativeStyle.HoverFlagsForTooltipMouse; set => mNativeStyle.HoverFlagsForTooltipMouse = value; }
+        public ImGuiHoveredFlags HoverFlagsForTooltipNav { get => mNativeStyle.HoverFlagsForTooltipNav; set => mNativeStyle.HoverFlagsForTooltipNav = value; }
 
         // OTHER
-        public ImGuiDir WindowMenuButtonPosition { readonly get => mNativeStyle.WindowMenuButtonPosition; set => mNativeStyle.WindowMenuButtonPosition = value; }
-        public ImGuiDir ColorButtonPosition { readonly get => mNativeStyle.ColorButtonPosition; set => mNativeStyle.ColorButtonPosition = value; }
-        public float LogSliderDeadzone { readonly get => mNativeStyle.LogSliderDeadzone; set => mNativeStyle.LogSliderDeadzone = value; }
-        public float TabMinWidthForCloseButton { readonly get => mNativeStyle.TabMinWidthForCloseButton; set => mNativeStyle.TabMinWidthForCloseButton = value; }
-        public float MouseCursorScale { readonly get => mNativeStyle.MouseCursorScale; set => mNativeStyle.MouseCursorScale = value; }
+        public ImGuiDir WindowMenuButtonPosition { get => mNativeStyle.WindowMenuButtonPosition; set => mNativeStyle.WindowMenuButtonPosition = value; }
+        public ImGuiDir ColorButtonPosition { get => mNativeStyle.ColorButtonPosition; set => mNativeStyle.ColorButtonPosition = value; }
+        public float LogSliderDeadzone { get => mNativeStyle.LogSliderDeadzone; set => mNativeStyle.LogSliderDeadzone = value; }
+        public float TabMinWidthForCloseButton { get => mNativeStyle.TabMinWidthForCloseButton; set => mNativeStyle.TabMinWidthForCloseButton = value; }
+        public float MouseCursorScale { get => mNativeStyle.MouseCursorScale; set => mNativeStyle.MouseCursorScale = value; }
 
         // COLORS
         // COLORS: BACKGROUND
-        public Value4 ColorBackgroundWindow { readonly get => mNativeStyle.Colors_2; set => mNativeStyle.Colors_2 = value; }
-        public Value4 ColorBackgroundChild { readonly get => mNativeStyle.Colors_3; set => mNativeStyle.Colors_3 = value; }
-        public Value4 ColorBackgroundPopup { readonly get => mNativeStyle.Colors_4; set => mNativeStyle.Colors_4 = value; }
-        public Value4 ColorBackgroundFrame { readonly get => mNativeStyle.Colors_7; set => mNativeStyle.Colors_7 = value; }
-        public Value4 ColorBackgroundFrameHovered { readonly get => mNativeStyle.Colors_8; set => mNativeStyle.Colors_8 = value; }
-        public Value4 ColorBackgroundFrameActive { readonly get => mNativeStyle.Colors_9; set => mNativeStyle.Colors_9 = value; }
-        public Value4 ColorBackgroundTitle { readonly get => mNativeStyle.Colors_10; set => mNativeStyle.Colors_10 = value; }
-        public Value4 ColorBackgroundTitleActive { readonly get => mNativeStyle.Colors_11; set => mNativeStyle.Colors_11 = value; }
-        public Value4 ColorBackgroundTitleCollapsed { readonly get => mNativeStyle.Colors_12; set => mNativeStyle.Colors_12 = value; }
-        public Value4 ColorBackgroundMenuBar { readonly get => mNativeStyle.Colors_13; set => mNativeStyle.Colors_13 = value; }
-        public Value4 ColorBackgroundScrollbar { readonly get => mNativeStyle.Colors_14; set => mNativeStyle.Colors_14 = value; }
-        public Value4 ColorBackgroundDockingEmpty { readonly get => mNativeStyle.Colors_39; set => mNativeStyle.Colors_39 = value; }
-        public Value4 ColorBackgroundTableHeader { readonly get => mNativeStyle.Colors_44; set => mNativeStyle.Colors_44 = value; }
-        public Value4 ColorBackgroundTableRow { readonly get => mNativeStyle.Colors_47; set => mNativeStyle.Colors_47 = value; }
-        public Value4 ColorBackgroundTableRowAlt { readonly get => mNativeStyle.Colors_48; set => mNativeStyle.Colors_48 = value; }
-        public Value4 ColorBackgroundTextSelected { readonly get => mNativeStyle.Colors_49; set => mNativeStyle.Colors_49 = value; }
-        public Value4 ColorBackgroundNavWindowingDim { readonly get => mNativeStyle.Colors_53; set => mNativeStyle.Colors_53 = value; }
-        public Value4 ColorBackgroundModalWindowDim { readonly get => mNativeStyle.Colors_54; set => mNativeStyle.Colors_54 = value; }
+        public Value4 ColorBackgroundWindow { get => mNativeStyle.Colors_2; set => mNativeStyle.Colors_2 = value; }
+        public Value4 ColorBackgroundChild { get => mNativeStyle.Colors_3; set => mNativeStyle.Colors_3 = value; }
+        public Value4 ColorBackgroundPopup { get => mNativeStyle.Colors_4; set => mNativeStyle.Colors_4 = value; }
+        public Value4 ColorBackgroundFrame { get => mNativeStyle.Colors_7; set => mNativeStyle.Colors_7 = value; }
+        public Value4 ColorBackgroundFrameHovered { get => mNativeStyle.Colors_8; set => mNativeStyle.Colors_8 = value; }
+        public Value4 ColorBackgroundFrameActive { get => mNativeStyle.Colors_9; set => mNativeStyle.Colors_9 = value; }
+        public Value4 ColorBackgroundTitle { get => mNativeStyle.Colors_10; set => mNativeStyle.Colors_10 = value; }
+        public Value4 ColorBackgroundTitleActive { get => mNativeStyle.Colors_11; set => mNativeStyle.Colors_11 = value; }
+        public Value4 ColorBackgroundTitleCollapsed { get => mNativeStyle.Colors_12; set => mNativeStyle.Colors_12 = value; }
+        public Value4 ColorBackgroundMenuBar { get => mNativeStyle.Colors_13; set => mNativeStyle.Colors_13 = value; }
+        public Value4 ColorBackgroundScrollbar { get => mNativeStyle.Colors_14; set => mNativeStyle.Colors_14 = value; }
+        public Value4 ColorBackgroundDockingEmpty { get => mNativeStyle.Colors_39; set => mNativeStyle.Colors_39 = value; }
+        public Value4 ColorBackgroundTableHeader { get => mNativeStyle.Colors_44; set => mNativeStyle.Colors_44 = value; }
+        public Value4 ColorBackgroundTableRow { get => mNativeStyle.Colors_47; set => mNativeStyle.Colors_47 = value; }
+        public Value4 ColorBackgroundTableRowAlt { get => mNativeStyle.Colors_48; set => mNativeStyle.Colors_48 = value; }
+        public Value4 ColorBackgroundTextSelected { get => mNativeStyle.Colors_49; set => mNativeStyle.Colors_49 = value; }
+        public Value4 ColorBackgroundNavWindowingDim { get => mNativeStyle.Colors_53; set => mNativeStyle.Colors_53 = value; }
+        public Value4 ColorBackgroundModalWindowDim { get => mNativeStyle.Colors_54; set => mNativeStyle.Colors_54 = value; }
 
 
         // COLORS: TEXT
-        public Value4 ColorText { readonly get => mNativeStyle.Colors_0; set => mNativeStyle.Colors_0 = value; }
-        public Value4 ColorTextDisabled { readonly get => mNativeStyle.Colors_1; set => mNativeStyle.Colors_1 = value; }
+        public Value4 ColorText { get => mNativeStyle.Colors_0; set => mNativeStyle.Colors_0 = value; }
+        public Value4 ColorTextDisabled { get => mNativeStyle.Colors_1; set => mNativeStyle.Colors_1 = value; }
 
         // COLORS: BORDERS
-        public Value4 ColorBorder { readonly get => mNativeStyle.Colors_5; set => mNativeStyle.Colors_5 = value; }
-        public Value4 ColorBorderShadow { readonly get => mNativeStyle.Colors_6; set => mNativeStyle.Colors_6 = value; }
-        public Value4 ColorTableBorderStrong { readonly get => mNativeStyle.Colors_45; set => mNativeStyle.Colors_45 = value; }
-        public Value4 ColorTableBorderLight { readonly get => mNativeStyle.Colors_46; set => mNativeStyle.Colors_46 = value; }
+        public Value4 ColorBorder { get => mNativeStyle.Colors_5; set => mNativeStyle.Colors_5 = value; }
+        public Value4 ColorBorderShadow { get => mNativeStyle.Colors_6; set => mNativeStyle.Colors_6 = value; }
+        public Value4 ColorTableBorderStrong { get => mNativeStyle.Colors_45; set => mNativeStyle.Colors_45 = value; }
+        public Value4 ColorTableBorderLight { get => mNativeStyle.Colors_46; set => mNativeStyle.Colors_46 = value; }
 
         // COLORS: SCROLL
-        public Value4 ColorScrollbarGrab { readonly get => mNativeStyle.Colors_15; set => mNativeStyle.Colors_15 = value; }
-        public Value4 ColorScrollbarGrabHovered { readonly get => mNativeStyle.Colors_16; set => mNativeStyle.Colors_16 = value; }
-        public Value4 ColorScrollbarGrabActive { readonly get => mNativeStyle.Colors_17; set => mNativeStyle.Colors_17 = value; }
+        public Value4 ColorScrollbarGrab { get => mNativeStyle.Colors_15; set => mNativeStyle.Colors_15 = value; }
+        public Value4 ColorScrollbarGrabHovered { get => mNativeStyle.Colors_16; set => mNativeStyle.Colors_16 = value; }
+        public Value4 ColorScrollbarGrabActive { get => mNativeStyle.Colors_17; set => mNativeStyle.Colors_17 = value; }
 
 
         // COLORS: SLIDER
-        public Value4 ColorSliderGrab { readonly get => mNativeStyle.Colors_19; set => mNativeStyle.Colors_19 = value; }
-        public Value4 ColorSliderGrabActive { readonly get => mNativeStyle.Colors_20; set => mNativeStyle.Colors_20 = value; }
+        public Value4 ColorSliderGrab { get => mNativeStyle.Colors_19; set => mNativeStyle.Colors_19 = value; }
+        public Value4 ColorSliderGrabActive { get => mNativeStyle.Colors_20; set => mNativeStyle.Colors_20 = value; }
 
         // COLORS: BUTTON
-        public Value4 ColorButton { readonly get => mNativeStyle.Colors_21; set => mNativeStyle.Colors_21 = value; }
-        public Value4 ColorButtonHovered { readonly get => mNativeStyle.Colors_22; set => mNativeStyle.Colors_22 = value; }
-        public Value4 ColorButtonActive { readonly get => mNativeStyle.Colors_23; set => mNativeStyle.Colors_23 = value; }
+        public Value4 ColorButton { get => mNativeStyle.Colors_21; set => mNativeStyle.Colors_21 = value; }
+        public Value4 ColorButtonHovered { get => mNativeStyle.Colors_22; set => mNativeStyle.Colors_22 = value; }
+        public Value4 ColorButtonActive { get => mNativeStyle.Colors_23; set => mNativeStyle.Colors_23 = value; }
 
         // COLORS: HEADER
-        public Value4 ColorHeader { readonly get => mNativeStyle.Colors_24; set => mNativeStyle.Colors_24 = value; }
-        public Value4 ColorHeaderHovered { readonly get => mNativeStyle.Colors_25; set => mNativeStyle.Colors_25 = value; }
-        public Value4 ColorHeaderActive { readonly get => mNativeStyle.Colors_26; set => mNativeStyle.Colors_26 = value; }
+        public Value4 ColorHeader { get => mNativeStyle.Colors_24; set => mNativeStyle.Colors_24 = value; }
+        public Value4 ColorHeaderHovered { get => mNativeStyle.Colors_25; set => mNativeStyle.Colors_25 = value; }
+        public Value4 ColorHeaderActive { get => mNativeStyle.Colors_26; set => mNativeStyle.Colors_26 = value; }
 
         // COLORS: SEPARATOR
-        public Value4 ColorSeparator { readonly get => mNativeStyle.Colors_27; set => mNativeStyle.Colors_27 = value; }
-        public Value4 ColorSeparatorHovered { readonly get => mNativeStyle.Colors_28; set => mNativeStyle.Colors_28 = value; }
-        public Value4 ColorSeparatorActive { readonly get => mNativeStyle.Colors_29; set => mNativeStyle.Colors_29 = value; }
+        public Value4 ColorSeparator { get => mNativeStyle.Colors_27; set => mNativeStyle.Colors_27 = value; }
+        public Value4 ColorSeparatorHovered { get => mNativeStyle.Colors_28; set => mNativeStyle.Colors_28 = value; }
+        public Value4 ColorSeparatorActive { get => mNativeStyle.Colors_29; set => mNativeStyle.Colors_29 = value; }
 
         // COLORS: RESIZE
-        public Value4 ColorResizeGrip { readonly get => mNativeStyle.Colors_30; set => mNativeStyle.Colors_30 = value; }
-        public Value4 ColorResizeGripHovered { readonly get => mNativeStyle.Colors_31; set => mNativeStyle.Colors_31 = value; }
-        public Value4 ColorResizeGripActive { readonly get => mNativeStyle.Colors_32; set => mNativeStyle.Colors_32 = value; }
+        public Value4 ColorResizeGrip { get => mNativeStyle.Colors_30; set => mNativeStyle.Colors_30 = value; }
+        public Value4 ColorResizeGripHovered { get => mNativeStyle.Colors_31; set => mNativeStyle.Colors_31 = value; }
+        public Value4 ColorResizeGripActive { get => mNativeStyle.Colors_32; set => mNativeStyle.Colors_32 = value; }
 
         // COLORS: TAB
-        public Value4 ColorTab { readonly get => mNativeStyle.Colors_33; set => mNativeStyle.Colors_33 = value; }
-        public Value4 ColorTabHovered { readonly get => mNativeStyle.Colors_34; set => mNativeStyle.Colors_34 = value; }
-        public Value4 ColorTabActive { readonly get => mNativeStyle.Colors_35; set => mNativeStyle.Colors_35 = value; }
-        public Value4 ColorTabUnfocused { readonly get => mNativeStyle.Colors_36; set => mNativeStyle.Colors_36 = value; }
-        public Value4 ColorTabUnfocusedActive { readonly get => mNativeStyle.Colors_37; set => mNativeStyle.Colors_37 = value; }
+        public Value4 ColorTab { get => mNativeStyle.Colors_33; set => mNativeStyle.Colors_33 = value; }
+        public Value4 ColorTabHovered { get => mNativeStyle.Colors_34; set => mNativeStyle.Colors_34 = value; }
+        public Value4 ColorTabActive { get => mNativeStyle.Colors_35; set => mNativeStyle.Colors_35 = value; }
+        public Value4 ColorTabUnfocused { get => mNativeStyle.Colors_36; set => mNativeStyle.Colors_36 = value; }
+        public Value4 ColorTabUnfocusedActive { get => mNativeStyle.Colors_37; set => mNativeStyle.Colors_37 = value; }
 
         // COLORS: PLOT
-        public Value4 ColorPlotLines { readonly get => mNativeStyle.Colors_40; set => mNativeStyle.Colors_40 = value; }
-        public Value4 ColorPlotLinesHovered { readonly get => mNativeStyle.Colors_41; set => mNativeStyle.Colors_41 = value; }
-        public Value4 ColorPlotHistogram { readonly get => mNativeStyle.Colors_42; set => mNativeStyle.Colors_42 = value; }
-        public Value4 ColorPlotHistogramHovered { readonly get => mNativeStyle.Colors_43; set => mNativeStyle.Colors_43 = value; }
+        public Value4 ColorPlotLines { get => mNativeStyle.Colors_40; set => mNativeStyle.Colors_40 = value; }
+        public Value4 ColorPlotLinesHovered { get => mNativeStyle.Colors_41; set => mNativeStyle.Colors_41 = value; }
+        public Value4 ColorPlotHistogram { get => mNativeStyle.Colors_42; set => mNativeStyle.Colors_42 = value; }
+        public Value4 ColorPlotHistogramHovered { get => mNativeStyle.Colors_43; set => mNativeStyle.Colors_43 = value; }
 
         // COLORS: OTHER
-        public Value4 ColorCheckMark { readonly get => mNativeStyle.Colors_18; set => mNativeStyle.Colors_18 = value; }
-        public Value4 ColorDockingPreview { readonly get => mNativeStyle.Colors_38; set => mNativeStyle.Colors_38 = value; }
-        public Value4 ColorDragDropTarget { readonly get => mNativeStyle.Colors_50; set => mNativeStyle.Colors_50 = value; }
-        public Value4 ColorNavHighlight { readonly get => mNativeStyle.Colors_51; set => mNativeStyle.Colors_51 = value; }
-        public Value4 ColorNavWindowingHighlight { readonly get => mNativeStyle.Colors_52; set => mNativeStyle.Colors_52 = value; }
+        public Value4 ColorCheckMark { get => mNativeStyle.Colors_18; set => mNativeStyle.Colors_18 = value; }
+        public Value4 ColorDockingPreview { get => mNativeStyle.Colors_38; set => mNativeStyle.Colors_38 = value; }
+        public Value4 ColorDragDropTarget { get => mNativeStyle.Colors_50; set => mNativeStyle.Colors_50 = value; }
+        public Value4 ColorNavHighlight { get => mNativeStyle.Colors_51; set => mNativeStyle.Colors_51 = value; }
+        public Value4 ColorNavWindowingHighlight { get => mNativeStyle.Colors_52; set => mNativeStyle.Colors_52 = value; }
 
         // WINDOW STYLE
         public (string name, int size) Font { get => mWindowStyle.Font; set => mWindowStyle.Font = value; }
