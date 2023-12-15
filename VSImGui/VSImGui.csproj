@@ -12,6 +12,15 @@
     <Reference Include="ImGui.NET">
       <HintPath>lib\ImGui.NET.dll</HintPath>
     </Reference>
+	  <Reference Include="ImGuizmo.NET">
+		  <HintPath>lib\ImGuizmo.NET.dll</HintPath>
+	  </Reference>
+	  <Reference Include="ImNodes.NET">
+		  <HintPath>lib\ImNodes.NET.dll</HintPath>
+	  </Reference>
+	  <Reference Include="ImPlot.NET">
+		  <HintPath>lib\ImPlot.NET.dll</HintPath>
+	  </Reference>
     
     <Reference Include="OpenTK.Audio.OpenAL">
       <HintPath>..\..\game\Lib\OpenTK.Audio.OpenAL.dll</HintPath>

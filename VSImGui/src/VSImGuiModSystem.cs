@@ -89,7 +89,6 @@ namespace VSImGui
         {
             if (mApi == null) return false;
             mController = new ImGuiController(mApi.Render.FrameWidth, mApi.Render.FrameHeight);
-
             return true;
         }
 

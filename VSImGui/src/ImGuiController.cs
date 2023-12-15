@@ -9,6 +9,13 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
 using ErrorCode = OpenTK.Graphics.OpenGL4.ErrorCode;
+using Vintagestory.API.Client;
+using Vintagestory.API.Config;
+using System.IO;
+using System.Text;
+using System.Runtime.InteropServices;
+using System.Drawing;
+using ImGuizmoNET;
 
 namespace VSImGui
 {
@@ -60,16 +67,23 @@ namespace VSImGui
             IntPtr context = ImGui.CreateContext();
             ImGui.SetCurrentContext(context);
             var io = ImGui.GetIO();
-            io.Fonts.AddFontDefault();
+            LoadFonts();
 
             io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
 
             CreateDeviceResources();
             SetKeyMappings();
-
             SetPerFrameImGuiData(1f / 60f);
+            SetConfigFolder();
+
+            io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
+            io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;
 
             ImGui.NewFrame();
+            //ImGuizmo.BeginFrame();
+
+            var viewport = ImGui.GetMainViewport();
+            ImGui.DockSpaceOverViewport(viewport);
             _frameBegun = true;
         }
 
@@ -226,6 +240,7 @@ void main()
 
             _frameBegun = true;
             ImGui.NewFrame();
+            //ImGuizmo.BeginFrame();
         }
 
         /// <summary>
@@ -585,6 +600,59 @@ void main()
             while ((error = GL.GetError()) != ErrorCode.NoError)
             {
                 Debug.Print($"{title} ({i++}): {error}");
+            }
+        }
+
+        private void SetConfigFolder()
+        {
+            var io = ImGui.GetIO();
+            string config = Path.Combine(GamePaths.ModConfig, "imgui.ini");
+            unsafe
+            {
+                IntPtr ptr = Marshal.StringToHGlobalAnsi(config);
+                io.NativePtr->IniFilename = (byte*)ptr.ToPointer();
+            }
+        }
+
+        static public HashSet<float> FontSizes { get; set; } = new HashSet<float>
+        {
+            6,
+            8,
+            10,
+            14,
+            18,
+            24,
+            30,
+            36,
+            48,
+            60,
+            72,
+        };
+        static public HashSet<string> Fonts { get; set; } = new HashSet<string>
+        {
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Almendra-Bold.otf"),
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Almendra-BoldItalic.otf"),
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Almendra-Italic.otf"),
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Almendra-Regular.otf"),
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Lora-Bold.ttf"),
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Lora-BoldItalic.ttf"),
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Lora-Italic.ttf"),
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Lora-Regular.ttf"),
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Montserrat-Bold.ttf"),
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Montserrat-Italic.ttf"),
+            Path.Combine(GamePaths.AssetsPath, "game/fonts", "Montserrat-Regular.ttf")
+        };
+        private void LoadFonts()
+        {
+            var io = ImGui.GetIO();
+            io.Fonts.AddFontDefault();
+
+            foreach (string font in Fonts)
+            {
+                foreach (float size in FontSizes)
+                {
+                    io.Fonts.AddFontFromFileTTF(font, size);
+                }
             }
         }
     }
