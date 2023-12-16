@@ -1,78 +1,22 @@
 ﻿using ImGuiNET;
+using Newtonsoft.Json;
 using System;
-using System.Numerics;
-using Vintagestory.API.MathTools;
+using System.Runtime.Serialization;
+using System.Text;
+using Vintagestory.API.Client;
+using Vintagestory.API.Datastructures;
+using VSImGui.ImGuiUtils;
 
 namespace VSImGui
 {
-    public struct Value2
-    {
-        public Vector2 Value { get; set; }
-        public float X => Value.X;
-        public float Y => Value.Y;
-
-        public Value2(Vector2 value) => Value = value;
-        public Value2((float first, float second) values) => Value = new(values.first, values.second);
-        public Value2(Vec2f value) => Value = new(value.X, value.Y);
-        public Value2(float first, float second) => Value = new(first, second);
-
-        public static implicit operator Value2(Vector2 value) => new(value);
-        public static implicit operator Value2((float first, float second) values) => new(values);
-        public static implicit operator Value2(Vec2f value) => new(value);
-        public static implicit operator Vector2(Value2 value) => new(value.X, value.Y);
-    }
-    public struct Value3
-    {
-        public Vector3 Value { get; set; }
-        public float X => Value.X;
-        public float Y => Value.Y;
-        public float Z => Value.Z;
-        public float R => Value.X;
-        public float G => Value.Y;
-        public float B => Value.Z;
-        public Value2 XY => new(X, Y);
-
-        public Value3(Vector3 value) => Value = value;
-        public Value3((float first, float second, float third) values) => Value = new(values.first, values.second, values.third);
-        public Value3(Vec3f value) => Value = new(value.X, value.Y, value.Z);
-        public Value3(float first, float second, float third) => Value = new(first, second, third);
-
-        public static implicit operator Value3(Vector3 value) => new(value);
-        public static implicit operator Value3((float first, float second, float third) values) => new(values);
-        public static implicit operator Value3(Vec3f value) => new(value);
-        public static implicit operator Vector3(Value3 value) => new(value.X, value.Y, value.Z);
-    }
-    public struct Value4
-    {
-        public Vector4 Value { get; set; }
-        public float X => Value.X;
-        public float Y => Value.Y;
-        public float Z => Value.Z;
-        public float W => Value.W;
-        public float R => Value.X;
-        public float G => Value.Y;
-        public float B => Value.Z;
-        public float A => Value.W;
-        public Value3 RGB => new(R, G, B);
-        public Value3 XYZ => new(X, Y, Z);
-
-        public Value4(Vector4 value) => Value = value;
-        public Value4((float first, float second, float third, float fourth) values) => Value = new(values.first, values.second, values.third, values.fourth);
-        public Value4(Vec4f value) => Value = new(value.X, value.Y, value.Z, value.W);
-        public Value4(float first, float second, float third, float fourth) => Value = new(first, second, third, fourth);
-        public Value4((Value3 RGB, float alpha) values) => Value = new(values.RGB.X, values.RGB.Y, values.RGB.Z, values.alpha);
-
-        public static implicit operator Value4(Vector4 value) => new(value);
-        public static implicit operator Value4((float first, float second, float third, float fourth) values) => new(values);
-        public static implicit operator Value4((Value3 RGB, float alpha) values) => new(values);
-        public static implicit operator Value4(Vec4f value) => new(value);
-        public static implicit operator Vector4(Value4 value) => new(value.X, value.Y, value.Z, value.W);
-    }
+    [JsonObject(MemberSerialization.OptOut)]
     public class Style
     {
+        [JsonIgnore]
         public ImGuiStyle NativeStyle => mNativeStyle;
 
         // PADDINGS
+        [JsonIgnore]
         public Value2 Paddings
         {
             private get => PaddingWindow;
@@ -102,6 +46,7 @@ namespace VSImGui
         public float SpacingColumnsMin { get => mNativeStyle.ColumnsMinSpacing; set => mNativeStyle.ColumnsMinSpacing = value; }
 
         // BORDERS
+        [JsonIgnore]
         public float Borders
         {
             private get => BorderWindow;
@@ -124,6 +69,7 @@ namespace VSImGui
         public float BorderSeparatorText { get => mNativeStyle.SeparatorTextBorderSize; set => mNativeStyle.SeparatorTextBorderSize = value; }
 
         // ROUNDING
+        [JsonIgnore]
         public float Rounding
         {
             private get => RoundingWindow;
@@ -153,6 +99,7 @@ namespace VSImGui
         public float SizeGrabMin { get => mNativeStyle.GrabMinSize; set => mNativeStyle.GrabMinSize = value; }
 
         // ALIGN
+        [JsonIgnore]
         public Value2 Aligns
         {
             private get => AlignWindowTitle;
@@ -194,6 +141,7 @@ namespace VSImGui
         public float MouseCursorScale { get => mNativeStyle.MouseCursorScale; set => mNativeStyle.MouseCursorScale = value; }
 
         // COLORS
+        [JsonIgnore]
         public Value4 Colors
         {
             private get => ColorBackgroundWindow;
@@ -280,6 +228,7 @@ namespace VSImGui
                 ColorNavWindowingHighlight = value;
             }
         }
+        [JsonIgnore]
         public Value4 ColorsActive
         {
             private get => ColorBackgroundFrameActive;
@@ -298,6 +247,7 @@ namespace VSImGui
                 ColorTabUnfocusedActive = value;
             }
         }
+        [JsonIgnore]
         public Value4 ColorsHovered
         {
             private get => ColorBackgroundFrameHovered;
@@ -317,6 +267,7 @@ namespace VSImGui
         }
 
         // COLORS: BACKGROUND
+        [JsonIgnore]
         public Value4 ColorsBackground
         {
             private get => ColorBackgroundWindow;
@@ -343,6 +294,7 @@ namespace VSImGui
                 ColorBackgroundModalWindowDim = value;
             }
         }
+        [JsonIgnore]
         public Value4 ColorsBackgroundActive
         {
             private get => ColorBackgroundFrameActive;
@@ -353,6 +305,7 @@ namespace VSImGui
                 ColorBackgroundTitleActive = value;
             }
         }
+        [JsonIgnore]
         public Value4 ColorsBackgroundHovered
         {
             private get => ColorBackgroundFrameHovered;
@@ -442,22 +395,25 @@ namespace VSImGui
         public Value4 ColorNavWindowingHighlight { get => mNativeStyle.Colors_52; set => mNativeStyle.Colors_52 = value; }
 
         // FONT
+        [JsonIgnore]
         public (string name, int size) Font
         {
             get => mFontKey;
             set
             {
-                FontLoaded = ImGuiController.LoadedFonts.ContainsKey(value);
-                if (FontLoaded)
+                mFontKey = value;
+                mFontLoaded = ImGuiController.LoadedFonts.ContainsKey(value);
+                if (mFontLoaded)
                 {
-                    mFontKey = value;
                     mFont = ImGuiController.LoadedFonts[value];
                 }
             }
         }
         public string FontName { get => Font.name; set => Font = (value, FontSize); }
         public int FontSize { get => Font.size; set => Font = (FontName, value); }
-        public bool FontLoaded { get; private set; }
+        [JsonIgnore]
+        public bool FontLoaded => mFontLoaded;
+
 
         private ImGuiStyle mPrevStyle;
         private ImGuiStyle mNativeStyle;
@@ -465,18 +421,17 @@ namespace VSImGui
         private (string name, int size) mFontKey;
         private bool mPushed = false;
         private bool mFontPushed = false;
+        private bool mFontLoaded = false;
 
         public Style(Style style) : this(style.NativeStyle, style.FontName, style.FontSize)
         {
 
         }
-
         public Style(ImGuiStyle style, string fontName, int fontSize = 14)
         {
             mNativeStyle = style;
             Font = (fontName, fontSize);
         }
-
         public Style(string fontName, int fontSize = 14)
         {
             unsafe
@@ -636,36 +591,150 @@ namespace VSImGui
             currentStyle.HoverFlagsForTooltipMouse = style.HoverFlagsForTooltipMouse;
             currentStyle.HoverFlagsForTooltipNav = style.HoverFlagsForTooltipNav;
         }
-    }
-
-    public class StyleApplier : IDisposable
-    {
-        private readonly Style mStyle;
-        private bool disposedValue;
-
-        public StyleApplier(Style style)
+        
+        public virtual void SetFrom(Style style)
         {
-            mStyle = style;
-            mStyle.Push();
+            mPrevStyle = style.mPrevStyle;
+            mNativeStyle = style.mNativeStyle;
+            mFont = style.mFont;
+            if (style.mFontKey.name != null) mFontKey = ((string)style.mFontKey.name.Clone(), style.mFontKey.size);
+            mPushed = style.mPushed;
+            mFontPushed = style.mFontPushed;
+            mFontLoaded = style.mFontLoaded;
+        }
+        public virtual string ToCode()
+        {
+            StringBuilder result = new();
+
+            result.AppendLine("VSImGui.Style style = new();");
+
+            OtherPropertiesToCode(result);
+            FloatPropertiesToCode(result);
+            Value2PropertiesToCode(result);
+            Value4PropertiesToCode(result);
+
+            return result.ToString();
         }
 
-        protected virtual void Dispose(bool disposing)
+        
+        protected void FloatPropertiesToCode(StringBuilder result)
         {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    mStyle.Pop();
-                }
-
-                disposedValue = true;
-            }
+            if (!Utils.CompareFloats(mPrevStyle.IndentSpacing, mNativeStyle.IndentSpacing)) result.AppendLine($"style.SpacingIndent = {SpacingIndent}f;");
+            if (!Utils.CompareFloats(mPrevStyle.ColumnsMinSpacing, mNativeStyle.ColumnsMinSpacing)) result.AppendLine($"style.SpacingColumnsMin = {SpacingColumnsMin}f;");
+            if (!Utils.CompareFloats(mPrevStyle.WindowBorderSize, mNativeStyle.WindowBorderSize)) result.AppendLine($"style.BorderWindow = {BorderWindow}f;");
+            if (!Utils.CompareFloats(mPrevStyle.ChildBorderSize, mNativeStyle.ChildBorderSize)) result.AppendLine($"style.BorderChild = {BorderChild}f;");
+            if (!Utils.CompareFloats(mPrevStyle.PopupBorderSize, mNativeStyle.PopupBorderSize)) result.AppendLine($"style.BorderPopup = {BorderPopup}f;");
+            if (!Utils.CompareFloats(mPrevStyle.FrameBorderSize, mNativeStyle.FrameBorderSize)) result.AppendLine($"style.BorderFrame = {BorderFrame}f;");
+            if (!Utils.CompareFloats(mPrevStyle.TabBorderSize, mNativeStyle.TabBorderSize)) result.AppendLine($"style.BorderTab = {BorderTab}f;");
+            if (!Utils.CompareFloats(mPrevStyle.SeparatorTextBorderSize, mNativeStyle.SeparatorTextBorderSize)) result.AppendLine($"style.BorderSeparatorText = {BorderSeparatorText}f;");
+            if (!Utils.CompareFloats(mPrevStyle.WindowRounding, mNativeStyle.WindowRounding)) result.AppendLine($"style.RoundingWindow = {RoundingWindow}f;");
+            if (!Utils.CompareFloats(mPrevStyle.ChildRounding, mNativeStyle.ChildRounding)) result.AppendLine($"style.RoundingChild = {RoundingChild}f;");
+            if (!Utils.CompareFloats(mPrevStyle.PopupRounding, mNativeStyle.PopupRounding)) result.AppendLine($"style.RoundingPopup = {RoundingPopup}f;");
+            if (!Utils.CompareFloats(mPrevStyle.FrameRounding, mNativeStyle.FrameRounding)) result.AppendLine($"style.RoundingFrame = {RoundingFrame}f;");
+            if (!Utils.CompareFloats(mPrevStyle.ScrollbarRounding, mNativeStyle.ScrollbarRounding)) result.AppendLine($"style.RoundingScrollbar = {RoundingScrollbar}f;");
+            if (!Utils.CompareFloats(mPrevStyle.GrabRounding, mNativeStyle.GrabRounding)) result.AppendLine($"style.RoundingGrab = {RoundingGrab}f;");
+            if (!Utils.CompareFloats(mPrevStyle.TabRounding, mNativeStyle.TabRounding)) result.AppendLine($"style.RoundingTab = {RoundingTab}f;");
+            if (!Utils.CompareFloats(mPrevStyle.ScrollbarSize, mNativeStyle.ScrollbarSize)) result.AppendLine($"style.SizeScrollbar = {SizeScrollbar}f;");
+            if (!Utils.CompareFloats(mPrevStyle.GrabMinSize, mNativeStyle.GrabMinSize)) result.AppendLine($"style.SizeGrabMin = {SizeGrabMin}f;");
+            if (!Utils.CompareFloats(mPrevStyle.Alpha, mNativeStyle.Alpha)) result.AppendLine($"style.Alpha = {Alpha}f;");
+            if (!Utils.CompareFloats(mPrevStyle.DisabledAlpha, mNativeStyle.DisabledAlpha)) result.AppendLine($"style.DisabledAlpha = {DisabledAlpha}f;");
+            if (!Utils.CompareFloats(mPrevStyle.CurveTessellationTol, mNativeStyle.CurveTessellationTol)) result.AppendLine($"style.CurveTessellationTol = {CurveTessellationTol}f;");
+            if (!Utils.CompareFloats(mPrevStyle.CircleTessellationMaxError, mNativeStyle.CircleTessellationMaxError)) result.AppendLine($"style.CircleTessellationMaxError = {CircleTessellationMaxError}f;");
+            if (!Utils.CompareFloats(mPrevStyle.HoverStationaryDelay, mNativeStyle.HoverStationaryDelay)) result.AppendLine($"style.HoverStationaryDelay = {HoverStationaryDelay}f;");
+            if (!Utils.CompareFloats(mPrevStyle.HoverDelayShort, mNativeStyle.HoverDelayShort)) result.AppendLine($"style.HoverDelayShort = {HoverDelayShort}f;");
+            if (!Utils.CompareFloats(mPrevStyle.HoverDelayNormal, mNativeStyle.HoverDelayNormal)) result.AppendLine($"style.HoverDelayNormal = {HoverDelayNormal}f;");
+            if (!Utils.CompareFloats(mPrevStyle.LogSliderDeadzone, mNativeStyle.LogSliderDeadzone)) result.AppendLine($"style.LogSliderDeadzone = {LogSliderDeadzone}f;");
+            if (!Utils.CompareFloats(mPrevStyle.TabMinWidthForCloseButton, mNativeStyle.TabMinWidthForCloseButton)) result.AppendLine($"style.TabMinWidthForCloseButton = {TabMinWidthForCloseButton}f;");
+            if (!Utils.CompareFloats(mPrevStyle.MouseCursorScale, mNativeStyle.MouseCursorScale)) result.AppendLine($"style.MouseCursorScale = {MouseCursorScale}f;");
         }
-
-        public void Dispose()
+        protected void Value2PropertiesToCode(StringBuilder result)
         {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            if (mPrevStyle.WindowPadding != mNativeStyle.WindowPadding) result.AppendLine($"style.PaddingWindow = ({PaddingWindow.X},{PaddingWindow.Y});");
+            if (mPrevStyle.FramePadding != mNativeStyle.FramePadding) result.AppendLine($"style.PaddingFrame = ({PaddingFrame.X},{PaddingFrame.Y});");
+            if (mPrevStyle.CellPadding != mNativeStyle.CellPadding) result.AppendLine($"style.PaddingCell = ({PaddingCell.X},{PaddingCell.Y});");
+            if (mPrevStyle.TouchExtraPadding != mNativeStyle.TouchExtraPadding) result.AppendLine($"style.PaddingTouchExtra = ({PaddingTouchExtra.X},{PaddingTouchExtra.Y});");
+            if (mPrevStyle.SeparatorTextPadding != mNativeStyle.SeparatorTextPadding) result.AppendLine($"style.PaddingSeparatorText = ({PaddingSeparatorText.X},{PaddingSeparatorText.Y});");
+            if (mPrevStyle.DisplayWindowPadding != mNativeStyle.DisplayWindowPadding) result.AppendLine($"style.PaddingDisplayWindow = ({PaddingDisplayWindow.X},{PaddingDisplayWindow.Y});");
+            if (mPrevStyle.DisplaySafeAreaPadding != mNativeStyle.DisplaySafeAreaPadding) result.AppendLine($"style.PaddingDisplaySafeArea = ({PaddingDisplaySafeArea.X},{PaddingDisplaySafeArea.Y});");
+            if (mPrevStyle.ItemSpacing != mNativeStyle.ItemSpacing) result.AppendLine($"style.SpacingItem = ({SpacingItem.X},{SpacingItem.Y});");
+            if (mPrevStyle.ItemInnerSpacing != mNativeStyle.ItemInnerSpacing) result.AppendLine($"style.SpacingItemInner = ({SpacingItemInner.X},{SpacingItemInner.Y});");
+            if (mPrevStyle.WindowMinSize != mNativeStyle.WindowMinSize) result.AppendLine($"style.SizeWindowMin = ({SizeWindowMin.X},{SizeWindowMin.Y});");
+            if (mPrevStyle.WindowTitleAlign != mNativeStyle.WindowTitleAlign) result.AppendLine($"style.AlignWindowTitle = ({AlignWindowTitle.X},{AlignWindowTitle.Y});");
+            if (mPrevStyle.ButtonTextAlign != mNativeStyle.ButtonTextAlign) result.AppendLine($"style.AlignButtonText = ({AlignButtonText.X},{AlignButtonText.Y});");
+            if (mPrevStyle.SelectableTextAlign != mNativeStyle.SelectableTextAlign) result.AppendLine($"style.AlignSelectableText = ({AlignSelectableText.X},{AlignSelectableText.Y});");
+            if (mPrevStyle.SeparatorTextAlign != mNativeStyle.SeparatorTextAlign) result.AppendLine($"style.AlignSeparatorText = ({AlignSeparatorText.X},{AlignSeparatorText.Y});");
+        }
+        protected void Value4PropertiesToCode(StringBuilder result)
+        {
+            if (mPrevStyle.Colors_2 != mNativeStyle.Colors_2) result.AppendLine($"style.ColorBackgroundWindow = ({ColorBackgroundWindow.R},{ColorBackgroundWindow.G},{ColorBackgroundWindow.B},{ColorBackgroundWindow.A});");
+            if (mPrevStyle.Colors_3 != mNativeStyle.Colors_3) result.AppendLine($"style.ColorBackgroundChild = ({ColorBackgroundChild.R},{ColorBackgroundChild.G},{ColorBackgroundChild.B},{ColorBackgroundChild.A});");
+            if (mPrevStyle.Colors_4 != mNativeStyle.Colors_4) result.AppendLine($"style.ColorBackgroundPopup = ({ColorBackgroundPopup.R},{ColorBackgroundPopup.G},{ColorBackgroundPopup.B},{ColorBackgroundPopup.A});");
+            if (mPrevStyle.Colors_7 != mNativeStyle.Colors_7) result.AppendLine($"style.ColorBackgroundFrame = ({ColorBackgroundFrame.R},{ColorBackgroundFrame.G},{ColorBackgroundFrame.B},{ColorBackgroundFrame.A});");
+            if (mPrevStyle.Colors_8 != mNativeStyle.Colors_8) result.AppendLine($"style.ColorBackgroundFrameHovered = ({ColorBackgroundFrameHovered.R},{ColorBackgroundFrameHovered.G},{ColorBackgroundFrameHovered.B},{ColorBackgroundFrameHovered.A});");
+            if (mPrevStyle.Colors_9 != mNativeStyle.Colors_9) result.AppendLine($"style.ColorBackgroundFrameActive = ({ColorBackgroundFrameActive.R},{ColorBackgroundFrameActive.G},{ColorBackgroundFrameActive.B},{ColorBackgroundFrameActive.A});");
+            if (mPrevStyle.Colors_10 != mNativeStyle.Colors_10) result.AppendLine($"style.ColorBackgroundTitle = ({ColorBackgroundTitle.R},{ColorBackgroundTitle.G},{ColorBackgroundTitle.B},{ColorBackgroundTitle.A});");
+            if (mPrevStyle.Colors_11 != mNativeStyle.Colors_11) result.AppendLine($"style.ColorBackgroundTitleActive = ({ColorBackgroundTitleActive.R},{ColorBackgroundTitleActive.G},{ColorBackgroundTitleActive.B},{ColorBackgroundTitleActive.A});");
+            if (mPrevStyle.Colors_12 != mNativeStyle.Colors_12) result.AppendLine($"style.ColorBackgroundTitleCollapsed = ({ColorBackgroundTitleCollapsed.R},{ColorBackgroundTitleCollapsed.G},{ColorBackgroundTitleCollapsed.B},{ColorBackgroundTitleCollapsed.A});");
+            if (mPrevStyle.Colors_13 != mNativeStyle.Colors_13) result.AppendLine($"style.ColorBackgroundMenuBar = ({ColorBackgroundMenuBar.R},{ColorBackgroundMenuBar.G},{ColorBackgroundMenuBar.B},{ColorBackgroundMenuBar.A});");
+            if (mPrevStyle.Colors_14 != mNativeStyle.Colors_14) result.AppendLine($"style.ColorBackgroundScrollbar = ({ColorBackgroundScrollbar.R},{ColorBackgroundScrollbar.G},{ColorBackgroundScrollbar.B},{ColorBackgroundScrollbar.A});");
+            if (mPrevStyle.Colors_39 != mNativeStyle.Colors_39) result.AppendLine($"style.ColorBackgroundDockingEmpty = ({ColorBackgroundDockingEmpty.R},{ColorBackgroundDockingEmpty.G},{ColorBackgroundDockingEmpty.B},{ColorBackgroundDockingEmpty.A});");
+            if (mPrevStyle.Colors_44 != mNativeStyle.Colors_44) result.AppendLine($"style.ColorBackgroundTableHeader = ({ColorBackgroundTableHeader.R},{ColorBackgroundTableHeader.G},{ColorBackgroundTableHeader.B},{ColorBackgroundTableHeader.A});");
+            if (mPrevStyle.Colors_47 != mNativeStyle.Colors_47) result.AppendLine($"style.ColorBackgroundTableRow = ({ColorBackgroundTableRow.R},{ColorBackgroundTableRow.G},{ColorBackgroundTableRow.B},{ColorBackgroundTableRow.A});");
+            if (mPrevStyle.Colors_48 != mNativeStyle.Colors_48) result.AppendLine($"style.ColorBackgroundTableRowAlt = ({ColorBackgroundTableRowAlt.R},{ColorBackgroundTableRowAlt.G},{ColorBackgroundTableRowAlt.B},{ColorBackgroundTableRowAlt.A});");
+            if (mPrevStyle.Colors_49 != mNativeStyle.Colors_49) result.AppendLine($"style.ColorBackgroundTextSelected = ({ColorBackgroundTextSelected.R},{ColorBackgroundTextSelected.G},{ColorBackgroundTextSelected.B},{ColorBackgroundTextSelected.A});");
+            if (mPrevStyle.Colors_53 != mNativeStyle.Colors_53) result.AppendLine($"style.ColorBackgroundNavWindowingDim = ({ColorBackgroundNavWindowingDim.R},{ColorBackgroundNavWindowingDim.G},{ColorBackgroundNavWindowingDim.B},{ColorBackgroundNavWindowingDim.A});");
+            if (mPrevStyle.Colors_54 != mNativeStyle.Colors_54) result.AppendLine($"style.ColorBackgroundModalWindowDim = ({ColorBackgroundModalWindowDim.R},{ColorBackgroundModalWindowDim.G},{ColorBackgroundModalWindowDim.B},{ColorBackgroundModalWindowDim.A});");
+            if (mPrevStyle.Colors_0 != mNativeStyle.Colors_0) result.AppendLine($"style.ColorText = ({ColorText.R},{ColorText.G},{ColorText.B},{ColorText.A});");
+            if (mPrevStyle.Colors_1 != mNativeStyle.Colors_1) result.AppendLine($"style.ColorTextDisabled = ({ColorTextDisabled.R},{ColorTextDisabled.G},{ColorTextDisabled.B},{ColorTextDisabled.A});");
+            if (mPrevStyle.Colors_5 != mNativeStyle.Colors_5) result.AppendLine($"style.ColorBorder = ({ColorBorder.R},{ColorBorder.G},{ColorBorder.B},{ColorBorder.A});");
+            if (mPrevStyle.Colors_6 != mNativeStyle.Colors_6) result.AppendLine($"style.ColorBorderShadow = ({ColorBorderShadow.R},{ColorBorderShadow.G},{ColorBorderShadow.B},{ColorBorderShadow.A});");
+            if (mPrevStyle.Colors_45 != mNativeStyle.Colors_45) result.AppendLine($"style.ColorTableBorderStrong = ({ColorTableBorderStrong.R},{ColorTableBorderStrong.G},{ColorTableBorderStrong.B},{ColorTableBorderStrong.A});");
+            if (mPrevStyle.Colors_46 != mNativeStyle.Colors_46) result.AppendLine($"style.ColorTableBorderLight = ({ColorTableBorderLight.R},{ColorTableBorderLight.G},{ColorTableBorderLight.B},{ColorTableBorderLight.A});");
+            if (mPrevStyle.Colors_15 != mNativeStyle.Colors_15) result.AppendLine($"style.ColorScrollbarGrab = ({ColorScrollbarGrab.R},{ColorScrollbarGrab.G},{ColorScrollbarGrab.B},{ColorScrollbarGrab.A});");
+            if (mPrevStyle.Colors_16 != mNativeStyle.Colors_16) result.AppendLine($"style.ColorScrollbarGrabHovered = ({ColorScrollbarGrabHovered.R},{ColorScrollbarGrabHovered.G},{ColorScrollbarGrabHovered.B},{ColorScrollbarGrabHovered.A});");
+            if (mPrevStyle.Colors_17 != mNativeStyle.Colors_17) result.AppendLine($"style.ColorScrollbarGrabActive = ({ColorScrollbarGrabActive.R},{ColorScrollbarGrabActive.G},{ColorScrollbarGrabActive.B},{ColorScrollbarGrabActive.A});");
+            if (mPrevStyle.Colors_19 != mNativeStyle.Colors_19) result.AppendLine($"style.ColorSliderGrab = ({ColorSliderGrab.R},{ColorSliderGrab.G},{ColorSliderGrab.B},{ColorSliderGrab.A});");
+            if (mPrevStyle.Colors_20 != mNativeStyle.Colors_20) result.AppendLine($"style.ColorSliderGrabActive = ({ColorSliderGrabActive.R},{ColorSliderGrabActive.G},{ColorSliderGrabActive.B},{ColorSliderGrabActive.A});");
+            if (mPrevStyle.Colors_21 != mNativeStyle.Colors_21) result.AppendLine($"style.ColorButton = ({ColorButton.R},{ColorButton.G},{ColorButton.B},{ColorButton.A});");
+            if (mPrevStyle.Colors_22 != mNativeStyle.Colors_22) result.AppendLine($"style.ColorButtonHovered = ({ColorButtonHovered.R},{ColorButtonHovered.G},{ColorButtonHovered.B},{ColorButtonHovered.A});");
+            if (mPrevStyle.Colors_23 != mNativeStyle.Colors_23) result.AppendLine($"style.ColorButtonActive = ({ColorButtonActive.R},{ColorButtonActive.G},{ColorButtonActive.B},{ColorButtonActive.A});");
+            if (mPrevStyle.Colors_24 != mNativeStyle.Colors_24) result.AppendLine($"style.ColorHeader = ({ColorHeader.R},{ColorHeader.G},{ColorHeader.B},{ColorHeader.A});");
+            if (mPrevStyle.Colors_25 != mNativeStyle.Colors_25) result.AppendLine($"style.ColorHeaderHovered = ({ColorHeaderHovered.R},{ColorHeaderHovered.G},{ColorHeaderHovered.B},{ColorHeaderHovered.A});");
+            if (mPrevStyle.Colors_26 != mNativeStyle.Colors_26) result.AppendLine($"style.ColorHeaderActive = ({ColorHeaderActive.R},{ColorHeaderActive.G},{ColorHeaderActive.B},{ColorHeaderActive.A});");
+            if (mPrevStyle.Colors_27 != mNativeStyle.Colors_27) result.AppendLine($"style.ColorSeparator = ({ColorSeparator.R},{ColorSeparator.G},{ColorSeparator.B},{ColorSeparator.A});");
+            if (mPrevStyle.Colors_28 != mNativeStyle.Colors_28) result.AppendLine($"style.ColorSeparatorHovered = ({ColorSeparatorHovered.R},{ColorSeparatorHovered.G},{ColorSeparatorHovered.B},{ColorSeparatorHovered.A});");
+            if (mPrevStyle.Colors_29 != mNativeStyle.Colors_29) result.AppendLine($"style.ColorSeparatorActive = ({ColorSeparatorActive.R},{ColorSeparatorActive.G},{ColorSeparatorActive.B},{ColorSeparatorActive.A});");
+            if (mPrevStyle.Colors_30 != mNativeStyle.Colors_30) result.AppendLine($"style.ColorResizeGrip = ({ColorResizeGrip.R},{ColorResizeGrip.G},{ColorResizeGrip.B},{ColorResizeGrip.A});");
+            if (mPrevStyle.Colors_31 != mNativeStyle.Colors_31) result.AppendLine($"style.ColorResizeGripHovered = ({ColorResizeGripHovered.R},{ColorResizeGripHovered.G},{ColorResizeGripHovered.B},{ColorResizeGripHovered.A});");
+            if (mPrevStyle.Colors_32 != mNativeStyle.Colors_32) result.AppendLine($"style.ColorResizeGripActive = ({ColorResizeGripActive.R},{ColorResizeGripActive.G},{ColorResizeGripActive.B},{ColorResizeGripActive.A});");
+            if (mPrevStyle.Colors_33 != mNativeStyle.Colors_33) result.AppendLine($"style.ColorTab = ({ColorTab.R},{ColorTab.G},{ColorTab.B},{ColorTab.A});");
+            if (mPrevStyle.Colors_34 != mNativeStyle.Colors_34) result.AppendLine($"style.ColorTabHovered = ({ColorTabHovered.R},{ColorTabHovered.G},{ColorTabHovered.B},{ColorTabHovered.A});");
+            if (mPrevStyle.Colors_35 != mNativeStyle.Colors_35) result.AppendLine($"style.ColorTabActive = ({ColorTabActive.R},{ColorTabActive.G},{ColorTabActive.B},{ColorTabActive.A});");
+            if (mPrevStyle.Colors_36 != mNativeStyle.Colors_36) result.AppendLine($"style.ColorTabUnfocused = ({ColorTabUnfocused.R},{ColorTabUnfocused.G},{ColorTabUnfocused.B},{ColorTabUnfocused.A});");
+            if (mPrevStyle.Colors_37 != mNativeStyle.Colors_37) result.AppendLine($"style.ColorTabUnfocusedActive = ({ColorTabUnfocusedActive.R},{ColorTabUnfocusedActive.G},{ColorTabUnfocusedActive.B},{ColorTabUnfocusedActive.A});");
+            if (mPrevStyle.Colors_40 != mNativeStyle.Colors_40) result.AppendLine($"style.ColorPlotLines = ({ColorPlotLines.R},{ColorPlotLines.G},{ColorPlotLines.B},{ColorPlotLines.A});");
+            if (mPrevStyle.Colors_41 != mNativeStyle.Colors_41) result.AppendLine($"style.ColorPlotLinesHovered = ({ColorPlotLinesHovered.R},{ColorPlotLinesHovered.G},{ColorPlotLinesHovered.B},{ColorPlotLinesHovered.A});");
+            if (mPrevStyle.Colors_42 != mNativeStyle.Colors_42) result.AppendLine($"style.ColorPlotHistogram = ({ColorPlotHistogram.R},{ColorPlotHistogram.G},{ColorPlotHistogram.B},{ColorPlotHistogram.A});");
+            if (mPrevStyle.Colors_43 != mNativeStyle.Colors_43) result.AppendLine($"style.ColorPlotHistogramHovered = ({ColorPlotHistogramHovered.R},{ColorPlotHistogramHovered.G},{ColorPlotHistogramHovered.B},{ColorPlotHistogramHovered.A});");
+            if (mPrevStyle.Colors_18 != mNativeStyle.Colors_18) result.AppendLine($"style.ColorCheckMark = ({ColorCheckMark.R},{ColorCheckMark.G},{ColorCheckMark.B},{ColorCheckMark.A});");
+            if (mPrevStyle.Colors_38 != mNativeStyle.Colors_38) result.AppendLine($"style.ColorDockingPreview = ({ColorDockingPreview.R},{ColorDockingPreview.G},{ColorDockingPreview.B},{ColorDockingPreview.A});");
+            if (mPrevStyle.Colors_50 != mNativeStyle.Colors_50) result.AppendLine($"style.ColorDragDropTarget = ({ColorDragDropTarget.R},{ColorDragDropTarget.G},{ColorDragDropTarget.B},{ColorDragDropTarget.A});");
+            if (mPrevStyle.Colors_51 != mNativeStyle.Colors_51) result.AppendLine($"style.ColorNavHighlight = ({ColorNavHighlight.R},{ColorNavHighlight.G},{ColorNavHighlight.B},{ColorNavHighlight.A});");
+            if (mPrevStyle.Colors_52 != mNativeStyle.Colors_52) result.AppendLine($"style.ColorNavWindowingHighlight = ({ColorNavWindowingHighlight.R},{ColorNavWindowingHighlight.G},{ColorNavWindowingHighlight.B},{ColorNavWindowingHighlight.A});");
+        }
+        protected void OtherPropertiesToCode(StringBuilder result)
+        {
+
+            if (mPrevStyle.AntiAliasedLines != mNativeStyle.AntiAliasedLines) result.AppendLine($"style.AntiAliasedLines = {AntiAliasedLines};");
+            if (mPrevStyle.AntiAliasedLinesUseTex != mNativeStyle.AntiAliasedLinesUseTex) result.AppendLine($"style.AntiAliasedLinesUseTex = {AntiAliasedLinesUseTex};");
+            if (mPrevStyle.AntiAliasedFill != mNativeStyle.AntiAliasedFill) result.AppendLine($"style.AntiAliasedLines = {AntiAliasedFill};");
+            if (FontName != null && FontName != "") result.AppendLine($"style.FontName = \"{FontName}\";");
+            if (FontName != null && FontName != "") result.AppendLine($"style.FontSize = {FontSize};");
+
+            if (mPrevStyle.HoverFlagsForTooltipMouse != mNativeStyle.HoverFlagsForTooltipMouse) result.AppendLine($"style.HoverFlagsForTooltipMouse = (ImGuiHoveredFlags)0x{HoverFlagsForTooltipMouse.ToString("x")};");
+            if (mPrevStyle.HoverFlagsForTooltipNav != mNativeStyle.HoverFlagsForTooltipNav) result.AppendLine($"style.HoverFlagsForTooltipNav = (ImGuiHoveredFlags)0x{HoverFlagsForTooltipNav.ToString("x")};");
+            if (mPrevStyle.WindowMenuButtonPosition != mNativeStyle.WindowMenuButtonPosition) result.AppendLine($"style.WindowMenuButtonPosition = (ImGuiDir)0x{WindowMenuButtonPosition.ToString("x")};");
+            if (mPrevStyle.ColorButtonPosition != mNativeStyle.ColorButtonPosition) result.AppendLine($"style.ColorButtonPosition = (ImGuiDir)0x{ColorButtonPosition.ToString("x")};");
         }
     }
 }

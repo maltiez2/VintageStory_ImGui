@@ -14,9 +14,13 @@ namespace VSImGui.ImGuiUtils
             Window,
             Foreground
         }
-        static public void TileWindowWithTexture(ICoreClientAPI api, AssetLocation texturePath, Vector2 textureSize, TextureRenderLevel layer = TextureRenderLevel.Background)
+        static public void TileWindowWithTexture(ICoreClientAPI api, AssetLocation texturePath, Vector2 textureSize, TextureRenderLevel layer = TextureRenderLevel.Window)
         {
             int texture = api.Render.GetOrLoadTexture(texturePath);
+            TileWindowWithTexture(texture, textureSize, layer);
+        }
+        static public void TileWindowWithTexture(int texture, Vector2 textureSize, TextureRenderLevel layer = TextureRenderLevel.Window)
+        {
             Vector2 dimensions = new(ImGui.GetWindowWidth(), ImGui.GetWindowHeight());
 
             (int widthCount, float widthSize) = CalcTextures(textureSize.X, dimensions.X);
@@ -87,5 +91,8 @@ namespace VSImGui.ImGuiUtils
             float lastSize = (windowSize - count * textureSize) / textureSize;
             return (count, lastSize);
         }
+
+        public const float Epsilon = 1E-9f;
+        static public bool CompareFloats(float first, float second) => MathF.Abs(first - second) < Epsilon;
     }
 }

@@ -7,10 +7,10 @@ using Vintagestory.Client.NoObf;
 
 namespace VSImGui
 {
-    public class VSImGuiModSystem : ModSystem
+    public class VSImGuiModSystem : ModSystem, IRenderer
     {
         public event Action SetUpImGuiWindows;
-        
+
         private bool mImGuiInitialized = false;
         private ImGuiController mController;
         private ICoreClientAPI mApi;
@@ -23,13 +23,14 @@ namespace VSImGui
             EmbeddedDllClass.LoadDll("cimgui.dll");
             mApi = clientApi;
             mImGuiInitialized = InitImGui();
+            clientApi.Event.RegisterRenderer(this, EnumRenderStage.Ortho);
         }
         public override void StartClientSide(ICoreClientAPI api)
         {
             mApi = api;
 
             HarmonyPatches.Patch("vsimgui");
-            HarmonyPatches.SwapBuffersEvent += OnSwapBuffers;
+            //HarmonyPatches.SwapBuffersEvent += OnSwapBuffers;
             HarmonyPatches.OnResizeEvent += OnResize;
             HarmonyPatches.OnUpdateFrameEvent += OnUpdateFrame;
             HarmonyPatches.OnTextInputFrameEvent += OnTextInput;
@@ -98,6 +99,17 @@ namespace VSImGui
         private void ResetMousePosition(ClientMain client)
         {
             mMouseGrabbed = client.MouseGrabbed;
+        }
+
+
+
+        public double RenderOrder => 1.01;
+
+        public int RenderRange => 0;
+
+        public void OnRenderFrame(float deltaTime, EnumRenderStage stage)
+        {
+            OnSwapBuffers();
         }
     }
 }
