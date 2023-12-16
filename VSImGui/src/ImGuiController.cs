@@ -11,6 +11,7 @@ using ErrorCode = OpenTK.Graphics.OpenGL4.ErrorCode;
 using Vintagestory.API.Config;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Drawing;
 
 namespace VSImGui
 {
@@ -641,9 +642,9 @@ void main()
         private void LoadFonts()
         {
             LoadedFonts.Clear();
-            var io = ImGui.GetIO();
-            io.Fonts.AddFontDefault();
+            LoadDefaultFont();
 
+            var io = ImGui.GetIO();
             foreach (string font in Fonts)
             {
                 foreach (int size in FontSizes)
@@ -652,6 +653,17 @@ void main()
                     LoadedFonts.TryAdd((Path.GetFileNameWithoutExtension(font), size), ptr);
                 }
             }
+        }
+
+        static public ImFontPtr DefaultFont { get; set; }
+        static public ImFontPtr NativeFont { get; set; }
+        private void LoadDefaultFont()
+        {
+            var io = ImGui.GetIO();
+            string defualtFont = Path.Combine(GamePaths.AssetsPath, "game/fonts", "Montserrat-Regular.ttf");
+            int defaultSize = 18;
+            DefaultFont = io.Fonts.AddFontFromFileTTF(defualtFont, defaultSize);
+            NativeFont = io.Fonts.AddFontDefault();
         }
     }
 }

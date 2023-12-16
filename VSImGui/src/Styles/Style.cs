@@ -483,7 +483,7 @@ namespace VSImGui
 
             ApplyStyle(in mPrevStyle);
         }
-        unsafe static private void ApplyStyle(in ImGuiStyle style)
+        unsafe static internal void ApplyStyle(in ImGuiStyle style)
         {
             ref ImGuiStyle currentStyle = ref *ImGui.GetStyle().NativePtr;
 
@@ -615,8 +615,8 @@ namespace VSImGui
 
             return result.ToString();
         }
-
         
+
         protected void FloatPropertiesToCode(StringBuilder result)
         {
             if (!Utils.CompareFloats(mPrevStyle.IndentSpacing, mNativeStyle.IndentSpacing)) result.AppendLine($"style.SpacingIndent = {SpacingIndent}f;");

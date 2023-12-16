@@ -1,0 +1,424 @@
+{
+  "PaddingWindow": [
+    4.0,
+    4.0
+  ],
+  "PaddingFrame": [
+    6.0,
+    4.0
+  ],
+  "PaddingCell": [
+    2.0,
+    2.0
+  ],
+  "PaddingTouchExtra": [
+    0.0,
+    0.0
+  ],
+  "PaddingSeparatorText": [
+    40.0,
+    3.0
+  ],
+  "PaddingDisplayWindow": [
+    19.0,
+    19.0
+  ],
+  "PaddingDisplaySafeArea": [
+    3.0,
+    3.0
+  ],
+  "SpacingItem": [
+    8.0,
+    4.0
+  ],
+  "SpacingItemInner": [
+    4.0,
+    4.0
+  ],
+  "SpacingIndent": 21.0,
+  "SpacingColumnsMin": 6.0,
+  "BorderWindow": 4.0,
+  "BorderChild": 1.0,
+  "BorderPopup": 4.0,
+  "BorderFrame": 1.0,
+  "BorderTab": 0.0,
+  "BorderSeparatorText": 4.0,
+  "RoundingWindow": 0.0,
+  "RoundingChild": 0.0,
+  "RoundingPopup": 0.0,
+  "RoundingFrame": 0.0,
+  "RoundingScrollbar": 1.0,
+  "RoundingGrab": 1.0,
+  "RoundingTab": 5.0,
+  "SizeWindowMin": [
+    32.0,
+    32.0
+  ],
+  "SizeScrollbar": 16.0,
+  "SizeGrabMin": 16.0,
+  "AlignWindowTitle": [
+    0.0,
+    0.5
+  ],
+  "AlignButtonText": [
+    0.5,
+    0.5
+  ],
+  "AlignSelectableText": [
+    0.0,
+    0.0
+  ],
+  "AlignSeparatorText": [
+    0.0,
+    0.5
+  ],
+  "Alpha": 1.0,
+  "DisabledAlpha": 0.6,
+  "AntiAliasedLines": true,
+  "AntiAliasedLinesUseTex": true,
+  "AntiAliasedFill": true,
+  "CurveTessellationTol": 1.25,
+  "CircleTessellationMaxError": 0.3,
+  "HoverStationaryDelay": 0.15,
+  "HoverDelayShort": 0.15,
+  "HoverDelayNormal": 0.4,
+  "HoverFlagsForTooltipMouse": 20480,
+  "HoverFlagsForTooltipNav": 98304,
+  "WindowMenuButtonPosition": 0,
+  "ColorButtonPosition": 1,
+  "LogSliderDeadzone": 4.0,
+  "TabMinWidthForCloseButton": 0.0,
+  "MouseCursorScale": 1.0,
+  "ColorBackgroundWindow": [
+    0.19607843,
+    0.15713415,
+    0.11534025,
+    1.0
+  ],
+  "ColorBackgroundChild": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "ColorBackgroundPopup": [
+    0.17102379,
+    0.30825558,
+    0.33766234,
+    0.9177489
+  ],
+  "ColorBackgroundFrame": [
+    0.47843137,
+    0.31707802,
+    0.15947711,
+    0.5411765
+  ],
+  "ColorBackgroundFrameHovered": [
+    0.2614379,
+    0.8535178,
+    0.98039216,
+    0.4
+  ],
+  "ColorBackgroundFrameActive": [
+    0.98039216,
+    0.6166859,
+    0.2614379,
+    0.67058825
+  ],
+  "ColorBackgroundTitle": [
+    0.27058825,
+    0.20392157,
+    0.14117648,
+    1.0
+  ],
+  "ColorBackgroundTitleActive": [
+    0.38039216,
+    0.28832585,
+    0.19840063,
+    1.0
+  ],
+  "ColorBackgroundTitleCollapsed": [
+    0.0,
+    0.0,
+    0.0,
+    0.51
+  ],
+  "ColorBackgroundMenuBar": [
+    0.3030303,
+    0.25591284,
+    0.20989111,
+    1.0
+  ],
+  "ColorBackgroundScrollbar": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "ColorBackgroundDockingEmpty": [
+    0.2,
+    0.2,
+    0.2,
+    1.0
+  ],
+  "ColorBackgroundTableHeader": [
+    0.19,
+    0.19,
+    0.2,
+    1.0
+  ],
+  "ColorBackgroundTableRow": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "ColorBackgroundTableRowAlt": [
+    1.0,
+    1.0,
+    1.0,
+    0.06
+  ],
+  "ColorBackgroundTextSelected": [
+    0.98039216,
+    0.6166859,
+    0.2614379,
+    0.34901962
+  ],
+  "ColorBackgroundNavWindowingDim": [
+    0.8,
+    0.8,
+    0.8,
+    0.2
+  ],
+  "ColorBackgroundModalWindowDim": [
+    0.8,
+    0.8,
+    0.8,
+    0.35
+  ],
+  "ColorText": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "ColorTextDisabled": [
+    0.5,
+    0.5,
+    0.5,
+    1.0
+  ],
+  "ColorBorder": [
+    0.16078432,
+    0.13333334,
+    0.10980392,
+    1.0
+  ],
+  "ColorBorderShadow": [
+    0.20392157,
+    0.16962887,
+    0.13914648,
+    0.0
+  ],
+  "ColorTableBorderStrong": [
+    0.31,
+    0.31,
+    0.35,
+    1.0
+  ],
+  "ColorTableBorderLight": [
+    0.23,
+    0.23,
+    0.25,
+    1.0
+  ],
+  "ColorScrollbarGrab": [
+    0.6969697,
+    0.487861,
+    0.28361535,
+    1.0
+  ],
+  "ColorScrollbarGrabHovered": [
+    0.33837447,
+    0.49465072,
+    0.5281385,
+    1.0
+  ],
+  "ColorScrollbarGrabActive": [
+    0.0615148,
+    0.8182372,
+    0.98039216,
+    1.0
+  ],
+  "ColorSliderGrab": [
+    0.6969697,
+    0.487861,
+    0.28361535,
+    1.0
+  ],
+  "ColorSliderGrabActive": [
+    0.0615148,
+    0.8182372,
+    0.98039216,
+    1.0
+  ],
+  "ColorButton": [
+    0.43722945,
+    0.28019655,
+    0.12681547,
+    1.0
+  ],
+  "ColorButtonHovered": [
+    0.98039216,
+    0.6166859,
+    0.2614379,
+    1.0
+  ],
+  "ColorButtonActive": [
+    0.0615148,
+    0.8182372,
+    0.98039216,
+    1.0
+  ],
+  "ColorHeader": [
+    0.98039216,
+    0.692539,
+    0.4113802,
+    0.30980393
+  ],
+  "ColorHeaderHovered": [
+    0.98039216,
+    0.72171336,
+    0.46905035,
+    0.7012987
+  ],
+  "ColorHeaderActive": [
+    0.2614379,
+    0.8535178,
+    0.98039216,
+    1.0
+  ],
+  "ColorSeparator": [
+    0.43,
+    0.43,
+    0.5,
+    0.5
+  ],
+  "ColorSeparatorHovered": [
+    0.7490196,
+    0.42062593,
+    0.09986927,
+    0.78039217
+  ],
+  "ColorSeparatorActive": [
+    0.09986927,
+    0.63446355,
+    0.7490196,
+    1.0
+  ],
+  "ColorResizeGrip": [
+    0.98039216,
+    0.6166859,
+    0.2614379,
+    0.2
+  ],
+  "ColorResizeGripHovered": [
+    0.98039216,
+    0.6166859,
+    0.2614379,
+    0.67058825
+  ],
+  "ColorResizeGripActive": [
+    0.2614379,
+    0.8535178,
+    0.98039216,
+    0.9490196
+  ],
+  "ColorTab": [
+    0.5021645,
+    0.41858548,
+    0.3369502,
+    0.67965364
+  ],
+  "ColorTabHovered": [
+    0.44000003,
+    0.6815686,
+    0.73333335,
+    1.0
+  ],
+  "ColorTabActive": [
+    0.5497836,
+    0.38965052,
+    0.23324153,
+    1.0
+  ],
+  "ColorTabUnfocused": [
+    0.5021645,
+    0.41858548,
+    0.3369502,
+    0.67965364
+  ],
+  "ColorTabUnfocusedActive": [
+    0.5497836,
+    0.38965052,
+    0.23324153,
+    1.0
+  ],
+  "ColorPlotLines": [
+    0.61,
+    0.61,
+    0.61,
+    1.0
+  ],
+  "ColorPlotLinesHovered": [
+    1.0,
+    0.43,
+    0.35,
+    1.0
+  ],
+  "ColorPlotHistogram": [
+    0.9,
+    0.7,
+    0.0,
+    1.0
+  ],
+  "ColorPlotHistogramHovered": [
+    1.0,
+    0.6,
+    0.0,
+    1.0
+  ],
+  "ColorCheckMark": [
+    0.3764706,
+    0.75686276,
+    0.84313726,
+    1.0
+  ],
+  "ColorDockingPreview": [
+    0.2614379,
+    0.8535178,
+    0.98039216,
+    0.7019608
+  ],
+  "ColorDragDropTarget": [
+    1.0,
+    1.0,
+    0.0,
+    0.9
+  ],
+  "ColorNavHighlight": [
+    0.2614379,
+    0.8535178,
+    0.98039216,
+    1.0
+  ],
+  "ColorNavWindowingHighlight": [
+    1.0,
+    1.0,
+    1.0,
+    0.7
+  ],
+  "FontName": "",
+  "FontSize": 14
+}

@@ -18,6 +18,7 @@ namespace ConfigLib
         private Style mBackup;
         private string mColorsFilter = "";
         private string mLayoutFilter = "";
+        private Guid mId = Guid.NewGuid();
 
         public StyleEditor(Style style)
         {
@@ -30,12 +31,14 @@ namespace ConfigLib
         {
             sIdCounter = 0;
             bool opened = true;
-            if (!ImGui.Begin("Style editor##vsimgui", ref opened, ImGuiWindowFlags.MenuBar)) return false;
+            if (!ImGui.Begin($"Style editor##vsimgui{mId}", ref opened, ImGuiWindowFlags.MenuBar)) return false;
 
             if (ImGui.BeginMenuBar())
             {
+                ImGui.BeginDisabled();
                 if (ImGui.MenuItem("Save##StyleEditor.vsimgui")) Save();
                 if (ImGui.MenuItem("Load##StyleEditor.vsimgui")) Load();
+                ImGui.EndDisabled();
                 if (ImGui.MenuItem("Restore##StyleEditor.vsimgui")) mStyle.SetFrom(mBackup);
                 Code(ImGui.MenuItem("Code##StyleEditor.vsimgui"));
                 ImGui.EndMenuBar();
@@ -123,16 +126,16 @@ namespace ConfigLib
         private void CsharpCode()
         {
             Vector2 size = ImGui.GetWindowSize();
-            size.X -= 15;
-            size.Y -= 100;
+            size.X -= 10;
+            size.Y -= 94;
 
             ImGui.InputTextMultiline("##C#resultjsonoutputvsimgui", ref mCsharpCode, (uint)mCsharpCode.Length * 2, size, ImGuiInputTextFlags.ReadOnly);
         }
         private void JsonCode()
         {
             Vector2 size = ImGui.GetWindowSize();
-            size.X -= 15;
-            size.Y -= 115;
+            size.X -= 10;
+            size.Y -= 124;
 
             if (ImGui.Button("Apply##jsonoutputvsimgui")) Deserialize(mSerialized);
             if (mException) ShowException(ref size);
@@ -165,9 +168,9 @@ namespace ConfigLib
         private void ShowException(ref Vector2 size)
         {
             Vector2 errorSize = ImGui.GetWindowSize();
-            errorSize.X -= 20;
+            errorSize.X -= 10;
             errorSize.Y = 100;
-            size.Y -= 100;
+            size.Y -= 104;
 
             ImGui.BeginChild("ApplyExceptionjsonoutputvsimgui", errorSize, true);
             ImGui.PushTextWrapPos(ImGui.GetCursorPosX() + errorSize.X);
@@ -178,8 +181,8 @@ namespace ConfigLib
 
         static private void FontAndTextureEditor(Style style)
         {
-            string[] fonts = ImGuiController.Fonts.ToArray();
-            string[] fontsNames = ImGuiController.Fonts.Select(font => Path.GetFileNameWithoutExtension(font)).ToArray();
+            string[] fonts = ImGuiController.Fonts.ToArray().Prepend("").ToArray();
+            string[] fontsNames = ImGuiController.Fonts.Select(font => Path.GetFileNameWithoutExtension(font)).ToArray().Prepend("").ToArray();
             int[] sizes = ImGuiController.FontSizes.ToArray();
             string[] sizesNames = ImGuiController.FontSizes.Select(size => $"{size}px").ToArray();
             int currentSizeIndex, currentFontIndex;
