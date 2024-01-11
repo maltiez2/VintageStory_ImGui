@@ -1,18 +1,10 @@
-﻿using ConfigLib;
-using ImGuiNET;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
-using System.Linq;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
-using Vintagestory.API.Datastructures;
 using Vintagestory.Client.NoObf;
-using Vintagestory.Common;
-using static OpenTK.Graphics.OpenGL.GL;
 
 namespace VSImGui
 {
@@ -29,8 +21,8 @@ namespace VSImGui
         public override void StartPre(ICoreAPI api)
         {
             if (api is not ICoreClientAPI clientApi) return;
-            EmbeddedDllClass.ExtractEmbeddedDlls();
-            EmbeddedDllClass.LoadDll("cimgui.dll");
+            EmbeddedDllClass.ExtractEmbeddedDlls(api.Logger);
+            EmbeddedDllClass.LoadImGui(api.Logger);
             mApi = clientApi;
             mImGuiInitialized = InitImGui();
             clientApi.Event.RegisterRenderer(this, EnumRenderStage.Ortho);
@@ -40,15 +32,11 @@ namespace VSImGui
             mApi = api;
 
             HarmonyPatches.Patch("vsimgui");
-            //HarmonyPatches.SwapBuffersEvent += OnSwapBuffers;
             HarmonyPatches.OnResizeEvent += OnResize;
             HarmonyPatches.OnUpdateFrameEvent += OnUpdateFrame;
             HarmonyPatches.OnTextInputFrameEvent += OnTextInput;
             HarmonyPatches.OnMouseWheelEvent += OnMouseWheel;
             HarmonyPatches.OnUpdateCameraYawPitchEvent += ResetMousePosition;
-
-            mEditor = new(DefaultStyle);
-            SetUpImGuiWindows += EditDefaultStyle;
         }
 
         public override void AssetsLoaded(ICoreAPI api)
@@ -121,20 +109,9 @@ namespace VSImGui
             mMouseGrabbed = client.MouseGrabbed;
         }
 
-        private StyleEditor mEditor;
-        private void EditDefaultStyle()
-        {
-            DefaultStyle.Pop();
-            mEditor.Draw();
-            DefaultStyle.Push();
-            ImGui.Begin("test");
-            ImGui.Text($"Font:   {DefaultStyle.FontName}");
-            ImGui.Text($"Size:   {DefaultStyle.FontSize}");
-            ImGui.Text($"Loaded: {DefaultStyle.FontLoaded}");
-            ImGui.End();
-        }
-
         public double RenderOrder => 1.01;
+
+        public override double ExecuteOrder() => 0.001;
 
         public int RenderRange => 0;
 

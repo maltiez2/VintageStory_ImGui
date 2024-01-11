@@ -98,8 +98,8 @@ public sealed class PackageTask : FrostingTask<BuildContext>
         context.EnsureDirectoryExists($"../Releases/{context.Name}");
         context.CopyFiles($"../{BuildContext.ProjectName}/bin/{context.BuildConfiguration}/Mods/mod/publish/*", $"../Releases/{context.Name}");
         context.CopyDirectory($"../{BuildContext.ProjectName}/assets", $"../Releases/{context.Name}/assets");
-        context.EnsureDirectoryExists($"../Releases/{context.Name}/runtimes/linux-x64/native");
-        context.CopyFile($"../{BuildContext.ProjectName}/lib/linux-x64/libcimgui.so", $"../Releases/{context.Name}/runtimes/linux-x64/native/libcimgui.so");
+        //context.EnsureDirectoryExists($"../Releases/{context.Name}/runtimes/linux-x64/native");
+        //context.CopyFile($"../{BuildContext.ProjectName}/lib/linux-x64/libcimgui.so", $"../Releases/{context.Name}/runtimes/linux-x64/native/libcimgui.so");
         context.CopyFile($"../{BuildContext.ProjectName}/modinfo.json", $"../Releases/{context.Name}/modinfo.json");
         context.CopyFile($"../{BuildContext.ProjectName}/modicon.png", $"../Releases/{context.Name}/modicon.png");
         context.Zip($"../Releases/{context.Name}", $"../Releases/{context.Name}_{context.Version}.zip");
