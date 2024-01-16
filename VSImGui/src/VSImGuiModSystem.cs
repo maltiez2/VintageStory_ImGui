@@ -6,124 +6,127 @@ using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.Client.NoObf;
 
-namespace VSImGui
+namespace VSImGui;
+
+public class VSImGuiModSystem : ModSystem, IRenderer
 {
-    public class VSImGuiModSystem : ModSystem, IRenderer
+    public event Action SetUpImGuiWindows;
+    public Style DefaultStyle { get; set; }
+
+    private bool mImGuiInitialized = false;
+    private ImGuiController mController;
+    private ICoreClientAPI mApi;
+    private bool mMouseGrabbed;
+
+    public override void StartPre(ICoreAPI api)
     {
-        public event Action SetUpImGuiWindows;
-        public Style DefaultStyle { get; set; }
+        if (api is not ICoreClientAPI clientApi) return;
+        EmbeddedDllClass.ExtractEmbeddedDlls(api.Logger);
+        EmbeddedDllClass.LoadImGui(api.Logger);
+        mApi = clientApi;
+        mImGuiInitialized = InitImGui();
+        clientApi.Event.RegisterRenderer(this, EnumRenderStage.Ortho);
+    }
+    public override void StartClientSide(ICoreClientAPI api)
+    {
+        mApi = api;
 
-        private bool mImGuiInitialized = false;
-        private ImGuiController mController;
-        private ICoreClientAPI mApi;
-        private bool mMouseGrabbed;
+        HarmonyPatches.Patch("vsimgui");
+        HarmonyPatches.OnResizeEvent += OnResize;
+        HarmonyPatches.OnUpdateFrameEvent += OnUpdateFrame;
+        HarmonyPatches.OnTextInputFrameEvent += OnTextInput;
+        HarmonyPatches.OnMouseWheelEvent += OnMouseWheel;
+        HarmonyPatches.OnUpdateCameraYawPitchEvent += ResetMousePosition;
 
-        public override void StartPre(ICoreAPI api)
+        SetUpImGuiWindows += DebugWindow.Draw;
+    }
+
+    public override void AssetsLoaded(ICoreAPI api)
+    {
+        if (api is not ICoreClientAPI clientApi) return;
+        DefaultStyle = JsonConvert.DeserializeObject<Style>(LoadDefaultStyle(clientApi));
+        DefaultStyle.Push();
+    }
+
+    public override void Dispose()
+    {
+        if (mApi != null)
         {
-            if (api is not ICoreClientAPI clientApi) return;
-            EmbeddedDllClass.ExtractEmbeddedDlls(api.Logger);
-            EmbeddedDllClass.LoadImGui(api.Logger);
-            mApi = clientApi;
+            HarmonyPatches.SwapBuffersEvent -= OnSwapBuffers;
+            HarmonyPatches.OnResizeEvent -= OnResize;
+            HarmonyPatches.OnUpdateFrameEvent -= OnUpdateFrame;
+            HarmonyPatches.OnTextInputFrameEvent -= OnTextInput;
+            HarmonyPatches.OnMouseWheelEvent -= OnMouseWheel;
+            HarmonyPatches.OnUpdateCameraYawPitchEvent -= ResetMousePosition;
+
+            HarmonyPatches.Unpatch("vsimgui");
+        }
+
+        DebugWindow.Clear();
+
+        base.Dispose();
+    }
+
+    private void OnSwapBuffers()
+    {
+        if (!mImGuiInitialized)
+        {
             mImGuiInitialized = InitImGui();
-            clientApi.Event.RegisterRenderer(this, EnumRenderStage.Ortho);
-        }
-        public override void StartClientSide(ICoreClientAPI api)
-        {
-            mApi = api;
-
-            HarmonyPatches.Patch("vsimgui");
-            HarmonyPatches.OnResizeEvent += OnResize;
-            HarmonyPatches.OnUpdateFrameEvent += OnUpdateFrame;
-            HarmonyPatches.OnTextInputFrameEvent += OnTextInput;
-            HarmonyPatches.OnMouseWheelEvent += OnMouseWheel;
-            HarmonyPatches.OnUpdateCameraYawPitchEvent += ResetMousePosition;
+            if (!mImGuiInitialized) return;
         }
 
-        public override void AssetsLoaded(ICoreAPI api)
-        {
-            if (api is not ICoreClientAPI clientApi) return;
-            DefaultStyle = JsonConvert.DeserializeObject<Style>(LoadDefaultStyle(clientApi));
-            DefaultStyle.Push();
-        }
+        SetUpImGuiWindows?.Invoke();
 
-        public override void Dispose()
-        {
-            if (mApi != null)
-            {
-                HarmonyPatches.SwapBuffersEvent -= OnSwapBuffers;
-                HarmonyPatches.OnResizeEvent -= OnResize;
-                HarmonyPatches.OnUpdateFrameEvent -= OnUpdateFrame;
-                HarmonyPatches.OnTextInputFrameEvent -= OnTextInput;
-                HarmonyPatches.OnMouseWheelEvent -= OnMouseWheel;
-                HarmonyPatches.OnUpdateCameraYawPitchEvent -= ResetMousePosition;
+        mController.Render();
+        ImGuiController.CheckGLError("End of frame");
+    }
 
-                HarmonyPatches.Unpatch("vsimgui");
-            }
+    private void OnResize(NativeWindow window)
+    {
+        if (mImGuiInitialized) mController.WindowResized(window.ClientSize.X, window.ClientSize.Y);
+    }
 
-            base.Dispose();
-        }
+    private void OnUpdateFrame(GameWindow window, FrameEventArgs eventData)
+    {
+        if (mImGuiInitialized) mController.Update(window, (float)eventData.Time, !mMouseGrabbed);
+    }
 
-        private void OnSwapBuffers()
-        {
-            if (!mImGuiInitialized)
-            {
-                mImGuiInitialized = InitImGui();
-                if (!mImGuiInitialized) return;
-            }
+    private void OnTextInput(TextInputEventArgs eventData)
+    {
+        if (mImGuiInitialized) mController.PressChar((char)eventData.Unicode);
+    }
 
-            SetUpImGuiWindows?.Invoke();
+    private void OnMouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs eventData)
+    {
+        if (mImGuiInitialized) mController.MouseScroll(eventData.Offset);
+    }
 
-            mController.Render();
-            ImGuiController.CheckGLError("End of frame");
-        }
+    private bool InitImGui()
+    {
+        if (mApi == null) return false;
+        mController = new ImGuiController(mApi.Render.FrameWidth, mApi.Render.FrameHeight);
+        return true;
+    }
 
-        private void OnResize(NativeWindow window)
-        {
-            if (mImGuiInitialized) mController.WindowResized(window.ClientSize.X, window.ClientSize.Y);
-        }
+    private void ResetMousePosition(ClientMain client)
+    {
+        mMouseGrabbed = client.MouseGrabbed;
+    }
 
-        private void OnUpdateFrame(GameWindow window, FrameEventArgs eventData)
-        {
-            if (mImGuiInitialized) mController.Update(window, (float)eventData.Time, !mMouseGrabbed);
-        }
+    public double RenderOrder => 1.01;
 
-        private void OnTextInput(TextInputEventArgs eventData)
-        {
-            if (mImGuiInitialized) mController.PressChar((char)eventData.Unicode);
-        }
+    public override double ExecuteOrder() => 0.001;
 
-        private void OnMouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs eventData)
-        {
-            if (mImGuiInitialized) mController.MouseScroll(eventData.Offset);
-        }
+    public int RenderRange => 0;
 
-        private bool InitImGui()
-        {
-            if (mApi == null) return false;
-            mController = new ImGuiController(mApi.Render.FrameWidth, mApi.Render.FrameHeight);
-            return true;
-        }
+    public void OnRenderFrame(float deltaTime, EnumRenderStage stage)
+    {
+        OnSwapBuffers();
+    }
 
-        private void ResetMousePosition(ClientMain client)
-        {
-            mMouseGrabbed = client.MouseGrabbed;
-        }
-
-        public double RenderOrder => 1.01;
-
-        public override double ExecuteOrder() => 0.001;
-
-        public int RenderRange => 0;
-
-        public void OnRenderFrame(float deltaTime, EnumRenderStage stage)
-        {
-            OnSwapBuffers();
-        }
-
-        private string LoadDefaultStyle(ICoreClientAPI api)
-        {
-            byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
-            return System.Text.Encoding.UTF8.GetString(data);
-        }
+    private string LoadDefaultStyle(ICoreClientAPI api)
+    {
+        byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
+        return System.Text.Encoding.UTF8.GetString(data);
     }
 }

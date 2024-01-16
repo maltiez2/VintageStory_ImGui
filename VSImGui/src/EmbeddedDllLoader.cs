@@ -30,8 +30,6 @@ namespace VSImGui
             AssemblyName assemblyName = assembly.GetName();
             tempFolder ??= $"{assemblyName.Name}.{assemblyName.Version}";
 
-            logger.Warning($"Temp folder: {tempFolder}");
-
             byte[] resourceBytes;
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
@@ -43,12 +41,9 @@ namespace VSImGui
             string dirName = Path.Combine(Path.GetTempPath(), tempFolder);
             if (!Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
 
-            logger.Warning($"Dir path: {dirName}");
-
             string[] resourceNameParts = resourceName.Split(".");
             string dllName = $"{resourceNameParts[resourceNameParts.Length - 2]}.{resourceNameParts[resourceNameParts.Length - 1]}";
             string dllPath = Path.Combine(dirName, dllName);
-            logger.Warning($"Dll path: {dllPath}");
             bool alreadyExtracted = false;
             if (File.Exists(dllPath))
             {
@@ -112,13 +107,11 @@ namespace VSImGui
             switch (RuntimeEnv.OS)
             {
                 case OS.Windows:
-                    logger.Warning($"Loading {dllPath}");
                     handle = LoadLibrary(dllPath);
                     break;
                 case OS.Mac:
                     break;
                 case OS.Linux:
-                    logger.Warning($"Loading {dllPath}");
                     handle = dlopen(dllPath, 1);
                     break;
             }
