@@ -3,6 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Vintagestory.API.Common;
+using Vintagestory.API.Datastructures;
+using Vintagestory.API.Util;
+using Vintagestory.GameContent;
 
 namespace VSImGui;
 
@@ -34,8 +38,7 @@ public static class EnumEditor<TEnum>
     public static TEnum Combo(string title, string filter, TEnum value)
     {
         int index = mKeys[value];
-        int selection = index;
-        EditorsUtils.FilterElements(filter, mNames, out IEnumerable<string> filtered, out IEnumerable<int> indexes, ref index, ref selection);
+        EditorsUtils.FilterElements(filter, mNames, out IEnumerable<string> filtered, out IEnumerable<int> indexes, ref index, out int selection);
         ImGui.Combo(title, ref selection, filtered.ToArray(), filtered.Count());
         return mValues[indexes.ToArray()[selection]];
     }
@@ -73,8 +76,7 @@ public static class EnumEditor<TEnum>
     public static TEnum List(string title, string filter, TEnum value)
     {
         int index = mKeys[value];
-        int selection = index;
-        EditorsUtils.FilterElements(filter, mNames, out IEnumerable<string> filtered, out IEnumerable<int> indexes, ref index, ref selection);
+        EditorsUtils.FilterElements(filter, mNames, out IEnumerable<string> filtered, out IEnumerable<int> indexes, ref index, out int selection);
         ImGui.ListBox(title, ref selection, filtered.ToArray(), filtered.Count());
         return mValues[indexes.ToArray()[selection]];
     }
@@ -108,10 +110,10 @@ public static class TextEditor
     public static void ListWithFilter(string title, string filterHolder, in IEnumerable<string> elements, ref int index, out string value, uint maxFilterLength = 256, string hint = "supports wildcards")
     {
         ImGui.InputTextWithHint($"Filter##{title}", hint, ref filterHolder, maxFilterLength);
-        int selection = index;
-        EditorsUtils.FilterElements(filterHolder, elements, out IEnumerable<string> filtered, out IEnumerable<int> indexes, ref index, ref selection);
+        EditorsUtils.FilterElements(filterHolder, elements, out IEnumerable<string> filtered, out IEnumerable<int> indexes, ref index, out int selection);
         ImGui.ListBox(title, ref selection, filtered.ToArray(), filtered.Count());
-        value = elements.ToArray()[indexes.ToArray()[selection]];
+        index = indexes.ElementAt(selection);
+        value = elements.ElementAt(index);
     }
 }
 
@@ -191,6 +193,172 @@ public static class ColorEditor
     }
 }
 
+public static class AssetLocationEditor
+{
+    public static void Edit(string title, ref AssetLocation value, AssetLocation defaultValue)
+    {
+        try
+        {
+            if (value?.Valid != true)
+            {
+                value = defaultValue;
+            }
+        }
+        catch (Exception exception)
+        {
+            value = defaultValue;
+        }
+        
+
+        string domain = value.Domain;
+        string path = value.Path.Split('/').Where((_, index) => index > 0).Aggregate((first, second) => $"{first}/{second}");
+        AssetCategory category = value.Category;
+
+        ImGui.InputText($"Domain##{title}", ref domain, 256);
+        ImGui.InputText($"Path##{title}", ref path, 2048);
+        AssetCategoryEditor.Combo($"Category##{title}", ref category);
+
+        string result = $"{category.Code}/{path}";
+
+        value = new AssetLocation(domain, result);
+    }
+    public static AssetLocation Edit(string title, AssetLocation value, AssetLocation defaultValue)
+    {
+        Edit(title, ref value, defaultValue);
+        return value;
+    }
+}
+
+public static class AssetCategoryEditor
+{
+    public static void Combo(string title, ref AssetCategory value)
+    {
+        string code = value.Code;
+        Dictionary<string, AssetCategory> categories = AssetCategory.categories;
+        string[] codes = categories.Select((entry, _) => entry.Key).ToArray();
+        int index = codes.IndexOf(code);
+
+        ImGui.Combo(title, ref index, codes, codes.Length);
+
+        value = categories[codes[index]];
+    }
+    public static AssetCategory Combo(string title, AssetCategory value)
+    {
+        Combo(title, ref value);
+        return value;
+    }
+}
+
+public static class ListEditor
+{
+    public static void Edit(string title, string[] list, ref int selected, Action<string, int> onRemove, System.Func<int, string> onAdd, bool appendToEnd = false)
+    {
+        if (selected >= list.Length) selected = Math.Max(0, list.Length - 1);
+        
+        if (ImGui.Button($"Add##{title}"))
+        {
+            if (appendToEnd)
+            {
+                list = list.Append(onAdd.Invoke(selected)).ToArray();
+            }
+            else
+            {
+                int selected_not_ref = selected;
+                var begin = list.Where((_, index) => index <= selected_not_ref).Append(onAdd.Invoke(selected));
+                var end = list.Where((_, index) => index > selected_not_ref);
+                list = begin.Concat(end).ToArray();
+            }
+        }
+        ImGui.SameLine();
+
+        bool disable = list.Length == 0;
+        if (disable) ImGui.BeginDisabled();
+        if (ImGui.Button($"Remove##{title}"))
+        {
+            onRemove.Invoke(list[selected], selected);
+            list = list.RemoveEntry(selected);
+        }
+        if (disable) ImGui.EndDisabled();
+
+        if (selected >= list.Length) selected = Math.Max(0, list.Length - 1);
+
+        ImGui.ListBox($"{title}", ref selected, list, list.Length);
+    }
+}
+
+public static class TimeEditor
+{
+    public static readonly string[] sTimeTypes = new string[]
+    {
+        "microseconds",
+        "milliseconds",
+        "seconds",
+        "minutes",
+        "hours",
+        "days"
+    };
+    
+    public static void WithScaleSelection(string title, ref TimeSpan value, ref int timeScale)
+    {
+        float value_f = Get(title, value, ref timeScale);
+
+        ImGui.DragFloat(title, ref value_f);
+
+        value = Set(value_f, timeScale);
+    }
+    public static void WithScaleSelection(string title, ref TimeSpan value, ref int timeScale, float min, float max)
+    {
+        float value_f = Get(title, value, ref timeScale);
+
+        ImGui.SliderFloat(title, ref value_f, min, max);
+
+        value = Set(value_f, timeScale);
+    }
+    public static void WithScaleSelection(string title, ref TimeSpan value, ref int timeScale, TimeSpan min, TimeSpan max)
+    {
+        float value_f = Get(title, value, ref timeScale);
+
+        ImGui.SliderFloat(title, ref value_f, Get(min, timeScale), Get(max, timeScale));
+
+        value = Set(value_f, timeScale);
+    }
+
+    private static float Get(string title, TimeSpan value, ref int timeScale)
+    {
+        ImGui.Combo($"##selector{title}", ref timeScale, sTimeTypes, sTimeTypes.Length);
+        ImGui.SameLine();
+        return Get(value, timeScale);
+    }
+    private static float Get(TimeSpan value, int timeScale)
+    {
+        double value_d = sTimeTypes[timeScale] switch
+        {
+            "microseconds" => (float)value.TotalMicroseconds,
+            "milliseconds" => (float)value.TotalMilliseconds,
+            "seconds" => (float)value.TotalSeconds,
+            "minutes" => (float)value.TotalMinutes,
+            "hours" => (float)value.TotalHours,
+            "days" => (float)value.TotalDays,
+            _ => value.TotalMilliseconds
+        };
+
+        return (float)value_d;
+    }
+    private static TimeSpan Set(float value, int timeScale)
+    {
+        return sTimeTypes[timeScale] switch
+        {
+            "microseconds" => TimeSpan.FromMicroseconds(value),
+            "milliseconds" => TimeSpan.FromMilliseconds(value),
+            "seconds" => TimeSpan.FromSeconds(value),
+            "minutes" => TimeSpan.FromMinutes(value),
+            "hours" => TimeSpan.FromHours(value),
+            "days" => TimeSpan.FromDays(value),
+            _ => TimeSpan.FromMilliseconds(value)
+        };
+    }
+}
+
 public static class EditorsUtils
 {
     public static void FilterElements(string filter, in IEnumerable<string> elements, out IEnumerable<string> filtered, out IEnumerable<int> indexes)
@@ -209,7 +377,7 @@ public static class EditorsUtils
         filtered = filteredMapping.Select(entry => entry.value).ToArray();
         indexes = filteredMapping.Select(entry => entry.index).ToArray();
     }
-    public static bool FilterElements(string filter, in IEnumerable<string> elements, out IEnumerable<string> filtered, out IEnumerable<int> indexes, ref int index, ref int selection)
+    public static bool FilterElements(string filter, in IEnumerable<string> elements, out IEnumerable<string> filtered, out IEnumerable<int> indexes, ref int index, out int selection)
     {
         FilterElements(filter, in elements, out filtered, out indexes);
 
@@ -223,9 +391,12 @@ public static class EditorsUtils
             return true;
         }
 
-        if (selection != selectedIndex)
+        selection = selectedIndex;
+        int newIndex = indexes.ElementAt(selectedIndex);
+
+        if (index != newIndex)
         {
-            selection = selectedIndex;
+            index = newIndex;
             return true;
         }
 
