@@ -9,7 +9,7 @@ using Vintagestory.API.Config;
 
 namespace VSImGui
 {
-    public class EmbeddedDllClass // Author: Rasmus Tanggaard (Dmitry221060 - VS discord server) (https://github.com/Ridderrasmus)
+    public class EmbeddedDllClass // base on code by Rasmus Tanggaard (https://github.com/Ridderrasmus)
     {
         private static string tempFolder;
 
@@ -100,6 +100,14 @@ namespace VSImGui
                     break;
             }
 
+            if (!Load(dllName, logger)) return false;
+            //Load("cimplot.dll", logger);
+
+            return true;
+        }
+
+        public static bool Load(string dllName, ILogger logger)
+        {
             string dllPath = Path.Combine(Path.GetTempPath(), tempFolder, dllName);
 
             IntPtr? handle = null;

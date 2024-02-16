@@ -1,10 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using ImGuiNET;
+using ImPlotNET;
+using Newtonsoft.Json;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using System;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.Client.NoObf;
+using Vintagestory.Common;
 
 namespace VSImGui;
 
@@ -38,8 +41,12 @@ public class VSImGuiModSystem : ModSystem, IRenderer
         HarmonyPatches.OnMouseWheelEvent += OnMouseWheel;
         HarmonyPatches.OnUpdateCameraYawPitchEvent += ResetMousePosition;
 
+        
+
         SetUpImGuiWindows += DebugWindow.Draw;
     }
+
+    public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Client;
 
     public override void AssetsLoaded(ICoreAPI api)
     {
@@ -67,6 +74,7 @@ public class VSImGuiModSystem : ModSystem, IRenderer
         base.Dispose();
     }
 
+    private float test = 0;
     private void OnSwapBuffers()
     {
         if (!mImGuiInitialized)
@@ -76,6 +84,11 @@ public class VSImGuiModSystem : ModSystem, IRenderer
         }
 
         SetUpImGuiWindows?.Invoke();
+
+        ImGui.Begin("TEST");
+
+        ImPlot.ColormapSlider("test", ref test);
+        ImGui.End();
 
         mController.Render();
         ImGuiController.CheckGLError("End of frame");

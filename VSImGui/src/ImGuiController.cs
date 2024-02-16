@@ -12,6 +12,8 @@ using Vintagestory.API.Config;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using ImPlotNET;
+using System.Xml.Serialization;
 
 namespace VSImGui;
 
@@ -61,9 +63,18 @@ public class ImGuiController : IDisposable
         CompatibilityProfile = (GL.GetInteger((GetPName)All.ContextProfileMask) & (int)All.ContextCompatibilityProfileBit) != 0;
 
         IntPtr context = ImGui.CreateContext();
+
         ImGui.SetCurrentContext(context);
+
+        IntPtr plotContext = ImPlot.CreateContext();
+
+        ImPlot.SetCurrentContext(plotContext);
+        ImPlot.SetImGuiContext(context);
+
         var io = ImGui.GetIO();
         LoadFonts();
+
+
 
         io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
 

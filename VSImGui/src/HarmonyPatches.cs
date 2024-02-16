@@ -55,7 +55,9 @@ namespace VSImGui
             //new Harmony(harmonyId).Patch(typeof(ClientPlatformWindows).GetMethod("game_KeyUp", AccessTools.all), prefix: AccessTools.Method(typeof(HarmonyPatches), nameof(KeyHandled)));
 
             new Harmony(harmonyId).Patch(typeof(ClientMain).GetMethod("UpdateCameraYawPitch", AccessTools.all), prefix: AccessTools.Method(typeof(HarmonyPatches), nameof(ResetMousePosition)));
-            
+
+            new Harmony(harmonyId).Patch(typeof(ClientPlatformWindows).GetMethod("window_RenderFrame", AccessTools.all), prefix: AccessTools.Method(typeof(HarmonyPatches), nameof(RenderFrame)));
+
         }
 
         public static void Unpatch(string harmonyId)
@@ -72,6 +74,13 @@ namespace VSImGui
             new Harmony(harmonyId).Unpatch(typeof(ClientPlatformWindows).GetMethod("game_KeyPress", AccessTools.all), HarmonyPatchType.Prefix, harmonyId);
             new Harmony(harmonyId).Unpatch(typeof(ClientPlatformWindows).GetMethod("game_KeyDown", AccessTools.all), HarmonyPatchType.Prefix, harmonyId);
             //new Harmony(harmonyId).Unpatch(typeof(ClientPlatformWindows).GetMethod("game_KeyUp", AccessTools.all), HarmonyPatchType.Prefix, harmonyId);
+
+            new Harmony(harmonyId).Unpatch(typeof(ClientPlatformWindows).GetMethod("window_RenderFrame", AccessTools.all), HarmonyPatchType.Prefix, harmonyId);
+        }
+
+        public static void RenderFrame()
+        {
+            //ImGui.DockSpaceOverViewport();
         }
 
         public static void SwapBuffers()

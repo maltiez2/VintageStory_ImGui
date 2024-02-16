@@ -99,27 +99,40 @@ public static class DebugWindow
         return id;
     }
 
-    public static int IntDrag(string domain, string category, string label, int min, int max, System.Func<int> getter, Action<int> setter)
+    public static int IntDrag(string domain, string category, string label, System.Func<int> getter, Action<int> setter)
     {
         if (!sDrawEntries.ContainsKey(domain)) sDrawEntries[domain] = new();
         int id = label.GetHashCode();
         sDrawEntries[domain][id] = new(domain, category, () =>
         {
             int value = getter?.Invoke() ?? 0;
-            ImGui.DragInt(label, ref value, min, max);
+            ImGui.DragInt(label, ref value);
             setter?.Invoke(value);
         });
         return id;
     }
 
-    public static int FloatDrag(string domain, string category, string label, float min, float max, System.Func<float> getter, Action<float> setter)
+    public static int FloatDrag(string domain, string category, string label, System.Func<float> getter, Action<float> setter)
     {
         if (!sDrawEntries.ContainsKey(domain)) sDrawEntries[domain] = new();
         int id = label.GetHashCode();
         sDrawEntries[domain][id] = new(domain, category, () =>
         {
             float value = getter?.Invoke() ?? 0;
-            ImGui.DragFloat(label, ref value, min, max);
+            ImGui.DragFloat(label, ref value);
+            setter?.Invoke(value);
+        });
+        return id;
+    }
+
+    public static int Float3Drag(string domain, string category, string label, System.Func<Value3> getter, Action<Value3> setter)
+    {
+        if (!sDrawEntries.ContainsKey(domain)) sDrawEntries[domain] = new();
+        int id = label.GetHashCode();
+        sDrawEntries[domain][id] = new(domain, category, () =>
+        {
+            Vector3 value = getter?.Invoke() ?? new(0,0,0);
+            ImGui.DragFloat3(label, ref value);
             setter?.Invoke(value);
         });
         return id;

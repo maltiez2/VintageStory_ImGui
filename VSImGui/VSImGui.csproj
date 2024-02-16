@@ -116,8 +116,7 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="lib\win-x64\cimgui.dll" />
-		<EmbeddedResource Include="lib\linux-x64\libcimgui.so" />
-		<EmbeddedResource Include="lib\osx\libcimgui.dylib" />
+		<EmbeddedResource Include="lib\win-x64\cimplot.dll" />
 	</ItemGroup>
 	
 <ItemGroup>

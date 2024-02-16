@@ -6,9 +6,9 @@
         "Maltiez"
     ],
     "description": "ImGui.NET wrapper for Vintage Story",
-    "version": "0.3.3",
+    "version": "0.3.5",
     "dependencies": {
-        "game": "1.19.0"
+        "game": "1.19.4-rc.1"
     },
 	  "side" : "Universal",
 	  "requiredOnClient": false,
