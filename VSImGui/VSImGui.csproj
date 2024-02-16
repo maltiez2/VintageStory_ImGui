@@ -1,126 +1,121 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>bin\$(Configuration)\Mods\mod</OutputPath>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <ControllerSubmoduleDir>ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK</ControllerSubmoduleDir>
+    <GameDirectory>$(VINTAGE_STORY)</GameDirectory>
+    <BindingsDir>$(SolutionDir)\$(ControllerSubmoduleDir)\lib\bindings</BindingsDir>
+    <NativesDir>$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native</NativesDir>
   </PropertyGroup>
-
   <ItemGroup>
-    
     <Reference Include="ImGui.NET">
-      <HintPath>lib\ImGui.NET.dll</HintPath>
+      <HintPath>$(BindingsDir)\ImGui.NET.dll</HintPath>
     </Reference>
-	  <Reference Include="ImGuizmo.NET">
-		  <HintPath>lib\ImGuizmo.NET.dll</HintPath>
-	  </Reference>
-	  <Reference Include="ImNodes.NET">
-		  <HintPath>lib\ImNodes.NET.dll</HintPath>
-	  </Reference>
-	  <Reference Include="ImPlot.NET">
-		  <HintPath>lib\ImPlot.NET.dll</HintPath>
-	  </Reference>
-    
-    <Reference Include="OpenTK.Audio.OpenAL">
-      <HintPath>..\..\game\Lib\OpenTK.Audio.OpenAL.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <Private>False</Private>
+    <Reference Include="ImGuizmo.NET">
+      <HintPath>$(BindingsDir)\ImGuizmo.NET.dll</HintPath>
     </Reference>
+    <Reference Include="ImNodes.NET">
+      <HintPath>$(BindingsDir)\ImNodes.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="ImPlot.NET" HintPath="">
+      <HintPath>$(BindingsDir)\ImPlot.NET.dll</HintPath>
+    </Reference>
+
     <Reference Include="OpenTK.Compute">
-      <HintPath>..\..\game\Lib\OpenTK.Compute.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>$(GameDirectory)\Lib\OpenTK.Compute.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OpenTK.Core">
-      <HintPath>..\..\game\Lib\OpenTK.Core.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>$(GameDirectory)\Lib\OpenTK.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OpenTK.Graphics">
-      <HintPath>..\..\game\Lib\OpenTK.Graphics.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>$(GameDirectory)\Lib\OpenTK.Graphics.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OpenTK.Input">
-      <HintPath>..\..\game\Lib\OpenTK.Input.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>$(GameDirectory)\Lib\OpenTK.Input.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OpenTK.Mathematics">
-      <HintPath>..\..\game\Lib\OpenTK.Mathematics.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>$(GameDirectory)\Lib\OpenTK.Mathematics.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OpenTK.Windowing.Common">
-      <HintPath>..\..\game\Lib\OpenTK.Windowing.Common.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>$(GameDirectory)\Lib\OpenTK.Windowing.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OpenTK.Windowing.Desktop">
-      <HintPath>..\..\game\Lib\OpenTK.Windowing.Desktop.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>$(GameDirectory)\Lib\OpenTK.Windowing.Desktop.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OpenTK.Windowing.GraphicsLibraryFramework">
-      <HintPath>..\..\game\Lib\OpenTK.Windowing.GraphicsLibraryFramework.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>$(GameDirectory)\Lib\OpenTK.Windowing.GraphicsLibraryFramework.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    
     <Reference Include="VintagestoryAPI">
-      <HintPath>D:\Projects\Firearms\game/VintagestoryAPI.dll</HintPath>
+      <HintPath>$(GameDirectory)/VintagestoryAPI.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="VSSurvivalMod">
-      <HintPath>D:\Projects\Firearms\game/Mods/VSSurvivalMod.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VSEssentials">
-      <HintPath>D:\Projects\Firearms\game/Mods/VSEssentials.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VSCreativeMod">
-      <HintPath>D:\Projects\Firearms\game/Mods/VSCreativeMod.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>D:\Projects\Firearms\game/Lib/Newtonsoft.Json.dll</HintPath>
+      <HintPath>$(GameDirectory)/Lib/Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="0Harmony">
-      <HintPath>D:\Projects\Firearms\game/Lib/0Harmony.dll</HintPath>
+      <HintPath>$(GameDirectory)/Lib/0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="VintagestoryLib">
-      <HintPath>D:\Projects\Firearms\game/VintagestoryLib.dll</HintPath>
+      <HintPath>$(GameDirectory)/VintagestoryLib.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="protobuf-net">
-      <HintPath>D:\Projects\Firearms\game/Lib/protobuf-net.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="cairo-sharp">
-      <HintPath>D:\Projects\Firearms\game/Lib/cairo-sharp.dll</HintPath>
+      <HintPath>$(GameDirectory)/Lib/protobuf-net.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-
-<ItemGroup>
-  <Compile Remove="FakesAssemblies\**" />
-  <EmbeddedResource Remove="FakesAssemblies\**" />
-  <None Remove="FakesAssemblies\**" />
-  <Content Include="modinfo.json">
+  <ItemGroup>
+    <Compile Remove="FakesAssemblies\**" />
+    <EmbeddedResource Remove="FakesAssemblies\**" />
+    <None Remove="FakesAssemblies\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="modinfo.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(NativesDir)\linux\cimgui.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-  </Content>
-</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Include="lib\win-x64\cimgui.dll" />
-		<EmbeddedResource Include="lib\win-x64\cimplot.dll" />
-	</ItemGroup>
-	
-<ItemGroup>
-  <AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
-</ItemGroup>
-
+    </Content>
+    <Content Include="$(NativesDir)\linux\cimguizmo.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(NativesDir)\linux\cimnodes.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(NativesDir)\linux\cimplot.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(NativesDir)\mac\cimgui.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(NativesDir)\mac\cimguizmo.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(NativesDir)\mac\cimnodes.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(NativesDir)\mac\cimplot.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native\win\cimgui.dll" />
+    <EmbeddedResource Include="$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native\win\cimguizmo.dll" />
+    <EmbeddedResource Include="$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native\win\cimnodes.dll" />
+    <EmbeddedResource Include="$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native\win\cimplot.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK\ImGuiController_OpenTK.csproj" />
+  </ItemGroup>
 </Project>

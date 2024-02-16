@@ -101,7 +101,9 @@ namespace VSImGui
             }
 
             if (!Load(dllName, logger)) return false;
-            //Load("cimplot.dll", logger);
+            Load("cimguizmo.dll", logger);
+            Load("cimnodes.dll", logger);
+            Load("cimplot.dll", logger);
 
             return true;
         }

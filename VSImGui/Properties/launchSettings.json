@@ -3,14 +3,14 @@
     "Client": {
       "commandName": "Executable",
       "executablePath": "dotnet",
-      "commandLineArgs": "\"D:/Projects/Firearms/game_19/Vintagestory.dll\" --tracelog --dataPath \"C:/Users/user/AppData/Roaming/VintagestoryDataDev\" --addModPath \"C:/Users/user/AppData/Roaming/VintagestoryDataDev/Mods\" \"$(ProjectDir)/bin/$(Configuration)/Mods\" \"-o\" \"test_fsm_2\"",
-      "workingDirectory": "D:/Projects/Firearms/game_19"
+      "commandLineArgs": "\"$(VINTAGE_STORY)/Vintagestory.dll\" --tracelog --dataPath \"C:/Users/user/AppData/Roaming/VintagestoryDataDev\" --addModPath \"C:/Users/user/AppData/Roaming/VintagestoryDataDev/Mods\" \"$(ProjectDir)/bin/$(Configuration)/Mods\" \"-o\" \"test_fsm_2\"",
+      "workingDirectory": "$(VINTAGE_STORY)"
     },
     "Server": {
       "commandName": "Executable",
       "executablePath": "dotnet",
-      "commandLineArgs": "\"D:/Projects/Firearms/game_19/VintagestoryServer.dll\" --tracelog --dataPath \"C:/Users/user/AppData/Roaming/VintagestoryDataDev\" --addModPath \"C:/Users/user/AppData/Roaming/VintagestoryDataDev/Mods\" \"$(ProjectDir)/bin/$(Configuration)/Mods\" \"-o\" \"test_fsm_2\"",
-      "workingDirectory": "D:/Projects/Firearms/game_19"
+      "commandLineArgs": "\"$(VINTAGE_STORY)/VintagestoryServer.dll\" --tracelog --dataPath \"C:/Users/user/AppData/Roaming/VintagestoryDataDev\" --addModPath \"C:/Users/user/AppData/Roaming/VintagestoryDataDev/Mods\" \"$(ProjectDir)/bin/$(Configuration)/Mods\" \"-o\" \"test_fsm_2\"",
+      "workingDirectory": "$(VINTAGE_STORY)"
     }
   }
 }
