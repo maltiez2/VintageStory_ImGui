@@ -1,47 +1,54 @@
 ﻿using ImGuiNET;
-using ImPlotNET;
 using Newtonsoft.Json;
-using OpenTK.Windowing.Common;
-using OpenTK.Windowing.Desktop;
 using System;
+using System.Reflection;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.API.Config;
 using Vintagestory.Client.NoObf;
-using Vintagestory.Common;
 
 namespace VSImGui;
 
-public class VSImGuiModSystem : ModSystem, IRenderer
+public class VSImGuiModSystem : ModSystem
 {
-    public event Action SetUpImGuiWindows;
-    public Style DefaultStyle { get; set; }
+    public Style? DefaultStyle { get; set; }
 
-    private bool mImGuiInitialized = false;
-    private ImGuiController mController;
-    private ICoreClientAPI mApi;
-    private bool mMouseGrabbed;
+    public event Action SetUpImGuiWindows
+    {
+        add { if (mMainWindowWrapper != null) mMainWindowWrapper.Draw += value; }
+        remove { if (mMainWindowWrapper != null)  mMainWindowWrapper.Draw -= value; }
+    }
+
+    private VSImGuiController? mController;
+    private VSGameWindowWrapper? mMainWindowWrapper;
+    private ICoreClientAPI? mApi;
+    private VSImGuiDialog? mDialog;
 
     public override void StartPre(ICoreAPI api)
     {
         if (api is not ICoreClientAPI clientApi) return;
         EmbeddedDllClass.ExtractEmbeddedDlls(api.Logger);
         EmbeddedDllClass.LoadImGui(api.Logger);
+
         mApi = clientApi;
-        mImGuiInitialized = InitImGui();
-        clientApi.Event.RegisterRenderer(this, EnumRenderStage.Ortho);
+        
+        GameWindowNative? window = GetWindow(clientApi);
+        if (window == null) return;
+
+        mMainWindowWrapper = new(window);
+        mController = new(mMainWindowWrapper);
+        mDialog = new(clientApi, mController, mMainWindowWrapper);
+        mDialog.TryOpen();
+        mController.OnWindowMergedIntoMain += () => mDialog.TryOpen();
+        clientApi.Event.RegisterRenderer(new OffWindowRenderer(mDialog), EnumRenderStage.Ortho);
     }
     public override void StartClientSide(ICoreClientAPI api)
     {
         mApi = api;
 
-        HarmonyPatches.Patch("vsimgui");
-        HarmonyPatches.OnResizeEvent += OnResize;
-        HarmonyPatches.OnUpdateFrameEvent += OnUpdateFrame;
-        HarmonyPatches.OnTextInputFrameEvent += OnTextInput;
-        HarmonyPatches.OnMouseWheelEvent += OnMouseWheel;
-        HarmonyPatches.OnUpdateCameraYawPitchEvent += ResetMousePosition;
+        api.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
 
-        
+        SetUpImGuiWindows += ImGui.ShowDemoWindow;
 
         SetUpImGuiWindows += DebugWindow.Draw;
     }
@@ -52,94 +59,27 @@ public class VSImGuiModSystem : ModSystem, IRenderer
     {
         if (api is not ICoreClientAPI clientApi) return;
         DefaultStyle = JsonConvert.DeserializeObject<Style>(LoadDefaultStyle(clientApi));
-        DefaultStyle.Push();
+        DefaultStyle?.Push();
     }
 
     public override void Dispose()
     {
-        if (mApi != null)
-        {
-            HarmonyPatches.SwapBuffersEvent -= OnSwapBuffers;
-            HarmonyPatches.OnResizeEvent -= OnResize;
-            HarmonyPatches.OnUpdateFrameEvent -= OnUpdateFrame;
-            HarmonyPatches.OnTextInputFrameEvent -= OnTextInput;
-            HarmonyPatches.OnMouseWheelEvent -= OnMouseWheel;
-            HarmonyPatches.OnUpdateCameraYawPitchEvent -= ResetMousePosition;
-
-            HarmonyPatches.Unpatch("vsimgui");
-        }
-
         DebugWindow.Clear();
 
         base.Dispose();
     }
 
-    private float test = 0;
-    private void OnSwapBuffers()
-    {
-        if (!mImGuiInitialized)
-        {
-            mImGuiInitialized = InitImGui();
-            if (!mImGuiInitialized) return;
-        }
-
-        SetUpImGuiWindows?.Invoke();
-
-        ImGui.Begin("TEST");
-
-        ImPlot.ColormapSlider("test", ref test);
-        ImGui.End();
-
-        mController.Render();
-        ImGuiController.CheckGLError("End of frame");
-    }
-
-    private void OnResize(NativeWindow window)
-    {
-        if (mImGuiInitialized) mController.WindowResized(window.ClientSize.X, window.ClientSize.Y);
-    }
-
-    private void OnUpdateFrame(GameWindow window, FrameEventArgs eventData)
-    {
-        if (mImGuiInitialized) mController.Update(window, (float)eventData.Time, !mMouseGrabbed);
-    }
-
-    private void OnTextInput(TextInputEventArgs eventData)
-    {
-        if (mImGuiInitialized) mController.PressChar((char)eventData.Unicode);
-    }
-
-    private void OnMouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs eventData)
-    {
-        if (mImGuiInitialized) mController.MouseScroll(eventData.Offset);
-    }
-
-    private bool InitImGui()
-    {
-        if (mApi == null) return false;
-        mController = new ImGuiController(mApi.Render.FrameWidth, mApi.Render.FrameHeight);
-        return true;
-    }
-
-    private void ResetMousePosition(ClientMain client)
-    {
-        mMouseGrabbed = client.MouseGrabbed;
-    }
-
-    public double RenderOrder => 1.01;
-
-    public override double ExecuteOrder() => 0.001;
-
-    public int RenderRange => 0;
-
-    public void OnRenderFrame(float deltaTime, EnumRenderStage stage)
-    {
-        OnSwapBuffers();
-    }
-
-    private string LoadDefaultStyle(ICoreClientAPI api)
+    private static string LoadDefaultStyle(ICoreClientAPI api)
     {
         byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
         return System.Text.Encoding.UTF8.GetString(data);
+    }
+
+    private static GameWindowNative? GetWindow(ICoreClientAPI client)
+    {
+        if (client.World is not ClientMain main) return null;
+        FieldInfo? field = typeof(ClientMain).GetField("Platform", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+        ClientPlatformWindows? platform = (ClientPlatformWindows?)field?.GetValue(main);
+        return platform?.window;
     }
 }

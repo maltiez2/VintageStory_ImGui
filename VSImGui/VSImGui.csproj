@@ -8,6 +8,7 @@
     <GameDirectory>$(VINTAGE_STORY)</GameDirectory>
     <BindingsDir>$(SolutionDir)\$(ControllerSubmoduleDir)\lib\bindings</BindingsDir>
     <NativesDir>$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native</NativesDir>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ImGui.NET">

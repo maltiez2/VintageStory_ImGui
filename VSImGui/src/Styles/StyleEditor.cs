@@ -178,10 +178,10 @@ public class StyleEditor
 
     static private void FontAndTextureEditor(Style style)
     {
-        string[] fonts = ImGuiController.Fonts.ToArray().Prepend("").ToArray();
-        string[] fontsNames = ImGuiController.Fonts.Select(font => Path.GetFileNameWithoutExtension(font)).ToArray().Prepend("").ToArray();
-        int[] sizes = ImGuiController.FontSizes.ToArray();
-        string[] sizesNames = ImGuiController.FontSizes.Select(size => $"{size}px").ToArray();
+        string[] fonts = FontManager.Fonts.ToArray().Prepend("").ToArray();
+        string[] fontsNames = FontManager.Fonts.Select(font => Path.GetFileNameWithoutExtension(font)).ToArray().Prepend("").ToArray();
+        int[] sizes = FontManager.Sizes.ToArray();
+        string[] sizesNames = FontManager.Sizes.Select(size => $"{size}px").ToArray();
         int currentSizeIndex, currentFontIndex;
         for (currentFontIndex = 0; currentFontIndex < fonts.Length; currentFontIndex++)
         {

@@ -399,10 +399,10 @@ public class Style
         set
         {
             mFontKey = value;
-            mFontLoaded = ImGuiController.LoadedFonts.ContainsKey(value);
+            mFontLoaded = FontManager.Loaded.ContainsKey(value);
             if (mFontLoaded)
             {
-                mFont = ImGuiController.LoadedFonts[value];
+                mFont = FontManager.Loaded[value];
             }
         }
     }
