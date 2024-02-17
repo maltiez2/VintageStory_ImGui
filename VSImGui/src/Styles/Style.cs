@@ -398,6 +398,7 @@ public class Style
         get => mFontKey;
         set
         {
+            if (value.name == null || value.name == "") return;
             mFontKey = value;
             mFontLoaded = FontManager.Loaded.ContainsKey(value);
             if (mFontLoaded)

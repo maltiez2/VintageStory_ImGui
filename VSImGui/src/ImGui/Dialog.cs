@@ -1,13 +1,18 @@
-﻿using Vintagestory.API.Client;
+﻿using System;
+using Vintagestory.API.Client;
+using VSImGui.src.ImGui;
 
 namespace VSImGui;
 
 public class VSImGuiDialog : GuiDialog
 {
-    public VSImGuiDialog(ICoreClientAPI capi, VSImGuiController controller, VSGameWindowWrapper windowWrapper) : base(capi)
+    public VSImGuiDialog(ICoreClientAPI capi, VSImGuiController controller, VSGameWindowWrapper windowWrapper, VSImGuiManager manager) : base(capi)
     {
         mController = controller;
         mWindowWrapper = windowWrapper;
+        mManager = manager;
+
+        windowWrapper.Draw += Draw;
     }
 
     #region Controller calls
@@ -28,12 +33,13 @@ public class VSImGuiDialog : GuiDialog
     #region Vanilla dialoug settings
     public override string ToggleKeyCombinationCode => "imguitoggle";
     public override bool ShouldReceiveRenderEvents() => true;
+    public override bool PrefersUngrabbedMouse => mGrabMouse; // In case of ImGui: grab means 'grab by gui', opposite of game's meaning
     #endregion
 
     #region Input handling
     public override void OnMouseDown(MouseEvent args) => HandleMouse(args);
     public override void OnMouseUp(MouseEvent args) => HandleMouse(args);
-    public override void OnMouseWheel(MouseWheelEventArgs args) => HandleMouse(args);
+    public override void OnMouseWheel(MouseWheelEventArgs args) => HandleMouseWheel(args);
     public override void OnMouseMove(MouseEvent args) => HandleMouseMovement(args);
     public override void OnKeyDown(KeyEvent args) => HandleKeyboard(args);
     public override void OnKeyPress(KeyEvent args) => HandleKeyboard(args);
@@ -47,9 +53,9 @@ public class VSImGuiDialog : GuiDialog
     {
         if (!args.Handled) args.Handled = mController.MouseMovesCaptured();
     }
-    private void HandleMouse(MouseWheelEventArgs args)
+    private void HandleMouseWheel(MouseWheelEventArgs args)
     {
-        // nothing to handle
+        if (!args.IsHandled) args.SetHandled(mController.MouseMovesCaptured());
     }
     private void HandleKeyboard(KeyEvent args)
     {
@@ -60,8 +66,21 @@ public class VSImGuiDialog : GuiDialog
     }
     #endregion
 
-    private VSImGuiController mController;
-    private VSGameWindowWrapper mWindowWrapper;
+
+    private readonly VSImGuiController mController;
+    private readonly VSGameWindowWrapper mWindowWrapper;
+    private readonly VSImGuiManager mManager;
+
+    private bool mGrabMouse = false;
+
+    private void Draw(float deltaSeconds)
+    {
+        (bool open, bool grab) = mManager.Draw(deltaSeconds);
+
+        if (open) TryOpen();
+
+        mGrabMouse = grab;
+    }
 }
 
 public sealed class OffWindowRenderer : IRenderer

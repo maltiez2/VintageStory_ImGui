@@ -1,10 +1,10 @@
 {
   "PaddingWindow": [
-    4.0,
+    6.0,
     4.0
   ],
   "PaddingFrame": [
-    6.0,
+    4.0,
     4.0
   ],
   "PaddingCell": [
@@ -38,15 +38,15 @@
   "SpacingIndent": 21.0,
   "SpacingColumnsMin": 6.0,
   "BorderWindow": 4.0,
-  "BorderChild": 1.0,
+  "BorderChild": 4.0,
   "BorderPopup": 4.0,
-  "BorderFrame": 1.0,
+  "BorderFrame": 0.0,
   "BorderTab": 0.0,
   "BorderSeparatorText": 4.0,
   "RoundingWindow": 0.0,
   "RoundingChild": 0.0,
   "RoundingPopup": 0.0,
-  "RoundingFrame": 0.0,
+  "RoundingFrame": 2.0,
   "RoundingScrollbar": 1.0,
   "RoundingGrab": 1.0,
   "RoundingTab": 5.0,
@@ -73,7 +73,7 @@
     0.5
   ],
   "Alpha": 1.0,
-  "DisabledAlpha": 0.6,
+  "DisabledAlpha": 0.5,
   "AntiAliasedLines": true,
   "AntiAliasedLinesUseTex": true,
   "AntiAliasedFill": true,
@@ -90,16 +90,16 @@
   "TabMinWidthForCloseButton": 0.0,
   "MouseCursorScale": 1.0,
   "ColorBackgroundWindow": [
-    0.19607843,
-    0.15713415,
-    0.11534025,
+    0.19215687,
+    0.15399146,
+    0.11303344,
     1.0
   ],
   "ColorBackgroundChild": [
-    0.0,
-    0.0,
-    0.0,
-    0.0
+    0.2509804,
+    0.2011317,
+    0.14763552,
+    0.7254902
   ],
   "ColorBackgroundPopup": [
     0.17102379,
@@ -419,6 +419,6 @@
     1.0,
     0.7
   ],
-  "FontName": "",
-  "FontSize": 14
+  "FontName": "Montserrat-Regular",
+  "FontSize": 18
 }

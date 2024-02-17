@@ -1,28 +1,36 @@
 ﻿using ImGuiNET;
 using Newtonsoft.Json;
-using System;
 using System.Reflection;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.Client.NoObf;
+using VSImGui.src.ImGui;
 
 namespace VSImGui;
 
-public class VSImGuiModSystem : ModSystem
+public class ImGuiModSystem : ModSystem
 {
     public Style? DefaultStyle { get; set; }
 
-    public event Action SetUpImGuiWindows
+    public event ImGuiDialogDrawCallback Draw
     {
-        add { if (mMainWindowWrapper != null) mMainWindowWrapper.Draw += value; }
-        remove { if (mMainWindowWrapper != null)  mMainWindowWrapper.Draw -= value; }
+        add
+        {
+            if (mGuiManager != null) mGuiManager.DrawCallback += value;
+        }
+        remove
+        {
+            if (mGuiManager != null) mGuiManager.DrawCallback -= value;
+        }
     }
 
     private VSImGuiController? mController;
     private VSGameWindowWrapper? mMainWindowWrapper;
     private ICoreClientAPI? mApi;
     private VSImGuiDialog? mDialog;
+    private VSImGuiManager? mGuiManager;
+    private StyleEditor? mStyleEditor;
 
     public override void StartPre(ICoreAPI api)
     {
@@ -31,27 +39,49 @@ public class VSImGuiModSystem : ModSystem
         EmbeddedDllClass.LoadImGui(api.Logger);
 
         mApi = clientApi;
-        
+
         GameWindowNative? window = GetWindow(clientApi);
         if (window == null) return;
 
+        mGuiManager = new();
         mMainWindowWrapper = new(window);
         mController = new(mMainWindowWrapper);
-        mDialog = new(clientApi, mController, mMainWindowWrapper);
+        mDialog = new(clientApi, mController, mMainWindowWrapper, mGuiManager);
         mDialog.TryOpen();
         mController.OnWindowMergedIntoMain += () => mDialog.TryOpen();
         clientApi.Event.RegisterRenderer(new OffWindowRenderer(mDialog), EnumRenderStage.Ortho);
+        clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
+
+#if DEBUG
+        Draw += DemoWindow;
+#endif
     }
-    public override void StartClientSide(ICoreClientAPI api)
+
+    private VSDialogStatus DemoWindow(float dt)
     {
-        mApi = api;
+        if (DefaultStyle == null || mStyleEditor == null) return VSDialogStatus.Closed; 
+        
+        using (new StyleApplier(DefaultStyle))
+        {
+            mStyleEditor.Draw();
 
-        api.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
+            ImGui.Begin("TEST");
 
-        SetUpImGuiWindows += ImGui.ShowDemoWindow;
+            ImGui.Text("test test test");
 
-        SetUpImGuiWindows += DebugWindow.Draw;
+            ImGui.BeginChild("test", new(300, 300), true);
+
+            ImGui.Text("test test test");
+
+            ImGui.EndChild();
+
+            ImGui.End();
+        }
+
+        return VSDialogStatus.GrabMouse;
     }
+
+    public override double ExecuteOrder() => 0;
 
     public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Client;
 
@@ -60,6 +90,7 @@ public class VSImGuiModSystem : ModSystem
         if (api is not ICoreClientAPI clientApi) return;
         DefaultStyle = JsonConvert.DeserializeObject<Style>(LoadDefaultStyle(clientApi));
         DefaultStyle?.Push();
+        if (DefaultStyle != null) mStyleEditor = new(DefaultStyle);
     }
 
     public override void Dispose()

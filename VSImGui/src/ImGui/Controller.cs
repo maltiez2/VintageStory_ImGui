@@ -1,5 +1,6 @@
 ﻿using ImGuiController_OpenTK;
 using ImGuiNET;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using Vintagestory.API.Config;
+using VSImGui.src.ImGui;
 
 namespace VSImGui;
 
@@ -14,10 +16,11 @@ public sealed class VSImGuiController : ImGuiController
 {
     public VSImGuiController(VSGameWindowWrapper window) : base(window)
     {
-        FontManager.Load();
         SetConfigFolder();
 
         mWindowsManager.OnWindowDestroyed += OnWindowDestroyed;
+
+        ImGui.NewFrame();
     }
 
     public event Action? OnWindowMergedIntoMain;
@@ -91,6 +94,12 @@ public sealed class VSImGuiController : ImGuiController
         if (mMainWindow.Native.IsFocused) OnWindowMergedIntoMain?.Invoke();
     }
 
+    protected override void LoadFonts()
+    {
+        FontManager.Load();
+        //ImGui.PushFont(FontManager.Default);
+    }
+
     private void SetConfigFolder()
     {
         ImGuiIOPtr io = ImGui.GetIO();
@@ -119,21 +128,21 @@ public static class FontManager
         36,
         48,
         60,
-        72,
+        72
     };
     static public HashSet<string> Fonts { get; } = new HashSet<string>
     {
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Almendra-Bold.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Almendra-BoldItalic.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Almendra-Italic.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Almendra-Regular.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Lora-Bold.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Lora-BoldItalic.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Lora-Italic.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Lora-Regular.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Montserrat-Bold.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Montserrat-Italic.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game/fonts", "Montserrat-Regular.ttf")
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Bold.otf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-BoldItalic.otf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Italic.otf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Regular.otf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-Bold.ttf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-BoldItalic.ttf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-Italic.ttf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-Regular.ttf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Montserrat-Bold.ttf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Montserrat-Italic.ttf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Montserrat-Regular.ttf")
     };
     static public Dictionary<(string, int), ImFontPtr> Loaded { get; } = new();
     internal static void Load()
@@ -154,7 +163,7 @@ public static class FontManager
     private static void LoadDefault()
     {
         ImGuiIOPtr io = ImGui.GetIO();
-        string defaultFont = Path.Combine(GamePaths.AssetsPath, "game/fonts", "Montserrat-Regular.ttf");
+        string defaultFont = Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Montserrat-Regular.ttf");
         int defaultSize = 18;
         Default = io.Fonts.AddFontFromFileTTF(defaultFont, defaultSize);
         Native = io.Fonts.AddFontDefault();
@@ -164,7 +173,7 @@ public static class FontManager
 public sealed class VSGameWindowWrapper : IWindow
 {
     public NativeWindow Native => mWindow;
-    public event Action? Draw;
+    internal event Action<float>? Draw;
 
     public VSGameWindowWrapper(GameWindow window)
     {
@@ -179,7 +188,7 @@ public sealed class VSGameWindowWrapper : IWindow
     {
         // Not owning window itself
     }
-    public void OnDraw(float deltaSeconds) => Draw?.Invoke();
+    public void OnDraw(float deltaSeconds) => Draw?.Invoke(deltaSeconds);
     public void OnRender(float deltaSeconds)
     {
         // nothing to render
@@ -194,4 +203,5 @@ public sealed class VSGameWindowWrapper : IWindow
     }
 
     private readonly GameWindow mWindow;
+    private readonly VSImGuiManager mManager;
 }

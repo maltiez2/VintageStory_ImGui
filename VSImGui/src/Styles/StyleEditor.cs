@@ -104,17 +104,18 @@ public class StyleEditor
             ImGui.RadioButton("JSON##codeoutputvsimgui", ref mOutputOption, 0); ImGui.SameLine();
             ImGui.RadioButton("C# ##codeoutputvsimgui", ref mOutputOption, 1);
 
+            ImGui.BeginChild("##codeoutputvsimguijson");
             switch (mOutputOption)
             {
                 case 0:
-                    ImGui.SeparatorText("JSON");
                     JsonCode();
                     break;
                 case 1:
-                    ImGui.SeparatorText("C#");
+                    ImGui.Separator();
                     CsharpCode();
                     break;
             }
+            ImGui.End();
 
             ImGui.EndPopup();
         }
@@ -126,6 +127,11 @@ public class StyleEditor
         size.X -= 10;
         size.Y -= 94;
 
+        if (ImGui.Button("Copy##resultjsonoutputvsimgui") || CopyCombination())
+        {
+            ImGui.SetClipboardText(mCsharpCode);
+        }
+
         ImGui.InputTextMultiline("##C#resultjsonoutputvsimgui", ref mCsharpCode, (uint)mCsharpCode.Length * 2, size, ImGuiInputTextFlags.ReadOnly);
     }
     private void JsonCode()
@@ -135,8 +141,35 @@ public class StyleEditor
         size.Y -= 124;
 
         if (ImGui.Button("Apply##jsonoutputvsimgui")) Deserialize(mSerialized);
+        ImGui.SameLine();
+        if (ImGui.Button("Copy##resultjsonoutputvsimgui") || CopyCombination())
+        {
+            ImGui.SetClipboardText(mSerialized);
+        }
+        ImGui.SameLine();
+        if (ImGui.Button("Paste##resultjsonoutputvsimgui") || PasteCombination())
+        {
+            mSerialized = ImGui.GetClipboardText();
+        }
+
         if (mException) ShowException(ref size);
         ImGui.InputTextMultiline("##JSONresultjsonoutputvsimgui", ref mSerialized, (uint)mSerialized.Length * 2, size);
+    }
+
+    private bool CopyCombination()
+    {
+        ImGuiIOPtr io = ImGui.GetIO();
+        return io.KeyCtrl && io.KeysDown[(int)ImGuiKey.C];
+    }
+    private bool PasteCombination()
+    {
+        ImGuiIOPtr io = ImGui.GetIO();
+        return io.KeyCtrl && io.KeysDown[(int)ImGuiKey.V];
+    }
+    private bool SelectAllCombination()
+    {
+        ImGuiIOPtr io = ImGui.GetIO();
+        return io.KeyCtrl && io.KeysDown[(int)ImGuiKey.A];
     }
 
     private void Deserialize(string json)
@@ -169,7 +202,7 @@ public class StyleEditor
         errorSize.Y = 100;
         size.Y -= 104;
 
-        ImGui.BeginChild("ApplyExceptionjsonoutputvsimgui", errorSize, true);
+        ImGui.BeginChild("Apply##Exceptionjsonoutputvsimgui", errorSize, true);
         ImGui.PushTextWrapPos(ImGui.GetCursorPosX() + errorSize.X);
         ImGui.Text(mMessage);
         ImGui.PopTextWrapPos();
@@ -183,14 +216,17 @@ public class StyleEditor
         int[] sizes = FontManager.Sizes.ToArray();
         string[] sizesNames = FontManager.Sizes.Select(size => $"{size}px").ToArray();
         int currentSizeIndex, currentFontIndex;
+        
         for (currentFontIndex = 0; currentFontIndex < fonts.Length; currentFontIndex++)
         {
             if (fontsNames[currentFontIndex] == style.FontName) break;
         }
-        for (currentSizeIndex = 0; currentSizeIndex < fonts.Length; currentSizeIndex++)
+        if (currentFontIndex >= fonts.Length) currentFontIndex = 0;
+        for (currentSizeIndex = 0; currentSizeIndex < sizes.Length; currentSizeIndex++)
         {
             if (sizes[currentSizeIndex] == style.FontSize) break;
         }
+        if (currentSizeIndex >= sizes.Length) currentSizeIndex = 0;
 
         ImGui.Combo("Font", ref currentFontIndex, fontsNames, fonts.Length);
         ImGui.Combo("Size", ref currentSizeIndex, sizesNames, sizes.Length);
