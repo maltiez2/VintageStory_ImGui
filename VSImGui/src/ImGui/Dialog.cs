@@ -33,7 +33,7 @@ public class VSImGuiDialog : GuiDialog
     #region Vanilla dialoug settings
     public override string ToggleKeyCombinationCode => "imguitoggle";
     public override bool ShouldReceiveRenderEvents() => true;
-    public override bool PrefersUngrabbedMouse => mGrabMouse; // In case of ImGui: grab means 'grab by gui', opposite of game's meaning
+    public override bool PrefersUngrabbedMouse => mGrabMouse; // In case of ImGui: grab means 'grab by GUI', opposite of game's meaning
     #endregion
 
     #region Input handling

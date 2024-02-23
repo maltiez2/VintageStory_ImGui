@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <ProjectDir>$(MSBuildProjectDirectory)\</ProjectDir>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>bin\$(Configuration)\Mods\mod</OutputPath>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ControllerSubmoduleDir>ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK</ControllerSubmoduleDir>
     <GameDirectory>$(VINTAGE_STORY)</GameDirectory>
-    <BindingsDir>$(SolutionDir)\$(ControllerSubmoduleDir)\lib\bindings</BindingsDir>
-    <NativesDir>$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native</NativesDir>
+    <BindingsDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\bindings</BindingsDir>
+    <NativesDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\native</NativesDir>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
