@@ -1,12 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- ************************************************** -->
+  <!-- *************** Configuration ******************** -->
+  
+  <!-- Parameters -->
   <PropertyGroup>
-    <!-- Settings -->
+    <ModName>Dear ImGui</ModName>
+    <GameVersion>1.19.4-rc.2</GameVersion>
+    <Version>1.0.0-pre.1</Version>
+    <ModId>vsimgui</ModId>
+    <Description>Brings famous immediate mode GUI to Vintage Story</Description>
+    <Side>Universal</Side>
+    <RequiredOnClient>true</RequiredOnClient>
+    <RequiredOnServer>false</RequiredOnServer>
+  </PropertyGroup>
+
+  <!-- Authors -->
+  <ItemGroup>
+    <ModInfoAuthors Include="Maltiez" />
+  </ItemGroup>
+
+  <!-- Dependencies -->
+  <ItemGroup>
+    <Dependencies Include="game">
+      <Version>$(GameVersion)</Version>
+    </Dependencies>
+  </ItemGroup>
+  
+  <!-- ************************************************** -->
+  <!-- ************************************************** -->
+  
+  <!-- Project settings -->
+  <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <!-- Paths -->
-    <ProjectDir>$(MSBuildProjectDirectory)\</ProjectDir>
+  </PropertyGroup>
+
+  <!-- Paths -->
+  <PropertyGroup>
+    <ProjectDir>$(MSBuildProjectDirectory)</ProjectDir>
     <OutputPath>bin\$(Configuration)\Mods\mod</OutputPath>
     <ControllerSubmoduleDir>ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK</ControllerSubmoduleDir>
     <GameDirectory>$(VINTAGE_STORY)</GameDirectory>
@@ -14,17 +47,16 @@
     <NativesDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\native</NativesDir>
     <AssetsDir>$(ProjectDir)\assets</AssetsDir>
     <ReleasesDir>$(ProjectDir)\Releases</ReleasesDir>
-    <!-- Parameters -->
-    <ModVersion>0.4.0</ModVersion>
-    <ModId>configlib</ModId>
   </PropertyGroup>
 
+  <!-- Builds dependency projects and copies theirs ddls into output directory -->
   <ItemGroup>
     <ProjectReference Include="$(ProjectDir)\..\$(ControllerSubmoduleDir)\ImGuiController_OpenTK.csproj" />
   </ItemGroup>
   
+  <!-- References to libraries that are being used in project -->
   <ItemGroup>
-    <!-- Bindings -->
+    <!-- Bindings: will be copied into output directory -->
     <Reference Include="ImGui.NET">
       <HintPath>$(BindingsDir)\ImGui.NET.dll</HintPath>
     </Reference>
@@ -37,7 +69,7 @@
     <Reference Include="ImPlot.NET" HintPath="">
       <HintPath>$(BindingsDir)\ImPlot.NET.dll</HintPath>
     </Reference>
-    <!-- Vintage Story dependencies -->
+    <!-- Vintage Story dependencies: wont be copied into output directory -->
     <Reference Include="OpenTK.Compute">
       <HintPath>$(GameDirectory)\Lib\OpenTK.Compute.dll</HintPath>
       <Private>False</Private>
@@ -70,7 +102,7 @@
       <HintPath>$(GameDirectory)\Lib\OpenTK.Windowing.GraphicsLibraryFramework.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <!-- Vintage Story own libraries -->
+    <!-- Vintage Story own libraries: wont be copied into output directory -->
     <Reference Include="VintagestoryAPI">
       <HintPath>$(GameDirectory)/VintagestoryAPI.dll</HintPath>
       <Private>false</Private>
@@ -93,21 +125,46 @@
     </Reference>
   </ItemGroup>
   
-  <ItemGroup>
-    <Content Include="modinfo.json" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="modicon.png" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
+  <!-- Creates/update modinfo.json file in build directory -->
+  <Target Name="ModInfo" AfterTargets="Build">
+    <PropertyGroup>
+      <ModInfo>
+{
+    "type": "code",
+    "name": "$(ModName)",
+    "modid": "$(ModId)",
+    "version": "$(Version)",
 
+    "description": "$(Description)",
+    "authors": [ @(ModInfoAuthors->'"%(Identity)"', ', ') ],
+
+    "dependencies": {
+        @(Dependencies->'"%(Identity)": "%(Version)"', ', ')
+    },
+    
+    "side" : "$(Side)",
+	  "requiredOnClient": $(RequiredOnClient),
+	  "requiredOnServer": $(RequiredOnServer)
+}
+      </ModInfo>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(OutputPath)/modinfo.json" Lines="$(ModInfo)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
+
+  <!-- Copies modicon, assets folder and native libraries into output directory -->
   <Target Name="CopyFilesToOutput" AfterTargets="Build">
     <ItemGroup>
       <NativesFolder Include="$(NativesDir)\**\*.*" />
       <AssetsFolder Include="$(AssetsDir)\**\*.*" />
+      <ModIcon Include="modicon.png" />
     </ItemGroup>
     <Copy SourceFiles="@(NativesFolder)" DestinationFiles="@(NativesFolder->'$(OutputPath)native\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(AssetsFolder)" DestinationFiles="@(AssetsFolder->'$(OutputPath)assets\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(ModIcon)" DestinationFolder="$(OutputPath)" />
   </Target>
 
-  <Target Name="ZipFiles" AfterTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
+  <!-- Archives output directory into zip and puts it into Releases folder -->
+  <Target Name="ZipFiles" AfterTargets="ModInfo" Condition=" '$(Configuration)' == 'Release' ">
     <PropertyGroup>
       <ZipFilePath>$(ReleasesDir)\$(ModId)_$(ModVersion).zip</ZipFilePath>
     </PropertyGroup>
