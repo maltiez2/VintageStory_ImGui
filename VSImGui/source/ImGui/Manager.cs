@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace VSImGui.src.ImGui;
@@ -48,10 +49,12 @@ public class VSImGuiManager
     private readonly Dictionary<int, ImGuiDialogDrawCallback> mCallbacks = new();
     private readonly Dictionary<int, bool> mWasClosed = new();
 
-    internal (bool open, bool grab) Draw(float deltaSeconds)
+    internal (bool open, bool grab, bool close) Draw(float deltaSeconds)
     {
         bool open = false;
         bool grab = false;
+        bool close = false;
+        bool anyOpened = false;
 
         foreach ((int id, ImGuiDialogDrawCallback callback) in mCallbacks)
         {
@@ -60,7 +63,11 @@ public class VSImGuiManager
             switch (result)
             {
                 case VSDialogStatus.Closed:
-                    mWasClosed[id] = true;
+                    if (!mWasClosed[id])
+                    {
+                        mWasClosed[id] = true;
+                        close = true;
+                    }
                     break;
                 case VSDialogStatus.GrabMouse:
                     if (mWasClosed[id])
@@ -69,6 +76,7 @@ public class VSImGuiManager
                         mWasClosed[id] = false;
                     }
                     grab = true;
+                    anyOpened = true;
                     break;
                 case VSDialogStatus.DontGrabMouse:
                     if (mWasClosed[id])
@@ -76,10 +84,13 @@ public class VSImGuiManager
                         open = true;
                         mWasClosed[id] = false;
                     }
+                    anyOpened = true;
                     break;
             }
+
+            if (open || close) Console.WriteLine($"{id}: {result} - open: {open}, grab: {grab}");
         }
 
-        return (open, grab);
+        return (open, grab, !anyOpened && close);
     }
 }

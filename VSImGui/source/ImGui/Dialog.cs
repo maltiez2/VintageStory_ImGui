@@ -9,7 +9,6 @@ public class VSImGuiDialog : GuiDialog
     public VSImGuiDialog(ICoreClientAPI capi, VSImGuiController controller, VSGameWindowWrapper windowWrapper, VSImGuiManager manager) : base(capi)
     {
         mController = controller;
-        mWindowWrapper = windowWrapper;
         mManager = manager;
 
         windowWrapper.Draw += Draw;
@@ -68,16 +67,16 @@ public class VSImGuiDialog : GuiDialog
 
 
     private readonly VSImGuiController mController;
-    private readonly VSGameWindowWrapper mWindowWrapper;
     private readonly VSImGuiManager mManager;
 
     private bool mGrabMouse = false;
 
     private void Draw(float deltaSeconds)
     {
-        (bool open, bool grab) = mManager.Draw(deltaSeconds);
+        (bool open, bool grab, bool close) = mManager.Draw(deltaSeconds);
 
         if (open) TryOpen();
+        if (close) TryClose();
 
         mGrabMouse = grab;
     }
