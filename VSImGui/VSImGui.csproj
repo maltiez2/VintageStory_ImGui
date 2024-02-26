@@ -1,17 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <!-- Settings -->
     <TargetFramework>net7.0</TargetFramework>
-    <ProjectDir>$(MSBuildProjectDirectory)\</ProjectDir>
+    <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>bin\$(Configuration)\Mods\mod</OutputPath>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <!-- Paths -->
+    <ProjectDir>$(MSBuildProjectDirectory)\</ProjectDir>
+    <OutputPath>bin\$(Configuration)\Mods\mod</OutputPath>
     <ControllerSubmoduleDir>ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK</ControllerSubmoduleDir>
     <GameDirectory>$(VINTAGE_STORY)</GameDirectory>
     <BindingsDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\bindings</BindingsDir>
     <NativesDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\native</NativesDir>
-    <Nullable>enable</Nullable>
+    <AssetsDir>$(ProjectDir)\assets</AssetsDir>
+    <!-- Parameters -->
+    <ModVersion>0.4.0</ModVersion>
+    <ModId>configlib</ModId>
   </PropertyGroup>
+
   <ItemGroup>
+    <ProjectReference Include="$(ProjectDir)\..\$(ControllerSubmoduleDir)\ImGuiController_OpenTK.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <!-- Bindings -->
     <Reference Include="ImGui.NET">
       <HintPath>$(BindingsDir)\ImGui.NET.dll</HintPath>
     </Reference>
@@ -24,7 +36,7 @@
     <Reference Include="ImPlot.NET" HintPath="">
       <HintPath>$(BindingsDir)\ImPlot.NET.dll</HintPath>
     </Reference>
-
+    <!-- Vintage Story dependencies -->
     <Reference Include="OpenTK.Compute">
       <HintPath>$(GameDirectory)\Lib\OpenTK.Compute.dll</HintPath>
       <Private>False</Private>
@@ -57,7 +69,7 @@
       <HintPath>$(GameDirectory)\Lib\OpenTK.Windowing.GraphicsLibraryFramework.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    
+    <!-- Vintage Story own libraries -->
     <Reference Include="VintagestoryAPI">
       <HintPath>$(GameDirectory)/VintagestoryAPI.dll</HintPath>
       <Private>false</Private>
@@ -79,45 +91,25 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="FakesAssemblies\**" />
-    <EmbeddedResource Remove="FakesAssemblies\**" />
-    <None Remove="FakesAssemblies\**" />
-  </ItemGroup>
+  
   <ItemGroup>
     <Content Include="modinfo.json" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="$(NativesDir)\linux\cimgui.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(NativesDir)\linux\cimguizmo.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(NativesDir)\linux\cimnodes.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(NativesDir)\linux\cimplot.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(NativesDir)\mac\cimgui.dylib">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(NativesDir)\mac\cimguizmo.dylib">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(NativesDir)\mac\cimnodes.dylib">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(NativesDir)\mac\cimplot.dylib">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="modicon.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(NativesDir)\win\cimgui.dll" />
-    <EmbeddedResource Include="$(NativesDir)\win\cimguizmo.dll" />
-    <EmbeddedResource Include="$(NativesDir)\win\cimnodes.dll" />
-    <EmbeddedResource Include="$(NativesDir)\win\cimplot.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="$(ProjectDir)\..\$(ControllerSubmoduleDir)\ImGuiController_OpenTK.csproj" />
-  </ItemGroup>
+
+  <Target Name="CopyFilesToOutput" AfterTargets="Build">
+    <ItemGroup>
+      <NativesFolder Include="$(NativesDir)\**\*.*" />
+      <AssetsFolder Include="$(AssetsDir)\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NativesFolder)" DestinationFiles="@(NativesFolder->'$(OutputPath)native\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(AssetsFolder)" DestinationFiles="@(AssetsFolder->'$(OutputPath)assets\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
+  <Target Name="ZipFiles" AfterTargets="Build">
+    <PropertyGroup>
+      <ZipFileName>$(OutputPath)$(ModId)_$(ModVersion).zip</ZipFileName>
+    </PropertyGroup>
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipFileName)" />
+  </Target>
 </Project>

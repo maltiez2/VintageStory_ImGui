@@ -1,10 +1,13 @@
 ﻿using ImGuiNET;
 using Newtonsoft.Json;
+using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.Client.NoObf;
+using Vintagestory.Common;
 using VSImGui.src.ImGui;
 
 namespace VSImGui;
@@ -35,8 +38,9 @@ public class ImGuiModSystem : ModSystem
     public override void StartPre(ICoreAPI api)
     {
         if (api is not ICoreClientAPI clientApi) return;
-        EmbeddedDllClass.ExtractEmbeddedDlls(api.Logger);
-        EmbeddedDllClass.LoadImGui(api.Logger);
+        //EmbeddedDllClass.ExtractEmbeddedDlls(api.Logger);
+        //EmbeddedDllClass.LoadImGui(api.Logger);
+        NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), DllImportResolver);
 
         mApi = clientApi;
 
@@ -59,8 +63,8 @@ public class ImGuiModSystem : ModSystem
 
     private VSDialogStatus DemoWindow(float dt)
     {
-        if (DefaultStyle == null || mStyleEditor == null) return VSDialogStatus.Closed; 
-        
+        if (DefaultStyle == null || mStyleEditor == null) return VSDialogStatus.Closed;
+
         using (new StyleApplier(DefaultStyle))
         {
             mStyleEditor.Draw();
@@ -112,5 +116,21 @@ public class ImGuiModSystem : ModSystem
         FieldInfo? field = typeof(ClientMain).GetField("Platform", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
         ClientPlatformWindows? platform = (ClientPlatformWindows?)field?.GetValue(main);
         return platform?.window;
+    }
+
+    private IntPtr DllImportResolver(string libraryname, Assembly assembly, DllImportSearchPath? searchpath)
+    {
+        string suffix = RuntimeEnv.OS switch
+        {
+            OS.Windows => ".dll",
+            OS.Mac => ".dylib",
+            OS.Linux => ".so",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        if (NativeLibrary.TryLoad($"{((ModContainer)Mod).FolderPath}/native/{libraryname}{suffix}", out nint handle))
+        {
+            return handle;
+        }
+        return IntPtr.Zero;
     }
 }
