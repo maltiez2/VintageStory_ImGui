@@ -1,7 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <!-- ************************************************** -->
-  <!-- *************** Configuration ******************** -->
-  
   <!-- Mod info -->
   <PropertyGroup>
     <ModName>Dear ImGui</ModName>
@@ -25,11 +22,6 @@
       <Version>$(GameVersion)</Version>
     </Dependencies>
   </ItemGroup>
-  
-  <!-- ************************************************** -->
-  <!-- ************************************************** -->
-  
-  
   
   <!-- Project settings -->
   <PropertyGroup>
@@ -156,7 +148,7 @@
     <WriteLinesToFile File="$(OutputPath)/modinfo.json" Lines="$(ModInfo)" Overwrite="true" WriteOnlyWhenDifferent="true" />
   </Target>
 
-  <!-- Copies modicon, assets folder and native libraries into output directory -->
+  <!-- Copies modicon, assets folder and native libraries if they exist into output directory -->
   <Target Name="CopyFilesToOutput" AfterTargets="Build">
     <ItemGroup Condition="Exists('$(NativesDir)')">
       <NativesFolder Include="$(NativesDir)\**\*.*" />
@@ -167,9 +159,9 @@
     <ItemGroup Condition="Exists('$(ModIconFile)')">
       <ModIcon Include="$(ModIconFile)" />
     </ItemGroup>
-    <Copy SourceFiles="@(NativesFolder)" DestinationFiles="@(NativesFolder->'$(OutputPath)native\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(AssetsFolder)" DestinationFiles="@(AssetsFolder->'$(OutputPath)assets\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(ModIcon)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(NativesFolder)" DestinationFiles="@(NativesFolder->'$(OutputPath)native\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(NativesDir)')"/>
+    <Copy SourceFiles="@(AssetsFolder)" DestinationFiles="@(AssetsFolder->'$(OutputPath)assets\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(AssetsDir)')"/>
+    <Copy SourceFiles="@(ModIcon)" DestinationFolder="$(OutputPath)" Condition="Exists('$(ModIconFile)')"/>
   </Target>
 
   <!-- Archives output directory into zip and puts it into Releases folder -->
