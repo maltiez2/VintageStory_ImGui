@@ -112,12 +112,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native\win\cimgui.dll" />
-    <EmbeddedResource Include="$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native\win\cimguizmo.dll" />
-    <EmbeddedResource Include="$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native\win\cimnodes.dll" />
-    <EmbeddedResource Include="$(SolutionDir)\$(ControllerSubmoduleDir)\lib\native\win\cimplot.dll" />
+    <EmbeddedResource Include="$(NativesDir)\win\cimgui.dll" />
+    <EmbeddedResource Include="$(NativesDir)\win\cimguizmo.dll" />
+    <EmbeddedResource Include="$(NativesDir)\win\cimnodes.dll" />
+    <EmbeddedResource Include="$(NativesDir)\win\cimplot.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(ProjectDir)\..\ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK\ImGuiController_OpenTK.csproj" />
+    <ProjectReference Include="$(ProjectDir)\..\$(ControllerSubmoduleDir)\ImGuiController_OpenTK.csproj" />
   </ItemGroup>
 </Project>
