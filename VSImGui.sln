@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CakeBuild", "CakeBuild\CakeBuild.csproj", "{54A73F50-8875-4401-B29E-90A0CCF42731}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSImGui", "VSImGui\VSImGui.csproj", "{65A74326-3B67-42DA-88DC-C38DA91A06A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSImGui", "VSImGui\VSImGui.csproj", "{65A74326-3B67-42DA-88DC-C38DA91A06A6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImGuiController_OpenTK", "ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK\ImGuiController_OpenTK.csproj", "{18F4DB2E-C091-4F9B-9393-D96B4A8659CB}"
 EndProject
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{54A73F50-8875-4401-B29E-90A0CCF42731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{54A73F50-8875-4401-B29E-90A0CCF42731}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{54A73F50-8875-4401-B29E-90A0CCF42731}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{54A73F50-8875-4401-B29E-90A0CCF42731}.Release|Any CPU.Build.0 = Release|Any CPU
 		{65A74326-3B67-42DA-88DC-C38DA91A06A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{65A74326-3B67-42DA-88DC-C38DA91A06A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65A74326-3B67-42DA-88DC-C38DA91A06A6}.Release|Any CPU.ActiveCfg = Release|Any CPU

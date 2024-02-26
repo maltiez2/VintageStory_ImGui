@@ -13,6 +13,7 @@
     <BindingsDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\bindings</BindingsDir>
     <NativesDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\native</NativesDir>
     <AssetsDir>$(ProjectDir)\assets</AssetsDir>
+    <ReleasesDir>$(ProjectDir)\Releases</ReleasesDir>
     <!-- Parameters -->
     <ModVersion>0.4.0</ModVersion>
     <ModId>configlib</ModId>
@@ -106,10 +107,12 @@
     <Copy SourceFiles="@(AssetsFolder)" DestinationFiles="@(AssetsFolder->'$(OutputPath)assets\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
-  <Target Name="ZipFiles" AfterTargets="Build">
+  <Target Name="ZipFiles" AfterTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
     <PropertyGroup>
-      <ZipFileName>$(OutputPath)$(ModId)_$(ModVersion).zip</ZipFileName>
+      <ZipFilePath>$(ReleasesDir)\$(ModId)_$(ModVersion).zip</ZipFilePath>
     </PropertyGroup>
-    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipFileName)" />
+    <MakeDir Directories="$(ReleasesDir)" />
+    <Delete Files="$(ZipFilePath)" />
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipFilePath)" />
   </Target>
 </Project>
