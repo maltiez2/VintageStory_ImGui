@@ -52,6 +52,8 @@ public class ImGuiModSystem : ModSystem
         clientApi.Event.RegisterRenderer(new OffWindowRenderer(mDialog), EnumRenderStage.Ortho);
         clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
 
+        Draw += DebugWindow.Draw;
+
 #if DEBUG
         //Draw += DemoWindow;
 #endif
