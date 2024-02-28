@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using VSImGui.src.ImGui;
 
 namespace VSImGui;
 
@@ -222,35 +223,40 @@ public static class DebugWindow
 
     private static Dictionary<string, Dictionary<int, DrawEntry>> sDrawEntries = new();
 
-    internal static void Draw()
+    internal static VSDialogStatus Draw(float deltaSeconds)
     {
+        bool anyDrawn = false;
+        
         foreach ((string domain, HashSet<string> categories) in DrawEntry.Categories)
         {
             ImGui.Begin(domain);
             ImGui.BeginTabBar(domain);
 
-            DrawCategories(domain, categories);
+            DrawCategories(domain, categories, ref anyDrawn);
 
             ImGui.EndTabBar();
             ImGui.End();
         }
+
+        return anyDrawn ? VSDialogStatus.DontGrabMouse : VSDialogStatus.Closed;
     }
 
-    private static void DrawCategories(string domain, HashSet<string> categories)
+    private static void DrawCategories(string domain, HashSet<string> categories, ref bool anyDrawn)
     {
         foreach (string category in categories.Where(category => ImGui.BeginTabItem(category)))
         {
-            DrawCategory(domain, category);
+            DrawCategory(domain, category, ref anyDrawn);
 
             ImGui.EndTabItem();
         }
     }
 
-    private static void DrawCategory(string domain, string category)
+    private static void DrawCategory(string domain, string category, ref bool anyDrawn)
     {
         foreach (DrawEntry entry in sDrawEntries[domain].Where(entry => entry.Value.Category == category).Select(entry => entry.Value))
         {
             entry.Draw();
+            anyDrawn = true;
         }
     }
 

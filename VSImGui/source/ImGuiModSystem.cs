@@ -25,6 +25,8 @@ public class ImGuiModSystem : ModSystem
         }
     }
 
+    public void Show() => mDialog?.TryOpen();
+
     private VSImGuiController? mController;
     private VSGameWindowWrapper? mMainWindowWrapper;
     private ICoreClientAPI? mApi;
@@ -51,6 +53,8 @@ public class ImGuiModSystem : ModSystem
         mController.OnWindowMergedIntoMain += () => mDialog.TryOpen();
         clientApi.Event.RegisterRenderer(new OffWindowRenderer(mDialog), EnumRenderStage.Ortho);
         clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
+
+        Draw += DebugWindow.Draw;
 
 #if DEBUG
         //Draw += DemoWindow;
