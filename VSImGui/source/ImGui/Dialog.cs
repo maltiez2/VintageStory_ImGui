@@ -65,7 +65,6 @@ public class VSImGuiDialog : GuiDialog
     }
     #endregion
 
-
     private readonly VSImGuiController mController;
     private readonly VSImGuiManager mManager;
 

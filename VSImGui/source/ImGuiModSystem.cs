@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using Newtonsoft.Json;
+using System;
 using System.Reflection;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -27,6 +28,8 @@ public class ImGuiModSystem : ModSystem
 
     public void Show() => mDialog?.TryOpen();
 
+    public event Action? Closed;
+
     private VSImGuiController? mController;
     private VSGameWindowWrapper? mMainWindowWrapper;
     private ICoreClientAPI? mApi;
@@ -50,6 +53,7 @@ public class ImGuiModSystem : ModSystem
         mController = new(mMainWindowWrapper);
         mDialog = new(clientApi, mController, mMainWindowWrapper, mGuiManager);
         mDialog.TryOpen();
+        mDialog.OnClosed += OnGuiClosed;
         mController.OnWindowMergedIntoMain += () => mDialog.TryOpen();
         clientApi.Event.RegisterRenderer(new OffWindowRenderer(mDialog), EnumRenderStage.Ortho);
         clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
@@ -59,6 +63,12 @@ public class ImGuiModSystem : ModSystem
 #if DEBUG
         //Draw += DemoWindow;
 #endif
+    }
+
+
+    private void OnGuiClosed()
+    {
+        Closed?.Invoke();
     }
 
     private VSDialogStatus DemoWindow(float dt)
