@@ -25,6 +25,8 @@ public class ImGuiModSystem : ModSystem
         }
     }
 
+    public void Show() => mDialog?.TryOpen();
+
     private VSImGuiController? mController;
     private VSGameWindowWrapper? mMainWindowWrapper;
     private ICoreClientAPI? mApi;
