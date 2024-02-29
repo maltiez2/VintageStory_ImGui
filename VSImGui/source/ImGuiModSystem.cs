@@ -14,7 +14,7 @@ public class ImGuiModSystem : ModSystem
 {
     public Style? DefaultStyle { get; set; }
 
-    public event ImGuiDialogDrawCallback Draw
+    public event DrawCallbackDelegate Draw
     {
         add
         {
@@ -34,7 +34,7 @@ public class ImGuiModSystem : ModSystem
     private VSGameWindowWrapper? mMainWindowWrapper;
     private ICoreClientAPI? mApi;
     private VSImGuiDialog? mDialog;
-    private VSImGuiManager? mGuiManager;
+    private DrawCallbacksManager? mGuiManager;
     private StyleEditor? mStyleEditor;
 
     public override void StartPre(ICoreAPI api)
@@ -71,9 +71,9 @@ public class ImGuiModSystem : ModSystem
         Closed?.Invoke();
     }
 
-    private VSDialogStatus DemoWindow(float dt)
+    private CallbackGUIStatus DemoWindow(float dt)
     {
-        if (DefaultStyle == null || mStyleEditor == null) return VSDialogStatus.Closed;
+        if (DefaultStyle == null || mStyleEditor == null) return CallbackGUIStatus.Closed;
 
         using (new StyleApplier(DefaultStyle))
         {
@@ -92,7 +92,7 @@ public class ImGuiModSystem : ModSystem
             ImGui.End();
         }
 
-        return VSDialogStatus.GrabMouse;
+        return CallbackGUIStatus.GrabMouse;
     }
 
     public override double ExecuteOrder() => 0;

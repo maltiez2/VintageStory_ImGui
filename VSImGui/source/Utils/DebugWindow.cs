@@ -223,7 +223,7 @@ public static class DebugWindow
 
     private static Dictionary<string, Dictionary<int, DrawEntry>> sDrawEntries = new();
 
-    internal static VSDialogStatus Draw(float deltaSeconds)
+    internal static CallbackGUIStatus Draw(float deltaSeconds)
     {
         bool anyDrawn = false;
         
@@ -238,7 +238,7 @@ public static class DebugWindow
             ImGui.End();
         }
 
-        return anyDrawn ? VSDialogStatus.DontGrabMouse : VSDialogStatus.Closed;
+        return anyDrawn ? CallbackGUIStatus.DontGrabMouse : CallbackGUIStatus.Closed;
     }
 
     private static void DrawCategories(string domain, HashSet<string> categories, ref bool anyDrawn)

@@ -6,7 +6,7 @@ namespace VSImGui;
 
 public class VSImGuiDialog : GuiDialog
 {
-    public VSImGuiDialog(ICoreClientAPI capi, VSImGuiController controller, VSGameWindowWrapper windowWrapper, VSImGuiManager manager) : base(capi)
+    public VSImGuiDialog(ICoreClientAPI capi, VSImGuiController controller, VSGameWindowWrapper windowWrapper, DrawCallbacksManager manager) : base(capi)
     {
         mController = controller;
         mManager = manager;
@@ -66,7 +66,7 @@ public class VSImGuiDialog : GuiDialog
     #endregion
 
     private readonly VSImGuiController mController;
-    private readonly VSImGuiManager mManager;
+    private readonly DrawCallbacksManager mManager;
 
     private bool mGrabMouse = false;
 

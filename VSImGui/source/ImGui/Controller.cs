@@ -203,5 +203,5 @@ public sealed class VSGameWindowWrapper : IWindow
     }
 
     private readonly GameWindow mWindow;
-    private readonly VSImGuiManager mManager;
+    private readonly DrawCallbacksManager mManager;
 }
