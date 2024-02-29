@@ -63,7 +63,7 @@ public interface IImGuiRenderer
 public static class FontManager
 {
     /// <summary>
-    /// Provides access to fonts and sizes collections that determine what fonts will be loaded. Font atlass is limited, so to many fonts and sizes might cause problems.
+    /// Provides access to fonts and sizes collections that determine what fonts will be loaded. Font atlas is limited, so to many fonts and sizes might cause problems.
     /// </summary>
     /// <param name="fonts">Collection of paths to fonts' files. Add your own fonts here.</param>
     /// <param name="sizes">Collection of sizes to generate. Add your sizes here.</param>
@@ -81,14 +81,6 @@ public static class FontManager
     public static IEnumerable<(string font, int size)> GetLoadedFonts() => Loaded.Select(entry => (entry.Key.Item1, entry.Key.Item2));
 
     /// <summary>
-    /// Default font
-    /// </summary>
-    static internal ImFontPtr Default { get; private set; }
-    /// <summary>
-    /// ImGui own native font
-    /// </summary>
-    static internal ImFontPtr Native { get; private set; }
-    /// <summary>
     /// List of sizes that would be generated for each font
     /// </summary>
     static internal HashSet<int> Sizes { get; } = new HashSet<int>
@@ -102,8 +94,7 @@ public static class FontManager
         30,
         36,
         48,
-        60,
-        72
+        60
     };
     /// <summary>
     /// List of paths to font files that would be loaded
@@ -160,7 +151,7 @@ public static class FontManager
     private static void LoadDefault()
     {
         ImGuiIOPtr io = ImGui.GetIO();
-        Default = io.Fonts.AddFontFromFileTTF(_defaultFont, _defaultSize);
-        Native = io.Fonts.AddFontDefault();
+        _ = io.Fonts.AddFontFromFileTTF(_defaultFont, _defaultSize);
+        _ = io.Fonts.AddFontDefault();
     }
 }

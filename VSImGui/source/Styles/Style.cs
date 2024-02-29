@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 using Vintagestory.API.Datastructures;
+using VSImGui.API;
+
 
 namespace VSImGui;
 

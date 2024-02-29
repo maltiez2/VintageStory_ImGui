@@ -135,7 +135,7 @@ internal sealed class Controller : ImGuiController
     }
 
     /// <summary>
-    /// Called at the right time to laod fonts. Uses FontManager to load fonts
+    /// Called at the right time to load fonts. Uses FontManager to load fonts
     /// </summary>
     protected override void LoadFonts()
     {
