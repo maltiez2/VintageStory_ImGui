@@ -3,7 +3,7 @@
 namespace VSImGui.Debug;
 
 /// <summary>
-/// Manages <see cref="DebugWidgets"/> draw calls.
+/// Manages <see cref="DebugWidgets"/> draw calls. Is used by VSImGui to draw debug widgets.
 /// </summary>
 public static class DebugWindowsManager
 {

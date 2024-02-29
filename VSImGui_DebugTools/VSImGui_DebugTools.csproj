@@ -5,16 +5,37 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <!-- Paths -->
-  <PropertyGroup>
+    <VersionPrefix>0.0.2</VersionPrefix>
     <ProjectDir>$(MSBuildProjectDirectory)</ProjectDir>
     <OutputDir>bin\$(Configuration)</OutputDir>
+    <ReleasesDir>$(ProjectDir)\Releases</ReleasesDir>
     <ControllerSubmoduleDir>ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK</ControllerSubmoduleDir>
     <GameDirectory>$(VINTAGE_STORY)</GameDirectory>
     <BindingsDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\bindings</BindingsDir>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Title>VS ImGui Debug Tools</Title>
+    <Authors>Maltiez</Authors>
+    <PackageIcon>packageicon.png</PackageIcon>
+    <PackageProjectUrl>https://mods.vintagestory.at/imgui</PackageProjectUrl>
+    <Description>Packages debug tools for use in development of Vintage Story mods.
+To use this package you need to install it, use methods from DebugWindow static class, and have VSImGui mod of latest version in your mods directory.</Description>
+    <RepositoryUrl>https://github.com/maltiez2/VintageStory_ImGui</RepositoryUrl>
+    <PackageTags>Vintage Story;VintageStory;ImGui;Dear ImGui;ImGui.NET;Debug;Tools</PackageTags>
+    <PackageOutputPath>$(ReleasesDir)</PackageOutputPath>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="resources\packageicon.png" Pack="true" PackagePath=""/>
+    <None Include="resources\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <!-- References to libraries that are being used in project -->
   <ItemGroup>
