@@ -120,14 +120,14 @@ internal partial class WindowsDllLoader : DllLoader
     /// </summary>
     /// <param name="fileName">Full path to dll</param>
     /// <returns><see cref="IntPtr.Zero"/> if failed to load library</returns>
-    [LibraryImport("kernel32", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
-    private static partial IntPtr LoadLibrary(string fileName);
+    [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
+    static extern IntPtr LoadLibrary(string fileName);
     /// <summary>
     /// Retrieves error code of error occurred while loading dynamic library 
     /// </summary>
     /// <returns>Error code</returns>
-    [LibraryImport("kernel32")]
-    private static partial uint GetLastError();
+    [DllImport("kernel32")]
+    private static extern uint GetLastError();
     /// <summary>
     /// Retrieves error message for error code provided by <see cref="GetLastError"/>
     /// </summary>
@@ -139,7 +139,7 @@ internal partial class WindowsDllLoader : DllLoader
     /// <param name="nSize"></param>
     /// <param name="Arguments"></param>
     /// <returns></returns>
-    [DllImport("kernel32", CharSet = CharSet.Unicode)]
+    [DllImport("kernel32")]
     private static extern uint FormatMessage(uint dwFlags, IntPtr lpSource, uint dwMessageId,
         uint dwLanguageId, [Out] StringBuilder lpBuffer, uint nSize, IntPtr[] Arguments);
 
@@ -179,10 +179,10 @@ internal partial class WindowsDllLoader : DllLoader
 /// <returns>true if was successfully loaded</returns>
 internal partial class LinuxDllLoader : DllLoader
 {
-    [LibraryImport("libdl.so.2", StringMarshalling = StringMarshalling.Utf16)]
-    private static partial IntPtr dlopen(string fileName, int flags);
-    [LibraryImport("libdl.so.2")]
-    private static partial IntPtr dlerror();
+    [DllImport("libdl.so.2")]
+    static extern IntPtr dlopen(string fileName, int flags);
+    [DllImport("libdl.so.2")]
+    private static extern IntPtr dlerror();
 
     /// <summary>
     /// Loads specified dll using linux specific functions
@@ -214,7 +214,7 @@ internal partial class LinuxDllLoader : DllLoader
 /// <returns>true if was successfully loaded</returns>
 internal class MacDllLoader : DllLoader
 {
-    [DllImport("libdl.dylib", EntryPoint = "dlopen", CharSet = CharSet.Unicode)]
+    [DllImport("libdl.dylib", EntryPoint = "dlopen")]
     private static extern IntPtr dlopen(string filename, int flags);
     [DllImport("libdl.dylib")]
     private static extern IntPtr dlerror();

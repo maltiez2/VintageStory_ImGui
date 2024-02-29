@@ -5,7 +5,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <VersionPrefix>0.0.2</VersionPrefix>
+    <VersionPrefix>0.0.3</VersionPrefix>
     <ProjectDir>$(MSBuildProjectDirectory)</ProjectDir>
     <OutputDir>bin\$(Configuration)</OutputDir>
     <ReleasesDir>$(ProjectDir)\Releases</ReleasesDir>
