@@ -122,15 +122,18 @@ public static class FontManager
     /// </summary>
     internal static void Load()
     {
-        BeforeFontsLoaded?.Invoke(Fonts, Sizes);
+        HashSet<int> sizes = Sizes.Select(value => value).ToHashSet();
+        HashSet<string> fonts = Fonts.Select(value => (string)value.Clone()).ToHashSet();
+
+        BeforeFontsLoaded?.Invoke(fonts, sizes);
 
         Loaded.Clear();
         LoadDefault();
 
         ImGuiIOPtr io = ImGui.GetIO();
-        foreach (string font in Fonts)
+        foreach (string font in fonts)
         {
-            foreach (int size in Sizes)
+            foreach (int size in sizes)
             {
                 ImFontPtr ptr = io.Fonts.AddFontFromFileTTF(font, size);
                 Loaded.TryAdd((Path.GetFileNameWithoutExtension(font), size), ptr);

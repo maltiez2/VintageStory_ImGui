@@ -1,41 +1,33 @@
-﻿using ImGuiNET;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
-using System.Reflection;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
-using Vintagestory.Client.NoObf;
 using VSImGui.API;
 
 namespace VSImGui;
 
+/// <summary>
+/// Initializes ImGui integration into VS and provides interface for drawing ImGui dialogs
+/// </summary>
 public class ImGuiModSystem : ModSystem, IImGuiRenderer
 {
-    public Style? DefaultStyle { get; set; }
-
+    #region IImGuiRenderer
+    public Style? DefaultStyle { get; private set; }
     public event DrawCallbackDelegate Draw
     {
         add
         {
-            if (mGuiManager != null) mGuiManager.DrawCallback += value;
+            if (_guiManager != null) _guiManager.DrawCallback += value;
         }
         remove
         {
-            if (mGuiManager != null) mGuiManager.DrawCallback -= value;
+            if (_guiManager != null) _guiManager.DrawCallback -= value;
         }
     }
-
-    public void Show() => mDialog?.TryOpen();
-
+    public void Show() => _dialog?.TryOpen();
     public event Action? Closed;
-
-    private Controller? mController;
-    private MainGameWindowWrapper? mMainWindowWrapper;
-    private ICoreClientAPI? mApi;
-    private VSImGuiDialog? mDialog;
-    private DrawCallbacksManager? mGuiManager;
-    private StyleEditor? mStyleEditor;
+    #endregion
 
     public override void StartPre(ICoreAPI api)
     {
@@ -43,77 +35,57 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         bool loaded = NativesLoader.Load(api.Logger, this);
         if (!loaded) return;
 
-        mApi = clientApi;
-
-        mGuiManager = new();
-        mMainWindowWrapper = new(clientApi);
-        mController = new(mMainWindowWrapper);
-        mDialog = new(clientApi, mController, mMainWindowWrapper, mGuiManager);
-        mDialog.TryOpen();
-        mDialog.OnClosed += OnGuiClosed;
-        mController.OnWindowMergedIntoMain += () => mDialog.TryOpen();
-        clientApi.Event.RegisterRenderer(new OffWindowRenderer(mDialog), EnumRenderStage.Ortho);
+        _guiManager = new();
+        _mainWindowWrapper = new(clientApi);
+        _controller = new(_mainWindowWrapper);
+        _dialog = new(clientApi, _controller, _mainWindowWrapper, _guiManager);
+        _dialog.TryOpen();
+        _dialog.OnClosed += OnGuiClosed;
+        _controller.OnWindowMergedIntoMain += () => _dialog.TryOpen();
+        clientApi.Event.RegisterRenderer(new OffWindowRenderer(_dialog), EnumRenderStage.Ortho);
         clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
 
         Draw += DebugWindow.Draw;
-
-#if DEBUG
-        //Draw += DemoWindow;
-#endif
-    }
-
-
-    private void OnGuiClosed()
-    {
-        Closed?.Invoke();
-    }
-
-    private CallbackGUIStatus DemoWindow(float dt)
-    {
-        if (DefaultStyle == null || mStyleEditor == null) return CallbackGUIStatus.Closed;
-
-        using (new StyleApplier(DefaultStyle))
-        {
-            mStyleEditor.Draw();
-
-            ImGui.Begin("TEST");
-
-            ImGui.Text("test test test");
-
-            ImGui.BeginChild("test", new(300, 300), true);
-
-            ImGui.Text("test test test");
-
-            ImGui.EndChild();
-
-            ImGui.End();
-        }
-
-        return CallbackGUIStatus.GrabMouse;
     }
 
     public override double ExecuteOrder() => 0;
-
     public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Client;
-
     public override void AssetsLoaded(ICoreAPI api)
     {
         if (api is not ICoreClientAPI clientApi) return;
-        DefaultStyle = JsonConvert.DeserializeObject<Style>(LoadDefaultStyle(clientApi));
-        DefaultStyle?.Push();
-        if (DefaultStyle != null) mStyleEditor = new(DefaultStyle);
+        LoadDefaultStyle(clientApi);
     }
-
     public override void Dispose()
     {
         DebugWindow.Clear();
+        _controller?.Dispose();
+        _mainWindowWrapper?.Dispose();
+        _dialog?.Dispose();
 
         base.Dispose();
     }
 
-    private static string LoadDefaultStyle(ICoreClientAPI api)
+    private Controller? _controller;
+    private MainGameWindowWrapper? _mainWindowWrapper;
+    private VSImGuiDialog? _dialog;
+    private DrawCallbacksManager? _guiManager;
+
+    /// <summary>
+    /// Called when VS GUI dialog is closed
+    /// </summary>
+    private void OnGuiClosed()
+    {
+        Closed?.Invoke();
+    }
+    /// <summary>
+    /// Loads from assets and sets default ImGUI style
+    /// </summary>
+    /// <param name="api"></param>
+    private void LoadDefaultStyle(ICoreClientAPI api)
     {
         byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
-        return System.Text.Encoding.UTF8.GetString(data);
+        string serializedStyle = System.Text.Encoding.UTF8.GetString(data);
+        DefaultStyle = JsonConvert.DeserializeObject<Style>(serializedStyle);
+        DefaultStyle?.Push();
     }
 }
