@@ -46,7 +46,7 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         clientApi.Event.RegisterRenderer(new OffWindowRenderer(_dialog), EnumRenderStage.Ortho);
         clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
 
-        Draw += DebugWindow.Draw;
+        Draw += DebugWindowsManager.Draw;
     }
     public override double ExecuteOrder() => 0;
     public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Client;
@@ -60,7 +60,7 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
     }
     public override void Dispose()
     {
-        DebugWindow.Clear();
+        DebugWindowsManager.Clear();
         _controller?.Dispose();
         _mainWindowWrapper?.Dispose();
         _dialog?.Dispose();
