@@ -1,12 +1,11 @@
 ﻿using System;
 using Vintagestory.API.Client;
-using VSImGui.src.ImGui;
 
 namespace VSImGui;
 
-public class VSImGuiDialog : GuiDialog
+internal class VSImGuiDialog : GuiDialog
 {
-    public VSImGuiDialog(ICoreClientAPI capi, VSImGuiController controller, VSGameWindowWrapper windowWrapper, DrawCallbacksManager manager) : base(capi)
+    public VSImGuiDialog(ICoreClientAPI capi, Controller controller, MainGameWindowWrapper windowWrapper, DrawCallbacksManager manager) : base(capi)
     {
         mController = controller;
         mManager = manager;
@@ -46,26 +45,26 @@ public class VSImGuiDialog : GuiDialog
 
     private void HandleMouse(MouseEvent args)
     {
-        if (!args.Handled) args.Handled = mController.MouseCaptured();
+        if (!args.Handled) args.Handled = Controller.MouseCaptured();
     }
     private void HandleMouseMovement(MouseEvent args)
     {
-        if (!args.Handled) args.Handled = mController.MouseMovesCaptured();
+        if (!args.Handled) args.Handled = Controller.MouseMovesCaptured();
     }
     private void HandleMouseWheel(MouseWheelEventArgs args)
     {
-        if (!args.IsHandled) args.SetHandled(mController.MouseMovesCaptured());
+        if (!args.IsHandled) args.SetHandled(Controller.MouseMovesCaptured());
     }
     private void HandleKeyboard(KeyEvent args)
     {
         if (!args.Handled || (args.KeyCode == (int)GlKeys.Escape && !focused))
         {
-            args.Handled = mController.KeyboardCaptured();
+            args.Handled = Controller.KeyboardCaptured();
         }
     }
     #endregion
 
-    private readonly VSImGuiController mController;
+    private readonly Controller mController;
     private readonly DrawCallbacksManager mManager;
 
     private bool mGrabMouse = false;
@@ -81,7 +80,7 @@ public class VSImGuiDialog : GuiDialog
     }
 }
 
-public sealed class OffWindowRenderer : IRenderer
+internal sealed class OffWindowRenderer : IRenderer
 {
 
     public OffWindowRenderer(VSImGuiDialog dialog)

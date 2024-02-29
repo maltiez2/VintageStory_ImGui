@@ -6,11 +6,11 @@ using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.Client.NoObf;
-using VSImGui.src.ImGui;
+using VSImGui.API;
 
 namespace VSImGui;
 
-public class ImGuiModSystem : ModSystem
+public class ImGuiModSystem : ModSystem, IImGuiRenderer
 {
     public Style? DefaultStyle { get; set; }
 
@@ -30,8 +30,8 @@ public class ImGuiModSystem : ModSystem
 
     public event Action? Closed;
 
-    private VSImGuiController? mController;
-    private VSGameWindowWrapper? mMainWindowWrapper;
+    private Controller? mController;
+    private MainGameWindowWrapper? mMainWindowWrapper;
     private ICoreClientAPI? mApi;
     private VSImGuiDialog? mDialog;
     private DrawCallbacksManager? mGuiManager;
@@ -45,11 +45,8 @@ public class ImGuiModSystem : ModSystem
 
         mApi = clientApi;
 
-        GameWindowNative? window = GetWindow(clientApi);
-        if (window == null) return;
-
         mGuiManager = new();
-        mMainWindowWrapper = new(window);
+        mMainWindowWrapper = new(clientApi);
         mController = new(mMainWindowWrapper);
         mDialog = new(clientApi, mController, mMainWindowWrapper, mGuiManager);
         mDialog.TryOpen();
@@ -118,13 +115,5 @@ public class ImGuiModSystem : ModSystem
     {
         byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
         return System.Text.Encoding.UTF8.GetString(data);
-    }
-
-    private static GameWindowNative? GetWindow(ICoreClientAPI client)
-    {
-        if (client.World is not ClientMain main) return null;
-        FieldInfo? field = typeof(ClientMain).GetField("Platform", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-        ClientPlatformWindows? platform = (ClientPlatformWindows?)field?.GetValue(main);
-        return platform?.window;
     }
 }

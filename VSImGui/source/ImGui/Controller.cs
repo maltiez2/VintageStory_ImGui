@@ -1,20 +1,28 @@
 ﻿using ImGuiController_OpenTK;
 using ImGuiNET;
-using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using Vintagestory.API.Client;
 using Vintagestory.API.Config;
-using VSImGui.src.ImGui;
+using Vintagestory.Client.NoObf;
+using VSImGui.API;
 
 namespace VSImGui;
 
-public sealed class VSImGuiController : ImGuiController
+/// <summary>
+/// Initializes ImGui, updates inputs for it, manages classes that render ImGui and manage native windows
+/// </summary>
+internal sealed class Controller : ImGuiController
 {
-    public VSImGuiController(VSGameWindowWrapper window) : base(window)
+    /// <summary>
+    /// Initializes ImGui
+    /// </summary>
+    /// <param name="window">Main game window wrapped in specialized class</param>
+    public Controller(MainGameWindowWrapper window) : base(window)
     {
         SetConfigFolder();
 
@@ -23,8 +31,16 @@ public sealed class VSImGuiController : ImGuiController
         ImGui.NewFrame();
     }
 
+    /// <summary>
+    /// Invoked when secondary window is dragged into main one and destroyed
+    /// </summary>
     public event Action? OnWindowMergedIntoMain;
 
+    /// <summary>
+    /// Updates ImGui inputs and windows parameters
+    /// </summary>
+    /// <param name="deltaSeconds">Time it took to render last frame</param>
+    /// <param name="captureInputs">If ImGUi should capture inputs from main window</param>
     public void Update(float deltaSeconds, bool captureInputs)
     {
         ImGui.UpdatePlatformWindows();
@@ -53,6 +69,10 @@ public sealed class VSImGuiController : ImGuiController
         ImGui.Render();
     }
 
+    /// <summary>
+    /// Renders ImGui into secondary windows
+    /// </summary>
+    /// <param name="deltaSeconds">Time it took to render last frame</param>
     public void RenderOffWindow(float deltaSeconds)
     {
         List<IImGuiWindow> windows = GetWindows(false);
@@ -68,6 +88,10 @@ public sealed class VSImGuiController : ImGuiController
         mMainWindow.Native.MakeCurrent();
     }
 
+    /// <summary>
+    /// Renders ImGui into main game windows
+    /// </summary>
+    /// <param name="deltaSeconds">Time it took to render last frame</param>
     public void RenderMainWindow(float deltaSeconds)
     {
         mMainWindow.ContextMakeCurrent();
@@ -76,30 +100,51 @@ public sealed class VSImGuiController : ImGuiController
         mMainWindow.SwapBuffers();
     }
 
-    public bool KeyboardCaptured()
+    /// <summary>
+    /// Returns whether ImGui wants to capture keyboard
+    /// </summary>
+    /// <returns>True if ImGui handled keyboard inputs</returns>
+    public static bool KeyboardCaptured()
     {
         return ImGui.GetIO().WantCaptureKeyboard;
     }
-    public bool MouseCaptured()
+    /// <summary>
+    /// Returns whether ImGui wants to capture mouse buttons
+    /// </summary>
+    /// <returns>True if ImGui handled mouse buttons inputs</returns>
+    public static bool MouseCaptured()
     {
         return ImGui.GetIO().WantCaptureMouse;
     }
-    public bool MouseMovesCaptured()
+    /// <summary>
+    /// Returns whether ImGui wants to capture mouse movement
+    /// </summary>
+    /// <returns>True if ImGui handled mouse movement inputs</returns>
+    public static bool MouseMovesCaptured()
     {
         return ImGui.IsAnyItemHovered();
     }
 
+    /// <summary>
+    /// Called when secondary window is dragged into main and destroyed
+    /// </summary>
+    /// <param name="window"></param>
     private void OnWindowDestroyed(NativeWindow window)
     {
         if (mMainWindow.Native.IsFocused) OnWindowMergedIntoMain?.Invoke();
     }
 
+    /// <summary>
+    /// Called at the right time to laod fonts. Uses FontManager to load fonts
+    /// </summary>
     protected override void LoadFonts()
     {
         FontManager.Load();
-        //ImGui.PushFont(FontManager.Default);
     }
 
+    /// <summary>
+    /// Sets ModConfig folder as path to ImGui config file that store all the info about ImGui windows arrangement
+    /// </summary>
     private void SetConfigFolder()
     {
         ImGuiIOPtr io = ImGui.GetIO();
@@ -112,72 +157,19 @@ public sealed class VSImGuiController : ImGuiController
     }
 }
 
-public static class FontManager
+/// <summary>
+/// Wraps main game window for use in <see cref="Controller"/>
+/// </summary>
+internal sealed class MainGameWindowWrapper : IWindow
 {
-    static public ImFontPtr Default { get; private set; }
-    static public ImFontPtr Native { get; private set; }
-    static public HashSet<int> Sizes { get; } = new HashSet<int>
-    {
-        6,
-        8,
-        10,
-        14,
-        18,
-        24,
-        30,
-        36,
-        48,
-        60,
-        72
-    };
-    static public HashSet<string> Fonts { get; } = new HashSet<string>
-    {
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Bold.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-BoldItalic.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Italic.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Regular.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-Bold.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-BoldItalic.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-Italic.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-Regular.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Montserrat-Bold.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Montserrat-Italic.ttf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Montserrat-Regular.ttf")
-    };
-    static public Dictionary<(string, int), ImFontPtr> Loaded { get; } = new();
-    internal static void Load()
-    {
-        Loaded.Clear();
-        LoadDefault();
-
-        ImGuiIOPtr io = ImGui.GetIO();
-        foreach (string font in Fonts)
-        {
-            foreach (int size in Sizes)
-            {
-                ImFontPtr ptr = io.Fonts.AddFontFromFileTTF(font, size);
-                Loaded.TryAdd((Path.GetFileNameWithoutExtension(font), size), ptr);
-            }
-        }
-    }
-    private static void LoadDefault()
-    {
-        ImGuiIOPtr io = ImGui.GetIO();
-        string defaultFont = Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Montserrat-Regular.ttf");
-        int defaultSize = 18;
-        Default = io.Fonts.AddFontFromFileTTF(defaultFont, defaultSize);
-        Native = io.Fonts.AddFontDefault();
-    }
-}
-
-public sealed class VSGameWindowWrapper : IWindow
-{
-    public NativeWindow Native => mWindow;
+    public NativeWindow Native => _window;
     internal event Action<float>? Draw;
 
-    public VSGameWindowWrapper(GameWindow window)
+    public MainGameWindowWrapper(ICoreClientAPI clientApi)
     {
-        mWindow = window;
+        FieldInfo? field = typeof(ClientMain).GetField("Platform", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+        ClientPlatformWindows? platform = (ClientPlatformWindows?)field?.GetValue(clientApi.World as ClientMain);
+        _window = platform?.window ?? throw new InvalidOperationException("Unable to get game native window from client api");
     }
 
     public void ContextMakeCurrent()
@@ -202,6 +194,5 @@ public sealed class VSGameWindowWrapper : IWindow
         // swapped by game itself
     }
 
-    private readonly GameWindow mWindow;
-    private readonly DrawCallbacksManager mManager;
+    private readonly GameWindowNative _window;
 }

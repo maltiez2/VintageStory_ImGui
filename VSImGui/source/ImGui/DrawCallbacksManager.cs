@@ -1,39 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VSImGui.API;
 
 namespace VSImGui;
 
-/// <summary>
-/// Is used to determine behavior of vintage story GUI dialog that is used for layering and managing inputs
-/// </summary>
-public enum CallbackGUIStatus
-{
-    /// <summary>
-    /// All ImGUI windows in callback are closed
-    /// </summary>
-    Closed,
-    /// <summary>
-    /// Require cursor to shot and lock camera
-    /// </summary>
-    GrabMouse,
-    /// <summary>
-    /// Do not require cursor to shot and lock camera (works only with immersive mouse mode)
-    /// </summary>
-    DontGrabMouse
-}
-
-/// <summary>
-/// Should contain all the ImGui draw related calls and return status of all ImGui windows managed by this callback
-/// </summary>
-/// <param name="deltaSeconds">Straight from the Render call to VS GUI dialog used to manage ImGui rendering and inputs</param>
-/// <returns>Aggregated status of all ImGui windows managed by this callback</returns>
-public delegate CallbackGUIStatus DrawCallbackDelegate(float deltaSeconds);
 
 /// <summary>
 /// Stores all the draw callbacks, calls them and makes sure that VS GUI dialog, that is used to integrate ImGui, is opened and closed when needed, and mouse is grabbed when needed
 /// </summary>
-public class DrawCallbacksManager
+internal class DrawCallbacksManager
 {
     /// <summary>
     /// Draw callbacks that draw all the ImGui windows, is invoked before rendering all the drawn ImGui windows and widgets
@@ -62,7 +38,7 @@ public class DrawCallbacksManager
     /// </summary>
     private readonly Dictionary<int, DrawCallbackDelegate> _callbacks = new();
     /// <summary>
-    /// Tracks down callback status to decide weather to close or open VS GUI dialog used for integration
+    /// Tracks down callback status to decide whether to close or open VS GUI dialog used for integration
     /// </summary>
     private readonly Dictionary<int, bool> _wasClosed = new();
 
@@ -70,8 +46,8 @@ public class DrawCallbacksManager
     /// Invokes all the registered callbacks to draw ImGui windows and widgets
     /// </summary>
     /// <param name="deltaSeconds">Time elapsed since last frame</param>
-    /// <returns>Weather VS GUI dialog should be closed/opened, and should it grab mouse from camera</returns>
-    internal (bool open, bool grab, bool close) Draw(float deltaSeconds)
+    /// <returns>Whether VS GUI dialog should be closed/opened, and should it grab mouse from camera</returns>
+    public (bool open, bool grab, bool close) Draw(float deltaSeconds)
     {
         bool open = false;
         bool grab = false;

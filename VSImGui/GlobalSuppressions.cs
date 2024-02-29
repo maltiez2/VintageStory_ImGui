@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields", Justification = "<Pending>", Scope = "member", Target = "~M:VSImGui.ImGuiModSystem.GetWindow(Vintagestory.API.Client.ICoreClientAPI)~Vintagestory.Client.NoObf.GameWindowNative")]
+[assembly: SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields", Justification = "<Pending>", Scope = "member", Target = "~M:VSImGui.MainGameWindowWrapper.#ctor(Vintagestory.API.Client.ICoreClientAPI)")]
