@@ -29,6 +29,7 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
     public event Action? Closed;
     #endregion
 
+    #region Initialisation and disposing
     public override void StartPre(ICoreAPI api)
     {
         if (api is not ICoreClientAPI clientApi) return;
@@ -40,20 +41,22 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         _controller = new(_mainWindowWrapper);
         _dialog = new(clientApi, _controller, _mainWindowWrapper, _guiManager);
         _dialog.TryOpen();
-        _dialog.OnClosed += OnGuiClosed;
+        _dialog.OnClosed += () => Closed?.Invoke();
         _controller.OnWindowMergedIntoMain += () => _dialog.TryOpen();
         clientApi.Event.RegisterRenderer(new OffWindowRenderer(_dialog), EnumRenderStage.Ortho);
         clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
 
         Draw += DebugWindow.Draw;
     }
-
     public override double ExecuteOrder() => 0;
     public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Client;
     public override void AssetsLoaded(ICoreAPI api)
     {
         if (api is not ICoreClientAPI clientApi) return;
-        LoadDefaultStyle(clientApi);
+        byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
+        string serializedStyle = System.Text.Encoding.UTF8.GetString(data);
+        DefaultStyle = JsonConvert.DeserializeObject<Style>(serializedStyle);
+        DefaultStyle?.Push();
     }
     public override void Dispose()
     {
@@ -69,23 +72,5 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
     private MainGameWindowWrapper? _mainWindowWrapper;
     private VSImGuiDialog? _dialog;
     private DrawCallbacksManager? _guiManager;
-
-    /// <summary>
-    /// Called when VS GUI dialog is closed
-    /// </summary>
-    private void OnGuiClosed()
-    {
-        Closed?.Invoke();
-    }
-    /// <summary>
-    /// Loads from assets and sets default ImGUI style
-    /// </summary>
-    /// <param name="api"></param>
-    private void LoadDefaultStyle(ICoreClientAPI api)
-    {
-        byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
-        string serializedStyle = System.Text.Encoding.UTF8.GetString(data);
-        DefaultStyle = JsonConvert.DeserializeObject<Style>(serializedStyle);
-        DefaultStyle?.Push();
-    }
+    #endregion
 }
