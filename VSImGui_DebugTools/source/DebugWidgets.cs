@@ -1,19 +1,16 @@
 ﻿using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using VSImGui.API;
+using Vintagestory.API.MathTools;
 
-namespace VSImGui;
+namespace VSImGui.Debug;
 
 /// <summary>
 /// Collection of methods for building small, fast to make, one-line debug tools that can be called from anywhere in code any number of times.<br/><br/>
 /// Tools are drawn in ImGui windows with specified domain used as id and title, in tabs with specified category used as title and id.<br/><br/>
 /// Widgets that require integer id use it as widget id to apply changes to existing widget instead of registering new one on subsequent calls.<br/>
-/// Other widgets use label as their widget id and its hash as integer id that <see cref="DebugWindow.Remove(string, int)"/> method accepts.
+/// Other widgets use label as their widget id and its hash as integer id that <see cref="DebugWidgets.Remove(string, int)"/> method accepts.
 /// </summary>
-public static class DebugWindow
+public static partial class DebugWidgets
 {
     public static void Draw(string domain, string category, int id, Action drawDelegate)
     {
@@ -33,7 +30,6 @@ public static class DebugWindow
         });
         return id;
     }
-
     public static int CheckBox(string domain, string category, string label, System.Func<bool> getter, Action<bool> setter)
     {
         if (!DebugWindowsManager.DrawEntries.ContainsKey(domain)) DebugWindowsManager.DrawEntries[domain] = new();
@@ -59,7 +55,6 @@ public static class DebugWindow
         });
         return id;
     }
-
     public static int FloatSlider(string domain, string category, string label, float min, float max, System.Func<float> getter, Action<float> setter)
     {
         if (!DebugWindowsManager.DrawEntries.ContainsKey(domain)) DebugWindowsManager.DrawEntries[domain] = new();
@@ -79,7 +74,6 @@ public static class DebugWindow
         DebugWindowsManager.DrawEntries[domain][id] = new(domain, category, () => ImGui.Text(text));
         return id;
     }
-
     public static int TextInput(string domain, string category, string label, System.Func<string> getter, Action<string> setter, uint maxLength = 512)
     {
         if (!DebugWindowsManager.DrawEntries.ContainsKey(domain)) DebugWindowsManager.DrawEntries[domain] = new();
@@ -92,7 +86,6 @@ public static class DebugWindow
         });
         return id;
     }
-
     public static int TextInputMultiline(string domain, string category, string label, System.Func<string> getter, Action<string> setter, uint maxLength = 512, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None, float width = 0, float height = 0)
     {
         if (!DebugWindowsManager.DrawEntries.ContainsKey(domain)) DebugWindowsManager.DrawEntries[domain] = new();
@@ -118,7 +111,6 @@ public static class DebugWindow
         });
         return id;
     }
-
     public static int FloatDrag(string domain, string category, string label, System.Func<float> getter, Action<float> setter)
     {
         if (!DebugWindowsManager.DrawEntries.ContainsKey(domain)) DebugWindowsManager.DrawEntries[domain] = new();
@@ -131,28 +123,36 @@ public static class DebugWindow
         });
         return id;
     }
-
-    public static int Float3Drag(string domain, string category, string label, System.Func<Value3> getter, Action<Value3> setter)
+    public static int Float3Drag(string domain, string category, string label, System.Func<Vec3f> getter, Action<Vec3f> setter)
     {
         if (!DebugWindowsManager.DrawEntries.ContainsKey(domain)) DebugWindowsManager.DrawEntries[domain] = new();
         int id = label.GetHashCode();
         DebugWindowsManager.DrawEntries[domain][id] = new(domain, category, () =>
         {
-            Vector3 value = getter?.Invoke() ?? new(0,0,0);
-            ImGui.DragFloat3(label, ref value);
+            Vec3f value = getter?.Invoke() ?? new(0, 0, 0);
+            Vector3 vector = new(value.X, value.Y, value.Z);
+            ImGui.DragFloat3(label, ref vector);
+            value.X = vector.X;
+            value.Y = vector.Y;
+            value.Z = vector.Z;
             setter?.Invoke(value);
         });
         return id;
     }
 
-    public static int ColorPicker(string domain, string category, string label, System.Func<Value4> getter, Action<Value4> setter, ImGuiColorEditFlags flags = ImGuiColorEditFlags.None)
+    public static int ColorPicker(string domain, string category, string label, System.Func<Vec4f> getter, Action<Vec4f> setter, ImGuiColorEditFlags flags = ImGuiColorEditFlags.None)
     {
         if (!DebugWindowsManager.DrawEntries.ContainsKey(domain)) DebugWindowsManager.DrawEntries[domain] = new();
         int id = label.GetHashCode();
         DebugWindowsManager.DrawEntries[domain][id] = new(domain, category, () =>
         {
-            Vector4 value = getter?.Invoke() ?? new(0, 0, 0, 0);
-            ImGui.ColorEdit4(label, ref value, flags);
+            Vec4f value = getter?.Invoke() ?? new(0, 0, 0, 0);
+            Vector4 vector = new(value.X, value.Y, value.Z, value.W);
+            ImGui.ColorEdit4(label, ref vector, flags);
+            value.X = vector.X;
+            value.Y = vector.Y;
+            value.Z = vector.Z;
+            value.W = vector.W;
             setter?.Invoke(value);
         });
         return id;
@@ -171,7 +171,6 @@ public static class DebugWindow
         });
         return id;
     }
-
     public static int EnumList<TEnum>(string domain, string category, string label, System.Func<TEnum> getter, Action<TEnum> setter)
         where TEnum : struct, Enum
     {
@@ -185,7 +184,6 @@ public static class DebugWindow
         });
         return id;
     }
-
     public static int EnumList<TEnum>(string domain, string category, string label, string filterHolder, System.Func<TEnum> getter, Action<TEnum> setter)
         where TEnum : struct, Enum
     {
@@ -225,115 +223,5 @@ public static class DebugWindow
             valueSetter?.Invoke(value);
         });
         return id;
-    }
-}
-
-/// <summary>
-/// Manages <see cref="DebugWindow"/> draw calls.
-/// </summary>
-public static class DebugWindowsManager
-{
-    /// <summary>
-    /// Registered ImGui widgets to draw
-    /// </summary>
-    public static Dictionary<string, Dictionary<int, DrawEntry>> DrawEntries { get; } = new();
-
-    /// <summary>
-    /// Draws all domains' windows
-    /// </summary>
-    /// <param name="deltaSeconds"></param>
-    /// <returns></returns>
-    internal static CallbackGUIStatus Draw(float deltaSeconds)
-    {
-        bool anyDrawn = false;
-        
-        foreach ((string domain, HashSet<string> categories) in DrawEntry.Categories)
-        {
-            ImGui.Begin(domain);
-            ImGui.BeginTabBar(domain);
-
-            DrawCategories(domain, categories, ref anyDrawn);
-
-            ImGui.EndTabBar();
-            ImGui.End();
-        }
-
-        return anyDrawn ? CallbackGUIStatus.DontGrabMouse : CallbackGUIStatus.Closed;
-    }
-
-    /// <summary>
-    /// Draws active category
-    /// </summary>
-    /// <param name="domain"></param>
-    /// <param name="categories"></param>
-    /// <param name="anyDrawn">Sets to true if any widget was drawn</param>
-    private static void DrawCategories(string domain, HashSet<string> categories, ref bool anyDrawn)
-    {
-        foreach (string category in categories.Where(category => ImGui.BeginTabItem(category)))
-        {
-            DrawCategory(domain, category, ref anyDrawn);
-
-            ImGui.EndTabItem();
-        }
-    }
-
-    /// <summary>
-    /// Draws all widgets in category
-    /// </summary>
-    /// <param name="domain"></param>
-    /// <param name="category"></param>
-    /// <param name="anyDrawn">Sets to true if any widget was drawn</param>
-    private static void DrawCategory(string domain, string category, ref bool anyDrawn)
-    {
-        foreach (DrawEntry entry in DrawEntries[domain].Where(entry => entry.Value.Category == category).Select(entry => entry.Value))
-        {
-            entry.InvokeDrawCallback();
-            anyDrawn = true;
-        }
-    }
-
-    /// <summary>
-    /// Clears stored entries
-    /// </summary>
-    internal static void Clear()
-    {
-        DrawEntries.Clear();
-        DrawEntry.Categories.Clear();
-    }
-
-    /// <summary>
-    /// Holds single draw callback with one widget. Manages categories.
-    /// </summary>
-    public class DrawEntry
-    {
-        public string Domain { get; }
-        public string Category { get; }
-        public Action Delegate { get; }
-
-        public static readonly Dictionary<string, HashSet<string>> Categories = new();
-
-        /// <summary>
-        /// Adds category to collection
-        /// </summary>
-        /// <param name="domain">Window title</param>
-        /// <param name="category">Tab title</param>
-        /// <param name="drawDelegate">Callback that draws ImGui widget and processes data</param>
-        public DrawEntry(string domain, string category, Action drawDelegate)
-        {
-            Domain = domain;
-            Category = category;
-            Delegate = drawDelegate;
-
-            if (!Categories.ContainsKey(domain)) Categories[domain] = new();
-            if (!Categories[domain].Contains(category)) Categories[domain].Add(category);
-        }
-
-        /// <summary>
-        /// Draw associated ImGui widget
-        /// </summary>
-        public void InvokeDrawCallback()
-        {
-            Delegate?.Invoke();
-        }
     }
 }

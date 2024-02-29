@@ -26,6 +26,7 @@
   <!-- Project settings -->
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -63,6 +64,9 @@
   
   <!-- References to libraries that are being used in project -->
   <ItemGroup>
+    <Reference Include="VSImGui_DebugTools">
+      <HintPath>$(ProjectDir)\..\VSImGui_DebugTools\bin\$(Configuration)\$(TargetFramework)\VSImGui_DebugTools.dll</HintPath>
+    </Reference>
     <!-- Bindings: will be copied into output directory -->
     <Reference Include="ImGui.NET">
       <HintPath>$(BindingsDir)\ImGui.NET.dll</HintPath>
@@ -129,8 +133,7 @@
     <Reference Include="VintagestoryLib">
       <HintPath>$(GameDirectory)/VintagestoryLib.dll</HintPath>
       <Private>false</Private>
-    </Reference>
-    
+    </Reference>    
   </ItemGroup>
   
   <!-- Creates/updates modinfo.json file in build directory -->

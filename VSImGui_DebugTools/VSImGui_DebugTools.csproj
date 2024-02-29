@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Project settings -->
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- Paths -->
+  <PropertyGroup>
+    <ProjectDir>$(MSBuildProjectDirectory)</ProjectDir>
+    <OutputDir>bin\$(Configuration)</OutputDir>
+    <ControllerSubmoduleDir>ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK</ControllerSubmoduleDir>
+    <GameDirectory>$(VINTAGE_STORY)</GameDirectory>
+    <BindingsDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\bindings</BindingsDir>
+  </PropertyGroup>
+
+  <!-- References to libraries that are being used in project -->
+  <ItemGroup>
+    <Reference Include="ImGui.NET">
+      <HintPath>$(BindingsDir)\ImGui.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="VintagestoryAPI">
+      <HintPath>$(GameDirectory)/VintagestoryAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VintagestoryLib">
+      <HintPath>$(GameDirectory)/VintagestoryLib.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -4,6 +4,7 @@ using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using VSImGui.API;
+using VSImGui.Debug;
 
 namespace VSImGui;
 
@@ -46,7 +47,7 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         clientApi.Event.RegisterRenderer(new OffWindowRenderer(_dialog), EnumRenderStage.Ortho);
         clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
 
-        Draw += DebugWindowsManager.Draw;
+        Draw += DrawDebugWindow;
     }
     public override double ExecuteOrder() => 0;
     public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Client;
@@ -72,5 +73,10 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
     private MainGameWindowWrapper? _mainWindowWrapper;
     private VSImGuiDialog? _dialog;
     private DrawCallbacksManager? _guiManager;
+
+    private CallbackGUIStatus DrawDebugWindow(float timeSeconds)
+    {
+        return DebugWindowsManager.Draw(timeSeconds) ? CallbackGUIStatus.DontGrabMouse : CallbackGUIStatus.Closed;
+    }
     #endregion
 }
