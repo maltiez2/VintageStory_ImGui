@@ -12,7 +12,7 @@ namespace VSImGui;
 public class Style
 {
     [JsonIgnore]
-    public ImGuiStyle NativeStyle => mNativeStyle;
+    internal ImGuiStyle NativeStyle => mNativeStyle;
 
     // PADDINGS
     [JsonIgnore]

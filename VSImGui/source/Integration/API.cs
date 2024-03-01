@@ -1,8 +1,4 @@
 ﻿using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Vintagestory.API.Client;
 using Vintagestory.API.Config;
 
@@ -41,7 +37,8 @@ public delegate CallbackGUIStatus DrawCallbackDelegate(float deltaSeconds);
 public interface IImGuiRenderer
 {
     /// <summary>
-    /// Should contain all the ImGui calls to draw windows and widgets
+    /// Should contain all the ImGui calls to draw windows and widgets.<br/>
+    /// Each imgui 'Begin' method should be closed with 'End' inside callback. Same for 'Push' and 'Pop', and using Styles.
     /// </summary>
     event DrawCallbackDelegate Draw;
     /// <summary>
@@ -255,7 +252,7 @@ public abstract class ImGuiDialogBase : IDisposable
             return CallbackGUIStatus.Closed;
         }
     }
-    
+
     private bool _disposed;
     private readonly ImGuiModSystem _system;
 }

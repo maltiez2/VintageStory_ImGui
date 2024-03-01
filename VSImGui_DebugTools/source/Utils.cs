@@ -410,3 +410,37 @@ internal static class EditorsUtils
         return false;
     }
 }
+
+internal static class Controls
+{
+    public static void CopySupport(string value, string title)
+    {
+        if (ImGui.Button(title) || CopyCombination())
+        {
+            ImGui.SetClipboardText(value);
+        }
+    }
+    public static void PasteSupport(ref string value, string title)
+    {
+        if (ImGui.Button(title) || PasteCombination())
+        {
+            value = ImGui.GetClipboardText();
+        }
+    }
+    public static void CopyPasteSupport(ref string value, string copy, string paste)
+    {
+        CopySupport(value, copy); ImGui.SameLine();
+        PasteSupport(ref value, paste); ImGui.SameLine();
+    }
+
+    private static bool CopyCombination()
+    {
+        ImGuiIOPtr io = ImGui.GetIO();
+        return io.KeyCtrl && io.KeysDown[(int)ImGuiKey.C];
+    }
+    private static bool PasteCombination()
+    {
+        ImGuiIOPtr io = ImGui.GetIO();
+        return io.KeyCtrl && io.KeysDown[(int)ImGuiKey.V];
+    }
+}

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ModName>Dear ImGui</ModName>
     <GameVersion>1.19.4</GameVersion>
-    <Version>1.1.0</Version>
+    <Version>0.01</Version>
     <ModId>vsimgui</ModId>
     <Description>Brings famous immediate mode GUI to Vintage Story</Description>
     <Side>Universal</Side>
@@ -55,7 +55,24 @@
     <AditionalModsFolder>$(AppDataDir)\$(DataFolderName)\Mods</AditionalModsFolder>
     <WorldName>test_$(ModId)</WorldName>
     <ModDir>$(ProjectDir)\$(OutputDir)</ModDir>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>Vintage Story ImGui</Title>
+    <Authors>Maltiez</Authors>
+    <PackageProjectUrl>https://mods.vintagestory.at/imgui</PackageProjectUrl>
+    <PackageIcon>modicon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/maltiez2/VintageStory_ImGui</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>Vintage Story;VintageStory;ImGui;Dear ImGui;ImGui.NET;Debug;Tools;GUI library;GUI;multiple viewports;ImNodes;ImGuizmo;ImPlot</PackageTags>
+    <PackageOutputPath>$(ReleasesDir)</PackageOutputPath>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="resources\modicon.png" Pack="true" PackagePath="" />
+    <None Include="resources\README.md" Pack="true" PackagePath="" />
+    <None Include="$(OutputDir)\*.xml" Pack="true" PackagePath="docs" Visible="false" />
+    <PackageReference Include="VSImGui_DebugTools" Version="0.0.4" />
+  </ItemGroup>
 
   <!-- Builds dependency projects and copies theirs ddls into output directory -->
   <ItemGroup>
@@ -173,9 +190,9 @@
     <ItemGroup Condition="Exists('$(ModIconFile)')">
       <ModIcon Include="$(ModIconFile)" />
     </ItemGroup>
-    <Copy SourceFiles="@(NativesFolder)" DestinationFiles="@(NativesFolder->'$(OutputPath)native\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(NativesDir)')"/>
-    <Copy SourceFiles="@(AssetsFolder)" DestinationFiles="@(AssetsFolder->'$(OutputPath)assets\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(AssetsDir)')"/>
-    <Copy SourceFiles="@(ModIcon)" DestinationFolder="$(OutputPath)" Condition="Exists('$(ModIconFile)')"/>
+    <Copy SourceFiles="@(NativesFolder)" DestinationFiles="@(NativesFolder->'$(OutputPath)native\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(NativesDir)')" />
+    <Copy SourceFiles="@(AssetsFolder)" DestinationFiles="@(AssetsFolder->'$(OutputPath)assets\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(AssetsDir)')" />
+    <Copy SourceFiles="@(ModIcon)" DestinationFolder="$(OutputPath)" Condition="Exists('$(ModIconFile)')" />
   </Target>
 
   <!-- Archives output directory into zip and puts it into Releases folder -->

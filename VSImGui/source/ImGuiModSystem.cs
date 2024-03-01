@@ -14,7 +14,14 @@ namespace VSImGui;
 public class ImGuiModSystem : ModSystem, IImGuiRenderer
 {
     #region IImGuiRenderer
+    /// <summary>
+    /// Style used pushed after loading as default
+    /// </summary>
     public Style? DefaultStyle { get; private set; }
+    /// <summary>
+    /// Draw callback that should contain ImGui windows with widgets.<br/>
+    /// Each imgui 'Begin' method should be closed with 'End' inside callback. Same for 'Push' and 'Pop', and using Styles.
+    /// </summary>
     public event DrawCallbackDelegate Draw
     {
         add
@@ -26,7 +33,14 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
             if (_guiManager != null) _guiManager.DrawCallback -= value;
         }
     }
+    /// <summary>
+    /// Shows all currently opened ImGui windows in main window<br/>
+    /// Tries to open VS dialog that is used to integrate ImGui into VS.
+    /// </summary>
     public void Show() => _dialog?.TryOpen();
+    /// <summary>
+    /// Is called when all ImGui windows are closed by 'Esc' button or hotkey.
+    /// </summary>
     public event Action? Closed;
     #endregion
 
@@ -76,7 +90,7 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
 
     private CallbackGUIStatus DrawDebugWindow(float timeSeconds)
     {
-        return DebugWindowsManager.Draw(timeSeconds) ? CallbackGUIStatus.DontGrabMouse : CallbackGUIStatus.Closed;
+        return DebugWindowsManager.Draw() ? CallbackGUIStatus.DontGrabMouse : CallbackGUIStatus.Closed;
     }
     #endregion
 }

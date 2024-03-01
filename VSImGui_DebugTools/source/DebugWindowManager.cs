@@ -15,9 +15,8 @@ public static class DebugWindowsManager
     /// <summary>
     /// Draws all domains' windows
     /// </summary>
-    /// <param name="deltaSeconds"></param>
-    /// <returns></returns>
-    public static bool Draw(float deltaSeconds)
+    /// <returns>false if no widgets were drawn</returns>
+    public static bool Draw()
     {
         bool anyDrawn = false;
 
@@ -80,8 +79,17 @@ public static class DebugWindowsManager
     /// </summary>
     public class DrawEntry
     {
+        /// <summary>
+        /// Entry domain. Used as window title.
+        /// </summary>
         public string Domain { get; }
+        /// <summary>
+        /// Entry category. Used as tab title.
+        /// </summary>
         public string Category { get; }
+        /// <summary>
+        /// Draw callback.
+        /// </summary>
         public Action Delegate { get; }
 
         internal static readonly Dictionary<string, HashSet<string>> _categories = new();
