@@ -1,40 +1,52 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-#nullable enable
 
 namespace VSImGui;
 
-public class FixedSizedQueue<TElement>
+/// <summary>
+/// Queue with fixed size. If size is exceeded extra elements are popped from beginning of the queue.<br/>
+/// Meant to be used for plots.
+/// </summary>
+/// <typeparam name="TElement"></typeparam>
+public class FixedSizedQueue<TElement> : IEnumerable<TElement>
 {
+    public FixedSizedQueue(int limit) => Limit = limit;
+
+    /// <summary>
+    /// Underlying queue
+    /// </summary>
     public readonly Queue<TElement> Queue = new();
-    public int Limit {
-        get => mLimit;
+    /// <summary>
+    /// Max number of elements. When set shrinks queue.
+    /// </summary>
+    public int Limit
+    {
+        get => _limit;
 
         set
         {
-            mLimit = value;
+            _limit = value;
             Shrink();
         }
     }
     public int Count => Queue.Count;
-    
-    public FixedSizedQueue(int limit) => Limit = limit;
-    
+
+    /// <summary>
+    /// Add element to the end of the queue. Shrink queue if needed.
+    /// </summary>
+    /// <param name="obj"></param>
     public void Enqueue(TElement obj)
     {
         Queue.Enqueue(obj);
         Shrink();
     }
-    public TElement[] ToArray() => Queue.ToArray();
-    public IEnumerable<TElement> Where(System.Func<TElement, bool> predicate) => Queue.Where(predicate);
-    public IEnumerable<TResult> Select<TResult>(System.Func<TElement, int, TResult> selector) => Queue.Select(selector);
-    public TElement Aggregate(System.Func<TElement, TElement, TElement> func) => Queue.Aggregate(func);
 
-    private int mLimit;
+    public IEnumerator<TElement> GetEnumerator() => Queue.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => Queue.GetEnumerator();
+    public void Clear() => Queue.Clear();
+
+    private int _limit;
     private void Shrink()
     {
-        while (Queue.Count > mLimit && Queue.TryDequeue(out _)) ;
+        while (Queue.Count > _limit && Queue.TryDequeue(out _)) ;
     }
 }

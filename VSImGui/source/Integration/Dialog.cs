@@ -42,6 +42,7 @@ internal class VSImGuiDialog : GuiDialog
     public override string ToggleKeyCombinationCode => "imguitoggle";
     public override bool ShouldReceiveRenderEvents() => true;
     public override bool PrefersUngrabbedMouse => _grabMouse; // In case of ImGui: grab means 'grab by GUI', opposite of game's meaning
+    public override EnumDialogType DialogType => _grabMouse ? EnumDialogType.Dialog : EnumDialogType.HUD;
     #endregion
 
     #region Input handling

@@ -5,7 +5,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <VersionPrefix>0.0.3</VersionPrefix>
+    <VersionPrefix>0.0.4</VersionPrefix>
     <ProjectDir>$(MSBuildProjectDirectory)</ProjectDir>
     <OutputDir>bin\$(Configuration)</OutputDir>
     <ReleasesDir>$(ProjectDir)\Releases</ReleasesDir>
@@ -24,17 +24,13 @@ To use this package you need to install it, use methods from DebugWindow static 
     <PackageOutputPath>$(ReleasesDir)</PackageOutputPath>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="..\LICENSE.txt">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="resources\packageicon.png" Pack="true" PackagePath=""/>
-    <None Include="resources\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="resources\packageicon.png" Pack="true" PackagePath="" />
+    <None Include="resources\README.md" Pack="true" PackagePath="" />
+    <None Include="$(OutputDir)\*.xml" Pack="true" PackagePath="docs" Visible="false" />
   </ItemGroup>
 
   <!-- References to libraries that are being used in project -->
