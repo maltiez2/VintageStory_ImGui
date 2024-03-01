@@ -59,7 +59,7 @@
     <Title>Vintage Story ImGui</Title>
     <Authors>Maltiez</Authors>
     <PackageProjectUrl>https://mods.vintagestory.at/imgui</PackageProjectUrl>
-    <PackageIcon>modicon.png</PackageIcon>
+    <PackageIcon>packageicon.png</PackageIcon>
     <RepositoryUrl>https://github.com/maltiez2/VintageStory_ImGui</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>Vintage Story;VintageStory;ImGui;Dear ImGui;ImGui.NET;Debug;Tools;GUI library;GUI;multiple viewports;ImNodes;ImGuizmo;ImPlot</PackageTags>
@@ -68,7 +68,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
-    <None Include="resources\modicon.png" Pack="true" PackagePath="" />
+    <None Include="resources\packageicon.png" Pack="true" PackagePath="" />
     <None Include="resources\README.md" Pack="true" PackagePath="" />
     <None Include="$(OutputDir)\*.xml" Pack="true" PackagePath="docs" Visible="false" />
     <PackageReference Include="VSImGui_DebugTools" Version="0.0.4" />

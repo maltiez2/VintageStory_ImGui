@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ImGuiNET;
+using Newtonsoft.Json;
 using System;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -60,6 +61,12 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         _controller.OnWindowMergedIntoMain += () => _dialog.TryOpen();
         clientApi.Event.RegisterRenderer(new OffWindowRenderer(_dialog), EnumRenderStage.Ortho);
         clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
+
+        int testValue = 0;
+
+        DebugWidgets.Text(domain: "Test window", category: "test tab", id: 0, text: "test text");
+        DebugWidgets.Draw(domain: "Test window", category: "test tab", id: 1, () => ImGui.Separator());
+        DebugWidgets.IntSlider(domain: "Test window", category: "test tab", label: "test slider", min: 0, max: 10, getter: () => testValue, setter: value => testValue = value);
 
         Draw += DrawDebugWindow;
     }

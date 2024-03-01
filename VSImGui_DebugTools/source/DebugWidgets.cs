@@ -169,7 +169,11 @@ public static partial class DebugWidgets
         DebugWindowsManager.DrawEntries[domain][id] = new(domain, category, () =>
         {
             string value = getter?.Invoke() ?? "";
-            if (controlButtons) Controls.CopyPasteSupport(ref value, $"Copy##{label}", $"Paste##{label}");
+            if (controlButtons)
+            {
+                Controls.CopyPasteSupport(ref value, $"Copy##{label}", $"Paste##{label}");
+                ImGui.SameLine();
+            }
             ImGui.InputText(label, ref value, maxLength);
             setter?.Invoke(value);
         });

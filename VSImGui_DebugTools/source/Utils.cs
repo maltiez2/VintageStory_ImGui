@@ -430,7 +430,7 @@ internal static class Controls
     public static void CopyPasteSupport(ref string value, string copy, string paste)
     {
         CopySupport(value, copy); ImGui.SameLine();
-        PasteSupport(ref value, paste); ImGui.SameLine();
+        PasteSupport(ref value, paste);
     }
 
     private static bool CopyCombination()
