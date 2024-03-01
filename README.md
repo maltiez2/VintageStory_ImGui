@@ -1,1 +1,1 @@
-# VSImGui
+# Vintage Story mod: ImGui
