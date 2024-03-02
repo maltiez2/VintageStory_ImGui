@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 using Vintagestory.API.Datastructures;
+using VSImGui.API;
+
 
 namespace VSImGui;
 
@@ -10,7 +12,7 @@ namespace VSImGui;
 public class Style
 {
     [JsonIgnore]
-    public ImGuiStyle NativeStyle => mNativeStyle;
+    internal ImGuiStyle NativeStyle => mNativeStyle;
 
     // PADDINGS
     [JsonIgnore]

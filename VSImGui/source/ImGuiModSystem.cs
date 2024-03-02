@@ -1,130 +1,103 @@
 ﻿using ImGuiNET;
 using Newtonsoft.Json;
 using System;
-using System.Reflection;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
-using Vintagestory.Client.NoObf;
-using VSImGui.src.ImGui;
+using VSImGui.API;
+using VSImGui.Debug;
 
 namespace VSImGui;
 
-public class ImGuiModSystem : ModSystem
+/// <summary>
+/// Initializes ImGui integration into VS and provides interface for drawing ImGui dialogs
+/// </summary>
+public class ImGuiModSystem : ModSystem, IImGuiRenderer
 {
-    public Style? DefaultStyle { get; set; }
-
-    public event ImGuiDialogDrawCallback Draw
+    #region IImGuiRenderer
+    /// <summary>
+    /// Style used pushed after loading as default
+    /// </summary>
+    public Style? DefaultStyle { get; private set; }
+    /// <summary>
+    /// Draw callback that should contain ImGui windows with widgets.<br/>
+    /// Each imgui 'Begin' method should be closed with 'End' inside callback. Same for 'Push' and 'Pop', and using Styles.
+    /// </summary>
+    public event DrawCallbackDelegate Draw
     {
         add
         {
-            if (mGuiManager != null) mGuiManager.DrawCallback += value;
+            if (_guiManager != null) _guiManager.DrawCallback += value;
         }
         remove
         {
-            if (mGuiManager != null) mGuiManager.DrawCallback -= value;
+            if (_guiManager != null) _guiManager.DrawCallback -= value;
         }
     }
-
-    public void Show() => mDialog?.TryOpen();
-
+    /// <summary>
+    /// Shows all currently opened ImGui windows in main window<br/>
+    /// Tries to open VS dialog that is used to integrate ImGui into VS.
+    /// </summary>
+    public void Show() => _dialog?.TryOpen();
+    /// <summary>
+    /// Is called when all ImGui windows are closed by 'Esc' button or hotkey.
+    /// </summary>
     public event Action? Closed;
+    #endregion
 
-    private VSImGuiController? mController;
-    private VSGameWindowWrapper? mMainWindowWrapper;
-    private ICoreClientAPI? mApi;
-    private VSImGuiDialog? mDialog;
-    private VSImGuiManager? mGuiManager;
-    private StyleEditor? mStyleEditor;
-
+    #region Initialisation and disposing
     public override void StartPre(ICoreAPI api)
     {
         if (api is not ICoreClientAPI clientApi) return;
         bool loaded = NativesLoader.Load(api.Logger, this);
         if (!loaded) return;
 
-        mApi = clientApi;
-
-        GameWindowNative? window = GetWindow(clientApi);
-        if (window == null) return;
-
-        mGuiManager = new();
-        mMainWindowWrapper = new(window);
-        mController = new(mMainWindowWrapper);
-        mDialog = new(clientApi, mController, mMainWindowWrapper, mGuiManager);
-        mDialog.TryOpen();
-        mDialog.OnClosed += OnGuiClosed;
-        mController.OnWindowMergedIntoMain += () => mDialog.TryOpen();
-        clientApi.Event.RegisterRenderer(new OffWindowRenderer(mDialog), EnumRenderStage.Ortho);
+        _guiManager = new();
+        _mainWindowWrapper = new(clientApi);
+        _controller = new(_mainWindowWrapper);
+        _dialog = new(clientApi, _controller, _mainWindowWrapper, _guiManager);
+        _dialog.TryOpen();
+        _dialog.OnClosed += () => Closed?.Invoke();
+        _controller.OnWindowMergedIntoMain += () => _dialog.TryOpen();
+        clientApi.Event.RegisterRenderer(new OffWindowRenderer(_dialog), EnumRenderStage.Ortho);
         clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
 
-        Draw += DebugWindow.Draw;
+        int testValue = 0;
 
-#if DEBUG
-        //Draw += DemoWindow;
-#endif
+        DebugWidgets.Text(domain: "Test window", category: "test tab", id: 0, text: "test text");
+        DebugWidgets.Draw(domain: "Test window", category: "test tab", id: 1, () => ImGui.Separator());
+        DebugWidgets.IntSlider(domain: "Test window", category: "test tab", label: "test slider", min: 0, max: 10, getter: () => testValue, setter: value => testValue = value);
+
+        Draw += DrawDebugWindow;
     }
-
-
-    private void OnGuiClosed()
-    {
-        Closed?.Invoke();
-    }
-
-    private VSDialogStatus DemoWindow(float dt)
-    {
-        if (DefaultStyle == null || mStyleEditor == null) return VSDialogStatus.Closed;
-
-        using (new StyleApplier(DefaultStyle))
-        {
-            mStyleEditor.Draw();
-
-            ImGui.Begin("TEST");
-
-            ImGui.Text("test test test");
-
-            ImGui.BeginChild("test", new(300, 300), true);
-
-            ImGui.Text("test test test");
-
-            ImGui.EndChild();
-
-            ImGui.End();
-        }
-
-        return VSDialogStatus.GrabMouse;
-    }
-
     public override double ExecuteOrder() => 0;
-
     public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Client;
-
     public override void AssetsLoaded(ICoreAPI api)
     {
         if (api is not ICoreClientAPI clientApi) return;
-        DefaultStyle = JsonConvert.DeserializeObject<Style>(LoadDefaultStyle(clientApi));
+        byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
+        string serializedStyle = System.Text.Encoding.UTF8.GetString(data);
+        DefaultStyle = JsonConvert.DeserializeObject<Style>(serializedStyle);
         DefaultStyle?.Push();
-        if (DefaultStyle != null) mStyleEditor = new(DefaultStyle);
     }
-
     public override void Dispose()
     {
-        DebugWindow.Clear();
+        DebugWindowsManager.Clear();
+        _controller?.Dispose();
+        _mainWindowWrapper?.Dispose();
+        _dialog?.Dispose();
 
         base.Dispose();
     }
 
-    private static string LoadDefaultStyle(ICoreClientAPI api)
-    {
-        byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
-        return System.Text.Encoding.UTF8.GetString(data);
-    }
+    private Controller? _controller;
+    private MainGameWindowWrapper? _mainWindowWrapper;
+    private VSImGuiDialog? _dialog;
+    private DrawCallbacksManager? _guiManager;
 
-    private static GameWindowNative? GetWindow(ICoreClientAPI client)
+    private CallbackGUIStatus DrawDebugWindow(float timeSeconds)
     {
-        if (client.World is not ClientMain main) return null;
-        FieldInfo? field = typeof(ClientMain).GetField("Platform", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-        ClientPlatformWindows? platform = (ClientPlatformWindows?)field?.GetValue(main);
-        return platform?.window;
+        return DebugWindowsManager.Draw() ? CallbackGUIStatus.DontGrabMouse : CallbackGUIStatus.Closed;
     }
+    #endregion
 }

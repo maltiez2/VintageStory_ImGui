@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ModName>Dear ImGui</ModName>
     <GameVersion>1.19.4</GameVersion>
-    <Version>1.0.0</Version>
+    <Version>0.01</Version>
     <ModId>vsimgui</ModId>
     <Description>Brings famous immediate mode GUI to Vintage Story</Description>
     <Side>Universal</Side>
@@ -26,6 +26,7 @@
   <!-- Project settings -->
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -54,7 +55,24 @@
     <AditionalModsFolder>$(AppDataDir)\$(DataFolderName)\Mods</AditionalModsFolder>
     <WorldName>test_$(ModId)</WorldName>
     <ModDir>$(ProjectDir)\$(OutputDir)</ModDir>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>Vintage Story ImGui</Title>
+    <Authors>Maltiez</Authors>
+    <PackageProjectUrl>https://mods.vintagestory.at/imgui</PackageProjectUrl>
+    <PackageIcon>packageicon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/maltiez2/VintageStory_ImGui</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>Vintage Story;VintageStory;ImGui;Dear ImGui;ImGui.NET;Debug;Tools;GUI library;GUI;multiple viewports;ImNodes;ImGuizmo;ImPlot</PackageTags>
+    <PackageOutputPath>$(ReleasesDir)</PackageOutputPath>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="resources\packageicon.png" Pack="true" PackagePath="" />
+    <None Include="resources\README.md" Pack="true" PackagePath="" />
+    <None Include="$(OutputDir)\*.xml" Pack="true" PackagePath="docs" Visible="false" />
+    <PackageReference Include="VSImGui_DebugTools" Version="0.0.4" />
+  </ItemGroup>
 
   <!-- Builds dependency projects and copies theirs ddls into output directory -->
   <ItemGroup>
@@ -63,6 +81,9 @@
   
   <!-- References to libraries that are being used in project -->
   <ItemGroup>
+    <Reference Include="VSImGui_DebugTools">
+      <HintPath>$(ProjectDir)\..\VSImGui_DebugTools\bin\$(Configuration)\$(TargetFramework)\VSImGui_DebugTools.dll</HintPath>
+    </Reference>
     <!-- Bindings: will be copied into output directory -->
     <Reference Include="ImGui.NET">
       <HintPath>$(BindingsDir)\ImGui.NET.dll</HintPath>
@@ -129,8 +150,7 @@
     <Reference Include="VintagestoryLib">
       <HintPath>$(GameDirectory)/VintagestoryLib.dll</HintPath>
       <Private>false</Private>
-    </Reference>
-    
+    </Reference>    
   </ItemGroup>
   
   <!-- Creates/updates modinfo.json file in build directory -->
@@ -170,9 +190,9 @@
     <ItemGroup Condition="Exists('$(ModIconFile)')">
       <ModIcon Include="$(ModIconFile)" />
     </ItemGroup>
-    <Copy SourceFiles="@(NativesFolder)" DestinationFiles="@(NativesFolder->'$(OutputPath)native\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(NativesDir)')"/>
-    <Copy SourceFiles="@(AssetsFolder)" DestinationFiles="@(AssetsFolder->'$(OutputPath)assets\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(AssetsDir)')"/>
-    <Copy SourceFiles="@(ModIcon)" DestinationFolder="$(OutputPath)" Condition="Exists('$(ModIconFile)')"/>
+    <Copy SourceFiles="@(NativesFolder)" DestinationFiles="@(NativesFolder->'$(OutputPath)native\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(NativesDir)')" />
+    <Copy SourceFiles="@(AssetsFolder)" DestinationFiles="@(AssetsFolder->'$(OutputPath)assets\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(AssetsDir)')" />
+    <Copy SourceFiles="@(ModIcon)" DestinationFolder="$(OutputPath)" Condition="Exists('$(ModIconFile)')" />
   </Target>
 
   <!-- Archives output directory into zip and puts it into Releases folder -->
