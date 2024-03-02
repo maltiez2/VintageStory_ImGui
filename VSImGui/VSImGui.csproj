@@ -3,7 +3,8 @@
   <PropertyGroup>
     <ModName>Dear ImGui</ModName>
     <GameVersion>1.19.4</GameVersion>
-    <Version>0.01</Version>
+    <ModVersion>1.1.0</ModVersion>
+    <Version>0.0.1</Version>
     <ModId>vsimgui</ModId>
     <Description>Brings famous immediate mode GUI to Vintage Story</Description>
     <Side>Universal</Side>
@@ -44,7 +45,7 @@
     <AssetsDir>$(ProjectDir)\resources\assets</AssetsDir>
     <ModIconFile>$(ProjectDir)\resources\modicon.png</ModIconFile>
     <ReleasesDir>$(ProjectDir)\Releases</ReleasesDir>
-    <ReleaseFile>$(ReleasesDir)\$(ModId)_$(Version).zip</ReleaseFile>
+    <ReleaseFile>$(ReleasesDir)\$(ModId)_$(ModVersion).zip</ReleaseFile>
   </PropertyGroup>
   
   <!-- Startup settings -->
@@ -65,13 +66,14 @@
     <PackageTags>Vintage Story;VintageStory;ImGui;Dear ImGui;ImGui.NET;Debug;Tools;GUI library;GUI;multiple viewports;ImNodes;ImGuizmo;ImPlot</PackageTags>
     <PackageOutputPath>$(ReleasesDir)</PackageOutputPath>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <DebugToolsDll>$(ProjectDir)\..\VSImGui_DebugTools\bin\$(Configuration)\$(TargetFramework)\VSImGui_DebugTools.dll</DebugToolsDll>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
     <None Include="resources\packageicon.png" Pack="true" PackagePath="" />
     <None Include="resources\README.md" Pack="true" PackagePath="" />
     <None Include="$(OutputDir)\*.xml" Pack="true" PackagePath="docs" Visible="false" />
-    <PackageReference Include="VSImGui_DebugTools" Version="0.0.4" />
+    <PackageReference Include="VSImGui_DebugTools" Version="0.0.5" />
   </ItemGroup>
 
   <!-- Builds dependency projects and copies theirs ddls into output directory -->
@@ -82,7 +84,7 @@
   <!-- References to libraries that are being used in project -->
   <ItemGroup>
     <Reference Include="VSImGui_DebugTools">
-      <HintPath>$(ProjectDir)\..\VSImGui_DebugTools\bin\$(Configuration)\$(TargetFramework)\VSImGui_DebugTools.dll</HintPath>
+      <HintPath>$(DebugToolsDll)</HintPath>
     </Reference>
     <!-- Bindings: will be copied into output directory -->
     <Reference Include="ImGui.NET">
@@ -161,7 +163,7 @@
     "type": "code",
     "name": "$(ModName)",
     "modid": "$(ModId)",
-    "version": "$(Version)",
+    "version": "$(ModVersion)",
 
     "description": "$(Description)",
     "authors": [ @(ModInfoAuthors->'"%(Identity)"', ', ') ],
@@ -180,7 +182,7 @@
   </Target>
 
   <!-- Copies modicon, assets folder and native libraries if they exist into output directory -->
-  <Target Name="CopyFilesToOutput" AfterTargets="Build">
+  <Target Name="CopyFilesToOutput" AfterTargets="ModInfo">
     <ItemGroup Condition="Exists('$(NativesDir)')">
       <NativesFolder Include="$(NativesDir)\**\*.*" />
     </ItemGroup>
@@ -190,13 +192,17 @@
     <ItemGroup Condition="Exists('$(ModIconFile)')">
       <ModIcon Include="$(ModIconFile)" />
     </ItemGroup>
+    <ItemGroup>
+      <ModIcon Include="$(DebugToolsDll)" />
+    </ItemGroup>
     <Copy SourceFiles="@(NativesFolder)" DestinationFiles="@(NativesFolder->'$(OutputPath)native\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(NativesDir)')" />
     <Copy SourceFiles="@(AssetsFolder)" DestinationFiles="@(AssetsFolder->'$(OutputPath)assets\%(RecursiveDir)%(Filename)%(Extension)')" Condition="Exists('$(AssetsDir)')" />
     <Copy SourceFiles="@(ModIcon)" DestinationFolder="$(OutputPath)" Condition="Exists('$(ModIconFile)')" />
+    <Copy SourceFiles="@(DebugToolsDll)" DestinationFolder="$(OutputPath)" />
   </Target>
 
   <!-- Archives output directory into zip and puts it into Releases folder -->
-  <Target Name="ZipFiles" AfterTargets="ModInfo" Condition=" '$(Configuration)' == 'Release' ">
+  <Target Name="ZipFiles" AfterTargets="CopyFilesToOutput" Condition=" '$(Configuration)' == 'Release' ">
     <MakeDir Directories="$(ReleasesDir)" />
     <Delete Files="$(ReleaseFile)" />
     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ReleaseFile)" />
