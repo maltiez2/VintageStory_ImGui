@@ -1,8 +1,8 @@
 # Dear ImGui integration into Vintage Story
 This repository contains two projects:
-- VSImGui - mod that integrates Dear ImGui into Vintage Story using ImGui.NET
-- VSImGui_DebugTools - collection of static methods for debugging VS mods
----
+- VSImGui - mod that integrates Dear ImGui into Vintage Story using fork of ImGui.NET
+- VSImGui_DebugTools - collection of static methods for debugging and tweaking VS mods
+
 ## Debug tools
 Contains static class `DebugWidgets` that has methods for drawing debug widgets in debug windows,
 that can be pasted anywhere in code for displaying data or editing it in real time.
