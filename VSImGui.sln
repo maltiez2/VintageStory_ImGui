@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSImGui", "VSImGui\VSImGui.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImGuiController_OpenTK", "ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK\ImGuiController_OpenTK.csproj", "{18F4DB2E-C091-4F9B-9393-D96B4A8659CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSImGui_DebugTools", "VSImGui_DebugTools\VSImGui_DebugTools.csproj", "{164A0E5C-A33E-4AE5-A1A7-481E3423B357}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSImGui_DebugTools", "VSImGui_DebugTools\VSImGui_DebugTools.csproj", "{164A0E5C-A33E-4AE5-A1A7-481E3423B357}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66183824-ABDF-4542-8C57-1DAC22F2ABDB}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
