@@ -3,8 +3,8 @@
   <PropertyGroup>
     <ModName>Dear ImGui</ModName>
     <GameVersion>1.19.4</GameVersion>
-    <ModVersion>1.1.0</ModVersion>
-    <Version>0.0.1</Version>
+    <ModVersion>1.1.1</ModVersion>
+    <Version>0.0.6</Version>
     <ModId>vsimgui</ModId>
     <Description>Brings famous immediate mode GUI to Vintage Story</Description>
     <Side>Universal</Side>
@@ -68,23 +68,27 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <DebugToolsDll>$(ProjectDir)\..\VSImGui_DebugTools\bin\$(Configuration)\$(TargetFramework)\VSImGui_DebugTools.dll</DebugToolsDll>
   </PropertyGroup>
+  
   <ItemGroup>
     <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
     <None Include="resources\packageicon.png" Pack="true" PackagePath="" />
     <None Include="resources\README.md" Pack="true" PackagePath="" />
     <None Include="$(OutputDir)\*.xml" Pack="true" PackagePath="docs" Visible="false" />
     <PackageReference Include="VSImGui_DebugTools" Version="0.0.5" />
-  </ItemGroup>
-
-  <!-- Builds dependency projects and copies theirs ddls into output directory -->
-  <ItemGroup>
-    <ProjectReference Include="$(ProjectDir)\..\$(ControllerSubmoduleDir)\ImGuiController_OpenTK.csproj" />
+    <None Include="$(ProjectDir)\..\$(ControllerSubmoduleDir)\bin\Release\$(TargetFramework)\ImGuiController_OpenTK.dll" Pack="true" PackagePath="lib\$(TargetFramework)" />
+    <None Include="$(BindingsDir)\ImGui.NET.dll" Pack="true" PackagePath="lib\$(TargetFramework)" />
+    <None Include="$(BindingsDir)\ImGuizmo.NET.dll" Pack="true" PackagePath="lib\$(TargetFramework)" />
+    <None Include="$(BindingsDir)\ImNodes.NET.dll" Pack="true" PackagePath="lib\$(TargetFramework)" />
+    <None Include="$(BindingsDir)\ImPlot.NET.dll" Pack="true" PackagePath="lib\$(TargetFramework)" />
   </ItemGroup>
   
   <!-- References to libraries that are being used in project -->
   <ItemGroup>
     <Reference Include="VSImGui_DebugTools">
       <HintPath>$(DebugToolsDll)</HintPath>
+    </Reference>
+    <Reference Include="ImGuiController_OpenTK">
+      <HintPath>$(ProjectDir)\..\$(ControllerSubmoduleDir)\bin\Release\net7.0\ImGuiController_OpenTK.dll</HintPath>
     </Reference>
     <!-- Bindings: will be copied into output directory -->
     <Reference Include="ImGui.NET">
