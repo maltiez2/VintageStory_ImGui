@@ -25,19 +25,12 @@ To use this package you need to install it, use methods from DebugWindow static 
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationMarkdown>$(ReleasesDir)\docs.md</DocumentationMarkdown>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
     <None Include="resources\packageicon.png" Pack="true" PackagePath="" />
     <None Include="resources\README.md" Pack="true" PackagePath="" />
     <None Include="$(OutputDir)\*.xml" Pack="true" PackagePath="docs" Visible="false" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Vsxmd" Version="1.4.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <!-- References to libraries that are being used in project -->
@@ -53,5 +46,8 @@ To use this package you need to install it, use methods from DebugWindow static 
       <HintPath>$(GameDirectory)/VintagestoryLib.dll</HintPath>
       <Private>false</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Releases\docs\" />
   </ItemGroup>
 </Project>
