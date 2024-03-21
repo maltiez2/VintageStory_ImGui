@@ -85,8 +85,6 @@ internal class DrawCallbacksManager
                     anyOpened = true;
                     break;
             }
-
-            if (open || close) Console.WriteLine($"{id}: {result} - open: {open}, grab: {grab}");
         }
 
         return (open, grab, !anyOpened && close);
