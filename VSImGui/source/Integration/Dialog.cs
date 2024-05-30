@@ -7,13 +7,20 @@ namespace VSImGui;
 /// </summary>
 internal class VSImGuiDialog : GuiDialog
 {
-    public VSImGuiDialog(ICoreClientAPI capi, Controller controller, MainGameWindowWrapper windowWrapper, DrawCallbacksManager manager) : base(capi)
+    public VSImGuiDialog(ICoreClientAPI api, Controller controller, MainGameWindowWrapper windowWrapper, DrawCallbacksManager manager) : base(api)
     {
         _controller = controller;
         _manager = manager;
 
         windowWrapper.Draw += Draw;
     }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        capi = null;
+    }
+
 
     #region Controller calls
     /// <summary>

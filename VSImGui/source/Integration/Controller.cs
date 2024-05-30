@@ -122,7 +122,7 @@ internal sealed class Controller : ImGuiController
     /// <returns>True if ImGui handled mouse movement inputs</returns>
     public static bool MouseMovesCaptured()
     {
-        return ImGui.IsAnyItemHovered();
+        return ImGui.IsAnyItemHovered() || ImGui.GetIO().WantCaptureMouse;
     }
 
     /// <summary>
@@ -153,6 +153,15 @@ internal sealed class Controller : ImGuiController
         {
             IntPtr ptr = Marshal.StringToHGlobalAnsi(config);
             io.NativePtr->IniFilename = (byte*)ptr.ToPointer();
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            ImGuiIOPtr io = ImGui.GetIO();
+            io.Fonts.Destroy();
         }
     }
 }

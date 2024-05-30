@@ -59,7 +59,8 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         _dialog.TryOpen();
         _dialog.OnClosed += () => Closed?.Invoke();
         _controller.OnWindowMergedIntoMain += () => _dialog.TryOpen();
-        clientApi.Event.RegisterRenderer(new OffWindowRenderer(_dialog), EnumRenderStage.Ortho);
+        _offWindowRenderer = new OffWindowRenderer(_dialog);
+        clientApi.Event.RegisterRenderer(_offWindowRenderer, EnumRenderStage.Ortho);
         clientApi.Input.RegisterHotKey("imguitoggle", Lang.Get("vsimgui:imgui-toggle"), GlKeys.P, HotkeyType.GUIOrOtherControls, false, true, false);
 
         Draw += DrawDebugWindow;
@@ -68,7 +69,7 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
     public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Client;
     public override void AssetsLoaded(ICoreAPI api)
     {
-        if (api is not ICoreClientAPI clientApi) return;
+        if (api is not ICoreClientAPI) return;
         byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
         string serializedStyle = System.Text.Encoding.UTF8.GetString(data);
         DefaultStyle = JsonConvert.DeserializeObject<Style>(serializedStyle);
@@ -80,6 +81,7 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         _controller?.Dispose();
         _mainWindowWrapper?.Dispose();
         _dialog?.Dispose();
+        _offWindowRenderer?.Dispose();
 
         base.Dispose();
     }
@@ -88,6 +90,7 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
     private MainGameWindowWrapper? _mainWindowWrapper;
     private VSImGuiDialog? _dialog;
     private DrawCallbacksManager? _guiManager;
+    private OffWindowRenderer? _offWindowRenderer;
 
     private CallbackGUIStatus DrawDebugWindow(float timeSeconds)
     {
