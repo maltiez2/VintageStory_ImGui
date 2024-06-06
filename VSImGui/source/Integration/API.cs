@@ -313,6 +313,31 @@ public static class FontManager
         Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Montserrat-Italic.ttf"),
         Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Montserrat-Regular.ttf")
     };
+    static private Dictionary<string, nint> GlyphRanges = new()
+    {
+        { "en", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "ar", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "nl", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "cs", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "fr", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "de", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "eo", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "it", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "ja", ImGui.GetIO().Fonts.GetGlyphRangesJapanese() },
+        { "ko", ImGui.GetIO().Fonts.GetGlyphRangesKorean() },
+        { "pl", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "pt-pt", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "pt-br", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "ru", ImGui.GetIO().Fonts.GetGlyphRangesCyrillic() },
+        { "sr", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "es-es", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "es-419", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "sk", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "sv-se", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "th", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "uk", ImGui.GetIO().Fonts.GetGlyphRangesCyrillic() },
+        { "zh-cn", ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon() }
+    };
     /// <summary>
     /// Maps all combinations of loaded fonts to pointers that hold them and are used to set current font
     /// </summary>
@@ -335,7 +360,7 @@ public static class FontManager
         {
             foreach (int size in sizes)
             {
-                ImFontPtr ptr = io.Fonts.AddFontFromFileTTF(font, size);
+                ImFontPtr ptr = io.Fonts.AddFontFromFileTTF(font, size, new ImFontConfigPtr(), GlyphRanges[Lang.CurrentLocale]);
                 Loaded.TryAdd((Path.GetFileNameWithoutExtension(font), size), ptr);
             }
         }
@@ -354,7 +379,7 @@ public static class FontManager
     private static void LoadDefault()
     {
         ImGuiIOPtr io = ImGui.GetIO();
-        _ = io.Fonts.AddFontFromFileTTF(_defaultFont, _defaultSize);
+        _ = io.Fonts.AddFontFromFileTTF(_defaultFont, _defaultSize, new ImFontConfigPtr(), GlyphRanges[Lang.CurrentLocale]);
         _ = io.Fonts.AddFontDefault();
     }
 }

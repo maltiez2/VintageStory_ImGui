@@ -96,5 +96,5 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
     {
         return DebugWindowsManager.Draw() ? CallbackGUIStatus.DontGrabMouse : CallbackGUIStatus.Closed;
     }
-    #endregion
+#endregion
 }
