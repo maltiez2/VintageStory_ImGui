@@ -336,7 +336,7 @@ public static class FontManager
         { "sv-se", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
         { "th", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
         { "uk", ImGui.GetIO().Fonts.GetGlyphRangesCyrillic() },
-        { "zh-cn", ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon() }
+        { "zh-cn", ImGui.GetIO().Fonts.GetGlyphRangesChineseFull() }
     };
     /// <summary>
     /// Maps all combinations of loaded fonts to pointers that hold them and are used to set current font

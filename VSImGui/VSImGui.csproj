@@ -2,8 +2,7 @@
   <!-- Mod info -->
   <PropertyGroup>
     <ModName>Dear ImGui</ModName>
-    <GameVersion>1.19.4</GameVersion>
-    <ModVersion>1.1.5</ModVersion>
+    <ModVersion>1.1.7</ModVersion>
     <Version>0.0.6</Version>
     <ModId>vsimgui</ModId>
     <Description>Brings famous immediate mode GUI to Vintage Story</Description>
@@ -15,13 +14,6 @@
   <!-- Authors -->
   <ItemGroup>
     <ModInfoAuthors Include="Maltiez" />
-  </ItemGroup>
-
-  <!-- Dependencies -->
-  <ItemGroup>
-    <Dependencies Include="game">
-      <Version>$(GameVersion)</Version>
-    </Dependencies>
   </ItemGroup>
   
   <!-- Project settings -->
