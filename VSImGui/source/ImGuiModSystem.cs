@@ -4,6 +4,7 @@ using System;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
+using Vintagestory.API.MathTools;
 using VSImGui.API;
 using VSImGui.Debug;
 
@@ -69,11 +70,19 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
     public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Client;
     public override void AssetsLoaded(ICoreAPI api)
     {
-        if (api is not ICoreClientAPI) return;
+        if (api is not ICoreClientAPI clientApi) return;
         byte[] data = api.Assets.Get("vsimgui:config/defaultstyle.json").Data;
         string serializedStyle = System.Text.Encoding.UTF8.GetString(data);
         DefaultStyle = JsonConvert.DeserializeObject<Style>(serializedStyle);
         DefaultStyle?.Push();
+
+        clientApi.Input.RegisterHotKey("imguiincfont", Lang.Get("vsimgui:imgui-increase-font-size"), GlKeys.Plus, HotkeyType.GUIOrOtherControls, false, true, false);
+        clientApi.Input.RegisterHotKey("imguidecfont", Lang.Get("vsimgui:imgui-decrease-font-size"), GlKeys.Minus, HotkeyType.GUIOrOtherControls, false, true, false);
+
+        clientApi.Input.SetHotKeyHandler("imguiincfont", _ => IncreaseFontSize());
+        clientApi.Input.SetHotKeyHandler("imguidecfont", _ => DecreaseFontSize());
+
+        Draw += DrawCallbackForFontChange;
     }
     public override void Dispose()
     {
@@ -91,10 +100,45 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
     private VSImGuiDialog? _dialog;
     private DrawCallbacksManager? _guiManager;
     private OffWindowRenderer? _offWindowRenderer;
+    private int _fontSizeChange = 0;
+
+    private bool IncreaseFontSize()
+    {
+        _fontSizeChange++;
+
+        return true;
+    }
+    private bool DecreaseFontSize()
+    {
+        _fontSizeChange--;
+
+        return true;
+    }
+    private CallbackGUIStatus DrawCallbackForFontChange(float deltaSeconds)
+    {
+        DefaultStyle?.Pop();
+
+        if (_fontSizeChange != 0 && DefaultStyle != null)
+        {
+            DefaultStyle.FontSize = GetFontSize(DefaultStyle.FontSize, _fontSizeChange);
+            _fontSizeChange = 0;
+        }
+
+        DefaultStyle?.Push();
+
+        return CallbackGUIStatus.Closed;
+    }
+    private int GetFontSize(int current, int change)
+    {
+        int currentIndex = FontManager.Sizes.IndexOf(current);
+        int newIndex = GameMath.Clamp(currentIndex + change, 0, FontManager.Sizes.Count - 1);
+
+        return FontManager.Sizes[newIndex];
+    }
 
     private CallbackGUIStatus DrawDebugWindow(float timeSeconds)
     {
         return DebugWindowsManager.Draw() ? CallbackGUIStatus.DontGrabMouse : CallbackGUIStatus.Closed;
     }
-#endregion
+    #endregion
 }

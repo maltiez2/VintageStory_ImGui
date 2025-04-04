@@ -283,7 +283,7 @@ public static class FontManager
     /// <summary>
     /// List of sizes that would be generated for each font
     /// </summary>
-    static internal HashSet<int> Sizes { get; } = new HashSet<int>
+    static internal List<int> Sizes { get; } = new List<int>
     {
         6,
         8,
