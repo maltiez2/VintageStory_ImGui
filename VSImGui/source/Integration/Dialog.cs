@@ -1,4 +1,5 @@
-﻿using Vintagestory.API.Client;
+﻿using Microsoft.CodeAnalysis;
+using Vintagestory.API.Client;
 
 namespace VSImGui;
 
@@ -19,6 +20,16 @@ internal class VSImGuiDialog : GuiDialog
     {
         base.Dispose();
         capi = null;
+    }
+
+    public override bool TryClose()
+    {
+        if (!_allImGuiWindowsClosed)
+        {
+            return false;
+        }
+
+        return base.TryClose();
     }
 
 
@@ -91,6 +102,12 @@ internal class VSImGuiDialog : GuiDialog
     /// <param name="args"></param>
     private void HandleKeyboard(KeyEvent args)
     {
+        if (!focused)
+        {
+            args.Handled = false;
+            return;
+        }
+        
         if (!args.Handled || (args.KeyCode == (int)GlKeys.Escape && !focused))
         {
             args.Handled = Controller.KeyboardCaptured();
@@ -110,6 +127,7 @@ internal class VSImGuiDialog : GuiDialog
     /// Whether this dialog should unlock mouse from camera (works only in Immersive Mouse mode)
     /// </summary>
     private bool _grabMouse = false;
+    private bool _allImGuiWindowsClosed = true;
     /// <summary>
     /// Draw callback that uses <see cref="_manager"/> to draw ImGui windows and widgets, also determines if dialog should be opened/closed.<br/>
     /// Currently open functionality does not work, because when dialog is closed, it is not rendered, which means that this method is not called.
@@ -119,10 +137,20 @@ internal class VSImGuiDialog : GuiDialog
     {
         (bool open, bool grab, bool close) = _manager.Draw(deltaSeconds);
 
-        if (open) TryOpen();
-        if (close) TryClose();
+        if (open)
+        {
+            _allImGuiWindowsClosed = false;
+            TryOpen();
+        }
+        if (close)
+        {
+            _allImGuiWindowsClosed = !grab;
+            TryClose();
+        }
 
         _grabMouse = grab;
+
+        focused = focused && Controller.IsAnyFocused();
     }
 }
 
@@ -150,8 +178,15 @@ internal sealed class OffWindowRenderer : IRenderer
     {
         if (!_disposed && stage == EnumRenderStage.Ortho)
         {
-            _dialog.Update(deltaTime);
-            _dialog.RenderOffWindow(deltaTime);
+            try
+            {
+                _dialog.Update(deltaTime);
+                _dialog.RenderOffWindow(deltaTime);
+            }
+            catch
+            {
+
+            }
         }
     }
 

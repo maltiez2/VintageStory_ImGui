@@ -347,8 +347,8 @@ public static class FontManager
     /// </summary>
     internal static void Load()
     {
-        HashSet<int> sizes = Sizes.Select(value => value).ToHashSet();
-        HashSet<string> fonts = Fonts.Select(value => (string)value.Clone()).ToHashSet();
+        HashSet<int> sizes = [.. Sizes];
+        HashSet<string> fonts = [.. Fonts];
 
         BeforeFontsLoaded?.Invoke(fonts, sizes);
 

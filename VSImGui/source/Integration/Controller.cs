@@ -1,9 +1,6 @@
 ﻿using ImGuiController_OpenTK;
 using ImGuiNET;
 using OpenTK.Windowing.Desktop;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Vintagestory.API.Client;
@@ -43,7 +40,15 @@ internal sealed class Controller : ImGuiController
     /// <param name="captureInputs">If ImGUi should capture inputs from main window</param>
     public void Update(float deltaSeconds, bool captureInputs)
     {
-        ImGui.UpdatePlatformWindows();
+        try
+        {
+            ImGui.UpdatePlatformWindows();
+        }
+        catch (Exception exception)
+        {
+            System.Console.WriteLine(exception.ToString());
+            return;
+        }
 
         List<IImGuiWindow> windows = GetWindows(true);
 
@@ -98,6 +103,11 @@ internal sealed class Controller : ImGuiController
         mMainWindow.OnRender(deltaSeconds);
         mMainWindow.ImGuiRenderer.Render();
         mMainWindow.SwapBuffers();
+    }
+
+    public static bool IsAnyFocused()
+    {
+        return ImGui.IsWindowFocused(ImGuiFocusedFlags.AnyWindow);
     }
 
     /// <summary>

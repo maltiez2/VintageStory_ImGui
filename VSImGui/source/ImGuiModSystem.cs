@@ -83,6 +83,12 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         clientApi.Input.SetHotKeyHandler("imguidecfont", _ => DecreaseFontSize());
 
         Draw += DrawCallbackForFontChange;
+
+        /*Draw += _ => {
+            ImGui.Begin("Test");
+            ImGui.End();
+            return CallbackGUIStatus.DontGrabMouse;
+        };*/
     }
     public override void Dispose()
     {
