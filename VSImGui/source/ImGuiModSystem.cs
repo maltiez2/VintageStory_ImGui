@@ -84,11 +84,19 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
 
         Draw += DrawCallbackForFontChange;
 
-        /*Draw += _ => {
-            ImGui.Begin("Test");
-            ImGui.End();
-            return CallbackGUIStatus.DontGrabMouse;
-        };*/
+#if DEBUG
+        //Draw += _ => {
+        //    ImGui.Begin("Test");
+        //    ImGui.Button("Test");
+        //    ImGui.Button("Test");
+        //    ImGui.Button("Test");
+        //    ImGui.Button("Test");
+        //    ImGui.Button("Test");
+        //    ImGui.Button("Test");
+        //    ImGui.End();
+        //    return CallbackGUIStatus.DontGrabMouse;
+        //};
+#endif
     }
     public override void Dispose()
     {

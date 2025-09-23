@@ -12,6 +12,7 @@ internal class VSImGuiDialog : GuiDialog
     {
         _controller = controller;
         _manager = manager;
+        _api = api;
 
         windowWrapper.Draw += Draw;
     }
@@ -40,6 +41,7 @@ internal class VSImGuiDialog : GuiDialog
     /// <param name="deltaTime">Time it took to render previous frame</param>
     public void Update(float deltaTime)
     {
+        _controller.CanUpdateInputs = !_api.Input.MouseGrabbed;
         _controller.Update(deltaTime, opened);
     }
     /// <summary>
@@ -115,6 +117,7 @@ internal class VSImGuiDialog : GuiDialog
     }
     #endregion
 
+    private readonly ICoreClientAPI _api;
     /// <summary>
     /// ImGui controller used to update and render ImGui
     /// </summary>
