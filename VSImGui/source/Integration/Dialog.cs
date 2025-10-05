@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using ImGuiNET;
 using Vintagestory.API.Client;
 
 namespace VSImGui;
@@ -78,25 +78,34 @@ internal class VSImGuiDialog : GuiDialog
     /// Determines if mouse keys inputs were handled
     /// </summary>
     /// <param name="args"></param>
-    private static void HandleMouse(MouseEvent args)
+    private void HandleMouse(MouseEvent args)
     {
-        if (!args.Handled) args.Handled = Controller.MouseCaptured();
+        if (!args.Handled)
+        {
+            args.Handled = Controller.MouseCaptured();
+        }
     }
     /// <summary>
     /// Determines if mouse movement inputs were handled
     /// </summary>
     /// <param name="args"></param>
-    private static void HandleMouseMovement(MouseEvent args)
+    private void HandleMouseMovement(MouseEvent args)
     {
-        if (!args.Handled) args.Handled = Controller.MouseMovesCaptured();
+        if (!args.Handled)
+        {
+            args.Handled = Controller.MouseMovesCaptured();
+        }
     }
     /// <summary>
     /// Determines if mouse wheel inputs were handled
     /// </summary>
     /// <param name="args"></param>
-    private static void HandleMouseWheel(MouseWheelEventArgs args)
+    private void HandleMouseWheel(MouseWheelEventArgs args)
     {
-        if (!args.IsHandled) args.SetHandled(Controller.MouseMovesCaptured());
+        if (!args.IsHandled)
+        {
+            args.SetHandled(Controller.MouseMovesCaptured());
+        }
     }
     /// <summary>
     /// Determines if keyboard inputs were handled
@@ -109,12 +118,13 @@ internal class VSImGuiDialog : GuiDialog
             args.Handled = false;
             return;
         }
-        
+
         if (!args.Handled || (args.KeyCode == (int)GlKeys.Escape && !focused))
         {
             args.Handled = Controller.KeyboardCaptured();
         }
     }
+
     #endregion
 
     private readonly ICoreClientAPI _api;
@@ -151,7 +161,7 @@ internal class VSImGuiDialog : GuiDialog
             TryClose();
         }
 
-        _grabMouse = grab;
+        _grabMouse = grab || ImGui.GetIO().WantTextInput;
 
         focused = focused && Controller.IsAnyFocused();
     }
