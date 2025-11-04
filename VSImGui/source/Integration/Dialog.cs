@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using System.Diagnostics;
 using Vintagestory.API.Client;
 
 namespace VSImGui;
@@ -50,11 +51,25 @@ internal class VSImGuiDialog : GuiDialog
     /// <param name="deltaTime"></param>
     public void RenderOffWindow(float deltaTime)
     {
-        _controller.RenderOffWindow(deltaTime);
+        try
+        {
+            _controller.RenderOffWindow(deltaTime);
+        }
+        catch (Exception exception)
+        {
+
+        }
     }
     public override void OnRenderGUI(float deltaTime)
     {
-        _controller.RenderMainWindow(deltaTime);
+        try
+        {
+            _controller.RenderMainWindow(deltaTime);
+        }
+        catch (Exception exception)
+        {
+
+        }
     }
     #endregion
 

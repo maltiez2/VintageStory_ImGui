@@ -2,7 +2,7 @@
   <!-- Mod info -->
   <PropertyGroup>
     <ModName>Dear ImGui</ModName>
-    <ModVersion>1.1.14</ModVersion>
+    <ModVersion>1.1.15</ModVersion>
     <Version>0.0.6</Version>
     <ModId>vsimgui</ModId>
     <Description>Brings famous immediate mode GUI to Vintage Story</Description>
