@@ -301,10 +301,10 @@ public static class FontManager
     /// </summary>
     static internal HashSet<string> Fonts { get; } = new HashSet<string>
     {
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Bold.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-BoldItalic.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Italic.otf"),
-        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Regular.otf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Bold.ttf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-BoldItalic.ttf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Italic.ttf"),
+        Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Almendra-Regular.ttf"),
         Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-Bold.ttf"),
         Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-BoldItalic.ttf"),
         Path.Combine(GamePaths.AssetsPath, "game", "fonts", "Lora-Italic.ttf"),
