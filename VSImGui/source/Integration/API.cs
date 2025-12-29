@@ -317,6 +317,7 @@ public static class FontManager
     {
         { "en", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
         { "ar", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "be", ImGui.GetIO().Fonts.GetGlyphRangesCyrillic() },
         { "nl", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
         { "cs", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
         { "fr", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
