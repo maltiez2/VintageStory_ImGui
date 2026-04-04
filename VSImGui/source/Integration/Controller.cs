@@ -19,7 +19,7 @@ internal sealed class Controller : ImGuiController
     /// Initializes ImGui
     /// </summary>
     /// <param name="window">Main game window wrapped in specialized class</param>
-    public Controller(MainGameWindowWrapper window) : base(window)
+    public Controller(MainGameWindowWrapper window, bool multiViewport = true) : base(window, multiViewport)
     {
         SetConfigFolder();
 

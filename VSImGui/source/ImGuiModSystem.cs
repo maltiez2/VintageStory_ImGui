@@ -1,6 +1,7 @@
 ﻿using ImGuiNET;
 using Newtonsoft.Json;
 using System;
+using System.Runtime.InteropServices;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
@@ -9,6 +10,11 @@ using VSImGui.API;
 using VSImGui.Debug;
 
 namespace VSImGui;
+
+public class ImGuiConfig
+{
+    public bool MultiViewportSupport { get; set; } = true;
+}
 
 /// <summary>
 /// Initializes ImGui integration into VS and provides interface for drawing ImGui dialogs
@@ -53,9 +59,24 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         bool loaded = NativesLoader.Load(api.Logger, this);
         if (!loaded) return;
 
+        ImGuiConfig? config = api.LoadModConfig<ImGuiConfig>("imgui.json");
+        if (config == null)
+        {
+            _config = new();
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                _config.MultiViewportSupport = false;
+            }
+            api.StoreModConfig(_config, "imgui.json");
+        }
+        else
+        {
+            _config = config;
+        }
+
         _guiManager = new();
         _mainWindowWrapper = new(clientApi);
-        _controller = new(_mainWindowWrapper);
+        _controller = new(_mainWindowWrapper, _config.MultiViewportSupport);
         _dialog = new(clientApi, _controller, _mainWindowWrapper, _guiManager);
         _dialog.TryOpen();
         _dialog.OnClosed += () => Closed?.Invoke();
@@ -117,6 +138,7 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
     private DrawCallbacksManager? _guiManager;
     private OffWindowRenderer? _offWindowRenderer;
     private int _fontSizeChange = 0;
+    private ImGuiConfig _config = new();
 
     private bool IncreaseFontSize()
     {

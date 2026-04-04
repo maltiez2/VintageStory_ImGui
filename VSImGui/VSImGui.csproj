@@ -2,7 +2,7 @@
   <!-- Mod info -->
   <PropertyGroup>
     <ModName>Dear ImGui</ModName>
-    <ModVersion>1.1.16</ModVersion>
+    <ModVersion>1.2.1</ModVersion>
     <Version>0.0.6</Version>
     <ModId>vsimgui</ModId>
     <Description>Brings famous immediate mode GUI to Vintage Story</Description>
@@ -18,7 +18,7 @@
   
   <!-- Project settings -->
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -31,7 +31,7 @@
     <OutputDir>bin\$(Configuration)\Mods</OutputDir>
     <OutputPath>$(OutputDir)\$(ModId)</OutputPath>
     <ControllerSubmoduleDir>ImGui.NET_OpenTK_Sample_multi-viewports\ImGuiController_OpenTK</ControllerSubmoduleDir>
-    <GameDirectory>$(VINTAGE_STORY)</GameDirectory>
+    <GameDirectory>D:\Projects\VintageStory\game_22</GameDirectory>
     <BindingsDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\bindings</BindingsDir>
     <NativesDir>$(ProjectDir)\..\$(ControllerSubmoduleDir)\lib\native</NativesDir>
     <AssetsDir>$(ProjectDir)\resources\assets</AssetsDir>
