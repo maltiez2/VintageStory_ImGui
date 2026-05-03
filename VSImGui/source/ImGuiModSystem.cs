@@ -13,6 +13,7 @@ namespace VSImGui;
 
 public class ImGuiConfig
 {
+    public int Version { get; set; } = 0;
     public bool MultiViewportSupport { get; set; } = true;
 }
 
@@ -60,12 +61,17 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         if (!loaded) return;
 
         ImGuiConfig? config = api.LoadModConfig<ImGuiConfig>("imgui.json");
-        if (config == null)
+        if (config == null || config.Version < 1)
         {
             _config = new();
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            _config.Version = 1;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 _config.MultiViewportSupport = false;
+            }
+            else
+            {
+                _config.MultiViewportSupport = true;
             }
             api.StoreModConfig(_config, "imgui.json");
         }
