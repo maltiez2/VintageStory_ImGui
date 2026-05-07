@@ -61,11 +61,11 @@ public class ImGuiModSystem : ModSystem, IImGuiRenderer
         if (!loaded) return;
 
         ImGuiConfig? config = api.LoadModConfig<ImGuiConfig>("imgui.json");
-        if (config == null || config.Version < 1)
+        if (config == null || config.Version < 2)
         {
             _config = new();
-            _config.Version = 1;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            _config.Version = 2;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)/* || RuntimeInformation.IsOSPlatform(OSPlatform.Windows)*/)
             {
                 _config.MultiViewportSupport = false;
             }
