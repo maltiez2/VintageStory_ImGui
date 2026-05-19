@@ -1,4 +1,4 @@
-﻿using ImGuiNET;
+using ImGuiNET;
 using Vintagestory.API.Client;
 using Vintagestory.API.Config;
 
@@ -263,6 +263,31 @@ public abstract class ImGuiDialogBase : IDisposable
 public static class FontManager
 {
     /// <summary>
+    /// Detects whether the currently loaded ImGui runtime exposes the 1.92 dynamic glyph-range feature so we can skip manual ranges when safe.
+    /// </summary>
+    static FontManager()
+    {
+        if (Version.TryParse(ImGui.GetVersion(), out Version? parsedVersion))
+        {
+            _supportsFullUnicodeGlyphs = parsedVersion >= new Version(1, 92);
+        }
+    }
+    /// <summary>
+    /// Whether ImGui 1.92+ is in use, enabling its dynamic glyph-range support; see https://github.com/ocornut/imgui/issues/8465 for context.
+    /// </summary>
+    private static readonly bool _supportsFullUnicodeGlyphs;
+    /// <summary>
+    /// Locale-specific factories that can build additional glyph ranges when ImGui defaults lack certain characters.
+    /// </summary>
+    private static readonly Dictionary<string, Func<ImGuiIOPtr, ImVector>> CustomGlyphBuilders = new()
+    {
+        { "pl", BuildPolishGlyphRange }
+    };
+    /// <summary>
+    /// Keeps custom glyph range buffers alive so ImGui can safely reference their memory.
+    /// </summary>
+    private static readonly List<ImVector> CustomGlyphRanges = new();
+    /// <summary>
     /// Provides access to fonts and sizes collections that determine what fonts will be loaded. Font atlas is limited, so to many fonts and sizes might cause problems.
     /// </summary>
     /// <param name="fonts">Collection of paths to fonts' files. Add your own fonts here.</param>
@@ -326,7 +351,7 @@ public static class FontManager
         { "it", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
         { "ja", ImGui.GetIO().Fonts.GetGlyphRangesJapanese() },
         { "ko", ImGui.GetIO().Fonts.GetGlyphRangesKorean() },
-        { "pl", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
+        { "pl", IntPtr.Zero },
         { "pt-pt", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
         { "pt-br", ImGui.GetIO().Fonts.GetGlyphRangesDefault() },
         { "ru", ImGui.GetIO().Fonts.GetGlyphRangesCyrillic() },
@@ -357,11 +382,12 @@ public static class FontManager
         LoadDefault();
 
         ImGuiIOPtr io = ImGui.GetIO();
+        nint glyphRange = ResolveGlyphRange(io);
         foreach (string font in fonts)
         {
             foreach (int size in sizes)
             {
-                ImFontPtr ptr = io.Fonts.AddFontFromFileTTF(font, size, new ImFontConfigPtr(), GlyphRanges[Lang.CurrentLocale]);
+                ImFontPtr ptr = io.Fonts.AddFontFromFileTTF(font, size, new ImFontConfigPtr(), glyphRange);
                 Loaded.TryAdd((Path.GetFileNameWithoutExtension(font), size), ptr);
             }
         }
@@ -380,7 +406,91 @@ public static class FontManager
     private static void LoadDefault()
     {
         ImGuiIOPtr io = ImGui.GetIO();
-        _ = io.Fonts.AddFontFromFileTTF(_defaultFont, _defaultSize, new ImFontConfigPtr(), GlyphRanges[Lang.CurrentLocale]);
+        nint glyphRange = ResolveGlyphRange(io);
+        _ = io.Fonts.AddFontFromFileTTF(_defaultFont, _defaultSize, new ImFontConfigPtr(), glyphRange);
         _ = io.Fonts.AddFontDefault();
+    }
+
+    /// <summary>
+    /// Determines the glyph range pointer that should be used for the current locale, falling back to builders or defaults when needed.
+    /// </summary>
+    private static nint ResolveGlyphRange(ImGuiIOPtr io)
+    {
+        if (_supportsFullUnicodeGlyphs)
+        {
+            return IntPtr.Zero; // ImGui 1.92+ automatically loads all glyphs, no manual range required
+        }
+
+        string locale = (Lang.CurrentLocale ?? "en").ToLowerInvariant();
+
+        if (GlyphRanges.TryGetValue(locale, out nint range) && range != IntPtr.Zero)
+        {
+            return range;
+        }
+
+        if (CustomGlyphBuilders.TryGetValue(locale, out Func<ImGuiIOPtr, ImVector>? builder))
+        {
+            ImVector vector = builder(io);
+            CustomGlyphRanges.Add(vector); // keep vector alive so ImGui can use the range memory
+            nint ptr = vector.Data;
+            GlyphRanges[locale] = ptr;
+            return ptr;
+        }
+
+        int dashIndex = locale.IndexOf('-');
+        if (dashIndex > 0)
+        {
+            string fallback = locale[..dashIndex];
+            return ResolveGlyphRangeForFallback(fallback, io);
+        }
+
+        return GlyphRanges["en"];
+    }
+
+    /// <summary>
+    /// Resolves glyph ranges for shortened locale names (e.g. "pl" extracted from "pl-PL").
+    /// </summary>
+    private static nint ResolveGlyphRangeForFallback(string locale, ImGuiIOPtr io)
+    {
+        if (_supportsFullUnicodeGlyphs)
+        {
+            return IntPtr.Zero;
+        }
+
+        if (GlyphRanges.TryGetValue(locale, out nint range) && range != IntPtr.Zero)
+        {
+            return range;
+        }
+
+        if (CustomGlyphBuilders.TryGetValue(locale, out Func<ImGuiIOPtr, ImVector>? builder))
+        {
+            ImVector vector = builder(io);
+            CustomGlyphRanges.Add(vector);
+            nint ptr = vector.Data;
+            GlyphRanges[locale] = ptr;
+            return ptr;
+        }
+
+        return GlyphRanges["en"];
+    }
+
+    /// <summary>
+    /// Builds a glyph range that covers Polish diacritics by merging default, Cyrillic and explicit characters.
+    /// </summary>
+    private static unsafe ImVector BuildPolishGlyphRange(ImGuiIOPtr io)
+    {
+        if (_supportsFullUnicodeGlyphs)
+        {
+            return default;
+        }
+
+        ImFontGlyphRangesBuilderPtr builder = new(ImGuiNative.ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder());
+        builder.AddRanges(io.Fonts.GetGlyphRangesDefault());
+        builder.AddRanges(io.Fonts.GetGlyphRangesCyrillic());
+        builder.AddText("ĄąĆćĘęŁłŃńÓóŚśŹźŻż");
+        ImVector ranges;
+        builder.BuildRanges(out ranges);
+        ImGuiNative.ImFontGlyphRangesBuilder_destroy(builder.NativePtr);
+        return ranges;
     }
 }
