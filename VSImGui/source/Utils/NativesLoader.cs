@@ -229,6 +229,12 @@ internal class MacDllLoader : DllLoader
 
         if (handle == IntPtr.Zero)
         {
+            dllPath = dllPath.Replace("native/mac/", "native/macarm/");
+            handle = dlopen(dllPath, 1);
+        }
+
+        if (handle == IntPtr.Zero)
+        {
             Exception innerException = new Win32Exception();
             Exception exception = new DllNotFoundException("Unable to load library: " + dllPath, innerException);
             logger.Fatal($"Failed to load embedded DLL:\n\nDlError:\n{Marshal.PtrToStringAnsi(dlerror())}\n\nException:\n{exception}");
