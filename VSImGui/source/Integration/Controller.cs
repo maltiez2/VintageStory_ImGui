@@ -170,6 +170,11 @@ internal sealed class Controller : ImGuiController
     {
         if (disposing)
         {
+            // The base class subscribes to the game window, which outlives the world; left subscribed,
+            // this controller and the whole world it belongs to stay in memory.
+            mMainWindow.Native.MouseWheel -= OnMouseScroll;
+            mMainWindow.Native.TextInput -= OnTextInput;
+
             ImGuiIOPtr io = ImGui.GetIO();
             io.Fonts.Destroy();
         }
